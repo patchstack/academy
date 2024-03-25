@@ -1,0 +1,98 @@
+---
+import type { Props } from '../props';
+
+import MobileTableOfContents from 'virtual:starlight/components/MobileTableOfContents';
+import TableOfContents from 'virtual:starlight/components/TableOfContents';
+const { locale, toc, editUrl, entry, isFallback } = Astro.props;
+import { Icon } from '@astrojs/starlight/components';
+---
+
+{
+	Astro.props.toc && (
+		<>
+			<div class="lg:sl-hidden">
+				<MobileTableOfContents {...Astro.props} />
+			</div>
+			<div class="right-sidebar-panel sl-hidden lg:sl-block">
+				<div class="sl-container">
+					<TableOfContents {...Astro.props} />
+
+                    <nav class="contribute" aria-labelledby="starlight__on-this-page">
+                        <h2>Contribute</h2>
+                        <ul>
+                            <li>
+                                <span><a href={editUrl}><Icon name="pencil" /> Make this page better</a></span>
+                            </li>
+							<li>
+                                <span><a href="https://discord.com/servers/patchstack-alliance-1024691600619745334" target="_blank"><Icon name="discord" /> Join Discord</a></span>
+                            </li>
+                        </ul>
+                    </nav>
+				</div>
+                
+			</div>
+		</>
+	)
+}
+
+<style>
+    .contribute {
+        padding-top: 1rem;
+    }
+
+	svg {
+		margin-right: 5px;
+		display: inline-block;
+	}
+    ul {
+		padding: 0;
+		list-style: none;
+	}
+	a {
+		--pad-inline: 0.5rem;
+		display: block;
+		border-radius: 0.25rem;
+		padding-block: 0.25rem;
+		padding-inline: calc(1rem * var(--depth) + var(--pad-inline)) var(--pad-inline);
+		line-height: 1.25;
+	}
+	a[aria-current='true'] {
+		color: var(--sl-color-text-accent);
+	}
+    
+	.right-sidebar-panel {
+		padding: 1rem var(--sl-sidebar-pad-x);
+	}
+	.sl-container {
+		width: calc(var(--sl-sidebar-width) - 2 * var(--sl-sidebar-pad-x));
+	}
+	.right-sidebar-panel :global(h2) {
+		color: var(--sl-color-white);
+		font-size: var(--sl-text-h5);
+		font-weight: 600;
+		line-height: var(--sl-line-height-headings);
+		margin-bottom: 0.5rem;
+	}
+	.right-sidebar-panel :global(:where(a)) {
+		display: block;
+		font-size: var(--sl-text-xs);
+		text-decoration: none;
+		color: var(--sl-color-gray-3);
+		overflow-wrap: anywhere;
+	}
+	.right-sidebar-panel :global(:where(a):hover) {
+		color: var(--sl-color-white);
+	}
+	@media (min-width: 72rem) {
+		.sl-container {
+			max-width: calc(
+				(
+					(
+							100vw - var(--sl-sidebar-width) - 2 * var(--sl-content-pad-x) - 2 *
+								var(--sl-sidebar-pad-x)
+						) * 0.25 /* MAGIC NUMBER 🥲 */
+				)
+			);
+		}
+	}
+</style>

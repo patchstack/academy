@@ -1,0 +1,32 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import Default from '@astrojs/starlight/components/Head.astro';
+
+const { isFallback, lang } = Astro.props;
+let path = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '');
+if ( path === '' ) {
+	path = 'index';
+}
+const imageSrc = '/open-graph/' + path + '.png';
+const canonicalImageSrc = new URL(imageSrc, Astro.site);
+---
+<Default {...Astro.props}><slot /></Default>
+<meta property="og:image" content={canonicalImageSrc} />
+
+<script>
+import '/src/libs/glightbox/js/glightbox.min.js';
+import '/src/libs/glightbox/css/glightbox.min.css';
+window.addEventListener("load", function(){
+	const nolb = document.querySelectorAll(".nolb img");
+	nolb.forEach((img) => {
+		img.classList.add('nolb');
+	});
+
+	const lightbox = GLightbox({
+		touchNavigation: true,
+		loop: true,
+		autoplayVideos: true,
+		selector: '.sl-markdown-content img:not(.nolb)',
+	});
+});
+</script>

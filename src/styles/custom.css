@@ -1,0 +1,92 @@
+@font-face {
+	font-display: swap;
+	font-family: 'Faktum';
+	font-style: normal;
+	font-weight: 400;
+	src: url('/fonts/faktum-regular.woff2') format('woff2'); 
+}
+
+@font-face {
+	font-display: swap;
+	font-family: 'Faktum';
+	font-style: normal;
+	font-weight: 600;
+	src: url('/fonts/faktum-semibold.woff2') format('woff2'); 
+}
+
+/* Dark mode colors. */
+:root {
+	--sl-color-accent-low: #17181c;
+	--sl-color-accent: #afe614;
+	--sl-color-accent-high: #afe614;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #eceef2;
+	--sl-color-gray-2: #c0c2c7;
+	--sl-color-gray-3: #888b96;
+	--sl-color-gray-4: #545861;
+	--sl-color-gray-5: #353841;
+	--sl-color-gray-6: #24272f;
+	--sl-color-black: #17181c;
+	--sl-color-text: #ebebeb;
+}
+
+/* Light mode colors. */
+:root[data-theme='light'] {
+	--sl-color-accent-low: #c7d6ff;
+	--sl-color-accent: #6ebe00;
+	--sl-color-accent-high: #6ebe00;
+	--sl-color-white: #17181c;
+	--sl-color-gray-1: #24272f;
+	--sl-color-gray-2: #353841;
+	--sl-color-gray-3: #545861;
+	--sl-color-gray-4: #888b96;
+	--sl-color-gray-5: #c0c2c7;
+	--sl-color-gray-6: #eceef2;
+	--sl-color-gray-7: #f5f6f8;
+	--sl-color-black: #ffffff;
+	--sl-color-bg-nav: #24272f;
+
+	starlight-theme-select select,
+	starlight-theme-select option,
+	starlight-theme-select label {
+		color:#eceef2;
+	}
+
+	.starlight-aside--note {
+		--sl-color-asides-text-accent: white;
+		border-color: #457700;
+		background-color: #afe614;
+	}
+}
+
+
+.starlight-aside--note {
+    --sl-color-asides-text-accent: white;
+    border-color: #afe614;
+    background-color: #457700;
+}
+
+.container {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	padding-top: 56.25%; /* 16:9 Aspect Ratio (divide 9 by 16 = 0.5625) */
+}
+  /* Then style the iframe to fit in the container div with full height and width */
+.responsive-iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	width: 100%;
+	height: 100%!important;
+}
+
+.main-pane h2 {
+	color: var(--sl-color-accent);
+}
+
+h1, h2, h3, span.link-title, summary .large {
+	font-family: 'Faktum', sans-serif;
+}
