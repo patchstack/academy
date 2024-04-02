@@ -28,7 +28,7 @@ export default defineConfig({
       ThemeProvider: './src/components/ThemeProvider.astro',
       ThemeSelect: './src/components/ThemeSelect.astro',
       Head: './src/components/Head.astro',
-	  PageSidebar: './src/components/PageSidebar.astro',
+	    PageSidebar: './src/components/PageSidebar.astro',
     },
     sidebar: [{
       label: '👋 Welcome',
