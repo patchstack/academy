@@ -29,6 +29,7 @@ export default defineConfig({
       ThemeSelect: './src/components/ThemeSelect.astro',
       Head: './src/components/Head.astro',
 	    PageSidebar: './src/components/PageSidebar.astro',
+      MarkdownContent: './src/components/MarkdownContent.astro',
     },
     sidebar: [{
       label: '👋 Welcome',

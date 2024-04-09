@@ -1,0 +1,16 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+
+const data = Astro.props.entry.data;
+---
+{ data.contributors?.length > 0 && 
+    <h3>Contributors</h3>
+}
+{ data.contributors?.length > 0 && (
+    data.contributors.map(function(contributor) {
+        return (
+            <a href={ 'https://github.com/' + contributor } target="_blank">
+                <img src={ 'https://github.com/' + contributor + '.png?size=50' } alt={contributor} />
+            </a>
+        ) 
+} )  ) }

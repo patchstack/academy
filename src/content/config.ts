@@ -6,6 +6,7 @@ export const collections = {
 		schema: docsSchema({
 			extend: z.object({
 				ogtitle: z.string().optional(),
+				contributors: z.array(z.string()).optional(),
 			}),
 		}),
 	}),

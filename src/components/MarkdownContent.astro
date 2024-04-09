@@ -1,0 +1,9 @@
+---
+import type { Props } from '@astrojs/starlight/props';
+import '@astrojs/starlight/style/markdown.css';
+import Contributors from './Contributors.astro';
+---
+
+<div class="sl-markdown-content"><slot /></div>
+
+<Contributors {...Astro.props}/>
