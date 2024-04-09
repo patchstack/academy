@@ -11,7 +11,7 @@ export const { getStaticPaths, GET } = OGImageRoute({
 
     getImageOptions: (path, page) => ({
         title: page.ogtitle ? page.ogtitle : page.title,
-        description: 'Detect & patch vulnerabilities in your WordPress apps',
+        description: 'Patchstack Academy',
         bgImage: {
             path: './public/images/og_bg.png',
             fit: 'contain'

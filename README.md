@@ -1,21 +1,20 @@
-# Starlight Starter Kit: Basics
+# Patchstack Academy
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+## What is it
+**Patchstack Academy** is a community-built website created by people fascinated with web security. 
 
-```
-npm create astro@latest -- --template starlight
-```
+[**Join our Community**](https://discord.com/servers/patchstack-alliance-1024691600619745334) to meet us better.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/starlight/tree/main/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/starlight/tree/main/examples/basics)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fwithastro%2Fstarlight%2Ftree%2Fmain%2Fexamples%2Fbasics&project-name=my-starlight-docs&repository-name=my-starlight-docs)
+## Installation
+**Prerequisites**
+**Node.js** - v18.14.1 or higher.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+1. Fork the repository first.
+2. `git clone` the forked repository on your computer.
+3. Run `npm install` and `npm start`
 
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
+## Project structure
+**Patchstack Academy** is built on top of [**Astro Starlight**](https://astro.build/).
 ```
 .
 ├── public/
@@ -24,20 +23,18 @@ Inside of your Astro + Starlight project, you'll see the following folders and f
 │   ├── content/
 │   │   ├── docs/
 │   │   └── config.ts
+|   ├── libs
+|   ├── pages
+|   ├── styles
 │   └── env.d.ts
 ├── astro.config.mjs
 ├── package.json
 └── tsconfig.json
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+The part that should interest you the most is the `src/content/docs` folder. All the website content is there in Markdown or MDX format.
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
-
-Static assets, like favicons, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
+## Commands
 All commands are run from the root of the project, from a terminal:
 
 | Command                   | Action                                           |
@@ -48,7 +45,3 @@ All commands are run from the root of the project, from a terminal:
 | `npm run preview`         | Preview your build locally, before deploying     |
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
