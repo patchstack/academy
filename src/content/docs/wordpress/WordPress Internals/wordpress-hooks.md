@@ -26,9 +26,9 @@ Example of hook implementation :
 add_action( 'init', 'process_post' );
 
 function process_post() {
-if( isset( $_POST['unique_hidden_field'] ) ) {
-// process $_POST data here, possibly need to add permission and nonce check first
-}
+    if( isset( $_POST['unique_hidden_field'] ) ) {
+    // process $_POST data here, possibly need to add permission and nonce check first
+    }
 }
 ```
 
@@ -42,8 +42,8 @@ Example of hook implementation :
 
 ```php
 function myplugin_settings() {
-  register_setting( 'myplugin', 'myplugin_setting_1', 'intval' );
-  register_setting( 'myplugin', 'myplugin_setting_2', 'intval' );
+    register_setting( 'myplugin', 'myplugin_setting_1', 'intval' );
+    register_setting( 'myplugin', 'myplugin_setting_2', 'intval' );
 }
 add_action( 'admin_init', 'myplugin_settings' );
 ```
@@ -66,10 +66,10 @@ Example of hook implementation :
 add_action( 'wp_ajax_foobar', 'my_ajax_foobar_handler' );
 
 function my_ajax_foobar_handler() {
-  // Make your response and echo it.
+    // Make your response and echo it.
 
-  // Don't forget to stop execution afterward.
-  wp_die();
+    // Don't forget to stop execution afterward.
+    wp_die();
 }
 ```
 

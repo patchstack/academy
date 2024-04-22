@@ -35,9 +35,9 @@ Example of function implementation :
 ```php
 $nonce = $_REQUEST['_wpnonce'];
 if ( ! wp_verify_nonce( $nonce, 'my-nonce' ) || ! current_user_can("manage_options")) {
-  die( __( 'Security check', 'textdomain' ) ); 
+	die( __( 'Security check', 'textdomain' ) ); 
 } else {
-  // Do stuff here.
+	// Do stuff here.
 }
 ```
 
@@ -54,7 +54,7 @@ Example of function implementation :
 <?php
 // if this fails, check_admin_referer() will automatically print a "failed" page and die.
 if ( ! empty( $_POST ) && check_admin_referer( 'name_of_my_action', 'name_of_nonce_field' ) && current_user_can("manage_options") ) {
-  // process form data, e.g. update fields
+   // process form data, e.g. update fields
 }
 
 // Display the form
@@ -70,16 +70,16 @@ Example of function implementation :
 
 ```php
 /**
- * Check the referrer for the AJAX call.
- */
+ * Check the referrer for the AJAX call.
+ */
 function wpdocs_action_function() {
-  if(!current_user_can("manage_options")){
-    die;
-  }
+    if(!current_user_can("manage_options")){
+        die;
+    }
 
-  check_ajax_referer( 'wpdocs-special-string', 'security' );
-  echo sanitize_text_field( $_POST['wpdocs_string'] );
-  die;
+	check_ajax_referer( 'wpdocs-special-string', 'security' );
+	echo sanitize_text_field( $_POST['wpdocs_string'] );
+	die;
 }
 add_action( 'wp_ajax_wpdocs_action', 'wpdocs_action_function' );
 ```
