@@ -1,10 +1,12 @@
 ---
 title: Arbitrary File Read
+contributors:
+    - rafiem
 ---
 
 ## Introduction
 
-This section covers cases of possible Arbitrary File Read on WordPress. This includes improper file fetch handling inside of the plugin/theme which can be used to read arbitrary local files inside of the server.
+This article covers cases of possible Arbitrary File Read on WordPress. This includes improper file fetch handling inside of the plugin/theme which can be used to read arbitrary local files inside of the server.
 
 ## Useful Functions
 

@@ -1,10 +1,12 @@
 ---
 title: Hooks
+contributors:
+    - rafiem
 ---
 
 ## Introduction
 
-This section covers descriptions and explanations about hooks in WordPress code. Hooks are a way for one piece of code to interact/modify another piece of code at specific, pre-defined spots. They make up the foundation for how plugins and themes interact with WordPress Core, but they’re also used extensively by Core itself.
+This article covers descriptions and explanations about hooks in WordPress code. Hooks are a way for one piece of code to interact/modify another piece of code at specific, pre-defined spots. They make up the foundation for how plugins and themes interact with WordPress Core, but they’re also used extensively by Core itself.
 
 There are two types of hooks: Actions and Filters. To use either, you need to write a custom function known as a Callback, and then register it with a WordPress hook for a specific action or filter.
 

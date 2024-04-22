@@ -1,10 +1,12 @@
 ---
 title: Server Side Request Forgery (SSRF)
+contributors:
+    - rafiem
 ---
 
 ## Introduction
 
-This section covers cases of possible SSRF on WordPress. This includes improper URL fetch handling inside of the plugin/theme which can be used to perform unauthorized actions or access to data within the organization. This can be in the vulnerable application, or on other back-end systems that the application can communicate with.
+This article covers cases of possible SSRF on WordPress. This includes improper URL fetch handling inside of the plugin/theme which can be used to perform unauthorized actions or access to data within the organization. This can be in the vulnerable application, or on other back-end systems that the application can communicate with.
 
 ## Useful Functions
 

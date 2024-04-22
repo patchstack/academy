@@ -1,10 +1,12 @@
 ---
 title: Arbitrary File Upload
+contributors:
+    - rafiem
 ---
 
 ## Introduction
 
-This section covers cases of possible Arbitrary File Upload on WordPress. This includes improper file input handling inside of the plugin/theme which can be used to arbitrarily upload files including `.php` files to further achieve Remote Code Execution (RCE).
+This article covers cases of possible Arbitrary File Upload on WordPress. This includes improper file input handling inside of the plugin/theme which can be used to arbitrarily upload files including `.php` files to further achieve Remote Code Execution (RCE).
 
 ## Files Input
 

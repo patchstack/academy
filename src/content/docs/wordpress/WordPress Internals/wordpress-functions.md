@@ -1,10 +1,12 @@
 ---
 title: Functions
+contributors:
+    - rafiem
 ---
 
 ## Introduction
 
-This section covers descriptions and explanations about functions in WordPress code.
+This article covers descriptions and explanations about functions in WordPress code.
 
 ## [`current_user_can`](https://developer.wordpress.org/reference/functions/current_user_can/)
 
