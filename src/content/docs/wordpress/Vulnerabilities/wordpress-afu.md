@@ -3,7 +3,6 @@ title: Arbitrary File Upload
 contributors:
     - rafiem
 ---
-
 ## Introduction
 
 This article covers cases of possible Arbitrary File Upload on WordPress. This includes improper file input handling inside of the plugin/theme which can be used to arbitrarily upload files including `.php` files to further achieve Remote Code Execution (RCE).
@@ -20,21 +19,21 @@ Another way that is most of the time missed by hackers is via [`WP_REST_Request:
 Several functions could be useful to identify a possible Arbitrary File Upload vulnerability:
 
 - PHP related
-    - [move_uploaded_file](https://www.php.net/manual/en/function.move-uploaded-file.php)
-    - [file_put_contents](https://www.php.net/manual/en/function.file-put-contents)
-    - [fwrite](https://www.php.net/manual/en/function.fwrite)
-    - [fputs](https://www.php.net/manual/en/function.fputs.php)
-    - [copy](https://www.php.net/manual/en/function.copy.php)
-    - [fputcsv](https://www.php.net/manual/en/function.fputcsv.php)
-    - [rename](https://www.php.net/manual/en/function.rename.php)
+  - [move_uploaded_file](https://www.php.net/manual/en/function.move-uploaded-file.php)
+  - [file_put_contents](https://www.php.net/manual/en/function.file-put-contents)
+  - [fwrite](https://www.php.net/manual/en/function.fwrite)
+  - [fputs](https://www.php.net/manual/en/function.fputs.php)
+  - [copy](https://www.php.net/manual/en/function.copy.php)
+  - [fputcsv](https://www.php.net/manual/en/function.fputcsv.php)
+  - [rename](https://www.php.net/manual/en/function.rename.php)
 - WordPress related
-    - [WP_Filesystem_Direct::put_contents](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/put_contents/)
-    - [WP_Filesystem_Direct::move](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/move/)
-    - [WP_Filesystem_Direct::copy](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/copy/)
+  - [WP_Filesystem_Direct::put_contents](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/put_contents/)
+  - [WP_Filesystem_Direct::move](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/move/)
+  - [WP_Filesystem_Direct::copy](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/copy/)
 
 ## Compressed File Extraction
 
-One of the processes to upload a file is through an extraction of the compressed file. The compressed itself can vary from zip, gz, tar, rar, xz, 7z, and etc. Most of the time, the developer forgets to implement a pre-check before the extraction process and it could lead to users uploading arbitrary files if the user is able to control the filename and the content of the extracted file.
+One of the processes to upload a file is through an extraction of the compressed file. The compressed itself can vary from zip, gz, tar, rar, xz, 7z, etc. Most of the time, the developer forgets to implement a pre-check before the extraction process and it could lead to users uploading arbitrary files if the user can control the filename and the content of the extracted file.
 
 Here are several functions that can be used to decompress a file:
 
@@ -46,28 +45,28 @@ Here are several functions that can be used to decompress a file:
 add_action("wp_ajax_unpack_fonts", "unpack_fonts");
 
 function unpack_fonts(){
-    $file = $_FILES["file"];
-    $ext = end(explode('.',$file_name));
+  $file = $_FILES["file"];
+  $ext = end(explode('.',$file_name));
 
-    if($ext !=== "zip"){
-        die();
-    }
-    
-    $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
-    move_uploaded_file($file["tmp_name"], $file_path);
+  if($ext !=== "zip"){
+    die();
+  }
+  
+  $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
+  move_uploaded_file($file["tmp_name"], $file_path);
 
-    $zip = new ZipArchive;
-    $f = $zip->open($file_path);
+  $zip = new ZipArchive;
+  $f = $zip->open($file_path);
 
-    if($f){
-        $zip->extractTo(WP_CONTENT_DIR + "/uploads/");
-        $zip->close();
-    }
+  if($f){
+    $zip->extractTo(WP_CONTENT_DIR + "/uploads/");
+    $zip->close();
+  }
 
 }
 ``` 
 
-In order to bypass the above check, basically we need to prepare a valid zip file and add a malicious PHP file inside of the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check, basically we need to prepare a valid zip file and add a malicious PHP file inside of the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=unpack_fonts HTTP/1.1
@@ -105,22 +104,22 @@ Example of vulnerable code :
 add_action("wp_ajax_nopriv_upload_image_check_mime", "upload_image_check_mime");
 
 function upload_image_check_mime(){
-    $file = $_FILES["file"];
-    $file_type = mime_content_type($file["tmp_name"]);
-    $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
-    
-    if(in_array($file_type, get_allowed_mime_types())){
-        move_uploaded_file($file["tmp_name"], $file_path);
-        echo "file uploaded";
-    }
-    else{
-        echo "file mime type not accepted";
-    }
+  $file = $_FILES["file"];
+  $file_type = mime_content_type($file["tmp_name"]);
+  $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
+  
+  if(in_array($file_type, get_allowed_mime_types())){
+    move_uploaded_file($file["tmp_name"], $file_path);
+    echo "file uploaded";
+  }
+  else{
+    echo "file mime type not accepted";
+  }
 
 }
 ```
 
-In order to bypass the above check, basically we need to prepare a valid PNG file and append a malicious PHP code on the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check, basically we need to prepare a valid PNG file and append a malicious PHP code on the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=upload_image_check_mime HTTP/1.1
@@ -147,23 +146,23 @@ Example of vulnerable code :
 add_action("wp_ajax_nopriv_upload_image_getimagesize", "upload_image_getimagesize");
 
 function upload_image_getimagesize(){
-    $file = $_FILES["file"];
-    $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
-    $size = getimagesize($file["tmp_name"]);
-    $fileContent = file_get_contents($_FILES['file']);
+  $file = $_FILES["file"];
+  $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
+  $size = getimagesize($file["tmp_name"]);
+  $fileContent = file_get_contents($_FILES['file']);
 
-    if($size){
-        file_put_contents($file_path, $fileContent);
-        echo "image uploaded";
-    }
-    else{
-        echo "invalid image size";
-    }
+  if($size){
+    file_put_contents($file_path, $fileContent);
+    echo "image uploaded";
+  }
+  else{
+    echo "invalid image size";
+  }
 
 }
 ```
 
-In order to bypass the above check, basically we need to prepare a valid image file and append a malicious PHP code on the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check, basically we need to prepare a valid image file and append a malicious PHP code on the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=upload_image_getimagesize HTTP/1.1

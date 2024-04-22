@@ -21,13 +21,13 @@ Example of vulnerable code :
 add_action("init", "check_if_update");
 
 function check_if_update(){
-    if(isset($_GET["update"])){
-        update_option("user_data", sanitize_text_field($_GET_["data"]));
-    }
+  if(isset($_GET["update"])){
+    update_option("user_data", sanitize_text_field($_GET_["data"]));
+  }
 }
 ```
 
-In order to exploit this, unauthenticated user just need to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
+To exploit this, unauthenticated user just need to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/?update=1&data=test
@@ -43,13 +43,13 @@ Example of vulnerable code :
 add_action("admin_init", "delete_admin_menu");
 
 function delete_admin_menu(){
-    if(isset($_POST_["delete"])){
-        delete_option("custom_admin_menu");
-    }
+  if(isset($_POST_["delete"])){
+    delete_option("custom_admin_menu");
+  }
 }
 ```
 
-In order to exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoint specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
+To exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoint specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat -d "delete=1"
@@ -65,14 +65,14 @@ Example of vulnerable code :
 add_action("wp_ajax_update_post_data", "update_post_data");
 
 function update_post_data(){
-    if(isset($_POST_["update"])){
-        $post_id = get_post($_GET["id"]);
-        update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
-    }
+  if(isset($_POST_["update"])){
+    $post_id = get_post($_GET["id"]);
+    update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
+  }
 }
 ```
 
-In order to exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
+To exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data&update=1 -d "id=1&data=changed"
@@ -88,16 +88,16 @@ Example of vulnerable code :
 add_action("wp_ajax_nopriv_toggle_menu_bar", "toggle_menu_bar");
 
 function toggle_menu_bar(){
-    if ($_POST_["toggle"] === "1"){
-        update_option("custom_toggle", 1);
-    }
-    else{
-        update_option("custom_toggle", 0);
-    }
+  if ($_POST_["toggle"] === "1"){
+    update_option("custom_toggle", 1);
+  }
+  else{
+    update_option("custom_toggle", 0);
+  }
 }
 ```
 
-In order to exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "toggle=1"
@@ -111,20 +111,20 @@ Sometimes, developers don't implement a proper permission check on the custom RE
 
 ```php
 add_action( 'rest_api_init', function () {
-  register_rest_route( 'myplugin/v1', '/delete/author', array(
-    'methods' => 'POST',
-    'callback' => 'delete_author_user',
-    'permission_callback' => '__return_true',
-  ) );
+ register_rest_route( 'myplugin/v1', '/delete/author', array(
+  'methods' => 'POST',
+  'callback' => 'delete_author_user',
+  'permission_callback' => '__return_true',
+ ) );
 } );
 
 function delete_author_user($request){
-    $params = $request->get_params();
-    wp_delete_user(intval($params["user_id"]));
+  $params = $request->get_params();
+  wp_delete_user(intval($params["user_id"]));
 }
 ```
 
-In order to exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/delete/author -d "user_id=1"
