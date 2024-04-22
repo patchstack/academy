@@ -1,0 +1,133 @@
+---
+title: Broken Access Control
+contributors:
+    - rafiem
+---
+
+## Introduction
+
+This article covers cases of possible Broken Access Control on WordPress. This includes improper hook/function/code usage inside of the plugin/theme which can be used to access or update sensitive information.
+
+By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/wordpress/wordpress-internals/wordpress-functions/#current_user_can) function, and the nonce value check using [`wp_verify_nonce`](/wordpress/wordpress-internals/wordpress-functions/#wp_verify_nonce), [`check_admin_referer`](/wordpress/wordpress-internals/wordpress-functions/#check_admin_referer) or [`check_ajax_referer`](/wordpress/wordpress-internals/wordpress-functions/#check_ajax_referer) functions.
+
+
+## `init` hook
+
+For more details on the `init` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#init-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("init", "check_if_update");
+
+function check_if_update(){
+    if(isset($_GET["update"])){
+        update_option("user_data", sanitize_text_field($_GET_["data"]));
+    }
+}
+```
+
+In order to exploit this, unauthenticated user just need to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
+
+```bash
+curl <WORDPRESS_BASE_URL>/?update=1&data=test
+```
+
+## `admin_init` hook
+
+For more details on the `admin_init` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#admin_init-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("admin_init", "delete_admin_menu");
+
+function delete_admin_menu(){
+    if(isset($_POST_["delete"])){
+        delete_option("custom_admin_menu");
+    }
+}
+```
+
+In order to exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoint specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat -d "delete=1"
+```
+
+## `wp_ajax_{$action}` hook
+
+For more details on the `wp_ajax_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#wp_ajax_action-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("wp_ajax_update_post_data", "update_post_data");
+
+function update_post_data(){
+    if(isset($_POST_["update"])){
+        $post_id = get_post($_GET["id"]);
+        update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
+    }
+}
+```
+
+In order to exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data&update=1 -d "id=1&data=changed"
+``` 
+
+## [`wp_ajax_nopriv_{$action}`](https://developer.wordpress.org/reference/hooks/wp_ajax_nopriv_action/) hook
+
+For more details on the `wp_ajax_nopriv_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#wp_ajax_nopriv_action-hook).
+
+Example of vulnerable code :
+
+```php
+add_action("wp_ajax_nopriv_toggle_menu_bar", "toggle_menu_bar");
+
+function toggle_menu_bar(){
+    if ($_POST_["toggle"] === "1"){
+        update_option("custom_toggle", 1);
+    }
+    else{
+        update_option("custom_toggle", 0);
+    }
+}
+```
+
+In order to exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "toggle=1"
+``` 
+
+## `register_rest_route` function
+
+For more details on the `register_rest_route` function, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-functions/#register_rest_route-function).
+
+Sometimes, developers don't implement a proper permission check on the custom REST API route and use `__return_true` string as the permission callback. This makes the custom REST API route to be publicly accessible.
+
+```php
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'myplugin/v1', '/delete/author', array(
+    'methods' => 'POST',
+    'callback' => 'delete_author_user',
+    'permission_callback' => '__return_true',
+  ) );
+} );
+
+function delete_author_user($request){
+    $params = $request->get_params();
+    wp_delete_user(intval($params["user_id"]));
+}
+```
+
+In order to exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/delete/author -d "user_id=1"
+``` 
+
+Other cases could exist where developers already specify a proper function on the `permission_callback` parameter, however, the permission check implemented inside the function itself is not proper to what process can be done from the REST API route `callback` function.
