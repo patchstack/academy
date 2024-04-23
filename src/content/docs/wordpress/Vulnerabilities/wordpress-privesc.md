@@ -1,5 +1,7 @@
 ---
 title: Privilege Escalation
+contributors:
+    - rafiem
 ---
 
 ## Introduction

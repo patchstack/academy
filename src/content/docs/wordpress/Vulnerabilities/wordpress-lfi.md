@@ -1,5 +1,7 @@
 ---
 title: Local File Inclusion (LFI)
+contributors:
+    - rafiem
 ---
 
 ## Introduction

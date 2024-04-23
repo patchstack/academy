@@ -1,5 +1,7 @@
 ---
 title: PHP Object Injection
+contributors:
+    - rafiem
 ---
 
 ## Introduction

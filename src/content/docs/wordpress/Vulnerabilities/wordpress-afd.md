@@ -1,5 +1,7 @@
 ---
 title: Arbitrary File Deletion
+contributors:
+    - rafiem
 ---
 
 ## Introduction
