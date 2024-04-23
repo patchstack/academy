@@ -6,7 +6,7 @@ contributors:
 
 ## Introduction
 
-This article covers cases of possible PHP Object Injection on WordPress. This includes improper usage of unserialization process inside of the plugin/theme which can be used to inject an arbitrary PHP object which in the worst case could turn into RCE depending on the available gadget chain.
+This article covers cases of possible PHP Object Injection on WordPress. This includes improper usage of the unserialization process inside of the plugin/theme which can be used to inject an arbitrary PHP object which in the worst case could turn into RCE depending on the available gadget chain.
 
 ## Useful Functions
 
