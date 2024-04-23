@@ -25,9 +25,8 @@ function check_if_update(){
         update_option("user_data", sanitize_text_field($_GET_["data"]));
     }
 }
-```
 
-In order to exploit this, unauthenticated user just need to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
+To exploit this, unauthenticated user just need to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/?update=1&data=test
@@ -49,7 +48,7 @@ function delete_admin_menu(){
 }
 ```
 
-In order to exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoint specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
+To exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoint specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat -d "delete=1"
@@ -72,7 +71,7 @@ function update_post_data(){
 }
 ```
 
-In order to exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
+To exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data&update=1 -d "id=1&data=changed"
@@ -97,7 +96,7 @@ function toggle_menu_bar(){
 }
 ```
 
-In order to exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "toggle=1"
@@ -124,7 +123,7 @@ function delete_author_user($request){
 }
 ```
 
-In order to exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/delete/author -d "user_id=1"
