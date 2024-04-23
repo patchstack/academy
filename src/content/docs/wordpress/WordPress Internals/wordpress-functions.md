@@ -24,11 +24,11 @@ current_user_can( 'manage_options' );
 
 ## [`wp_verify_nonce`]()
 
-One of the functions available to check for nonce value. This function will verify that a correct security nonce was used with a time limit. A nonce is valid for 24 hours (by default).
+One of the functions to check for nonce value. This function will verify that a correct security nonce was used with a time limit. A nonce is valid for 24 hours (by default).
 
 The function is used to verify the nonce sent in the current request usually accessed by the `$_REQUEST` PHP variable. 
 
-Nonces should never be relied on for authentication authorization, or access control. Protect your functions using `current_user_can` function, always assume nonce value can be compromised.
+Nonces should never be relied on for authentication authorization, or access control. Protect your functions using the `current_user_can` function, always assume the nonce value can be compromised.
 
 Example of function implementation :
 
@@ -46,7 +46,7 @@ if ( ! wp_verify_nonce( $nonce, 'my-nonce' ) || ! current_user_can("manage_optio
 
 One of the functions available to check for nonce value. This function ensures intent by verifying that a user was referred from another admin page with the correct security nonce.
 
-Nonces should never be relied on for authentication authorization, or access control. Protect your functions using `current_user_can` function, always assume nonce value can be compromised.
+Nonces should never be relied on for authentication authorization, or access control. Protect your functions using the `current_user_can` function, always assume the nonce value can be compromised.
 
 Example of function implementation :
 
@@ -62,9 +62,9 @@ if ( ! empty( $_POST ) && check_admin_referer( 'name_of_my_action', 'name_of_non
 
 ## [`check_ajax_referer`]()
 
-One of the functions available to check for nonce value. This function verifies the Ajax request to prevent processing requests external to the blog by checking the nonce value.
+One of the functions to check for nonce value. This function verifies the Ajax request to prevent processing requests external to the blog by checking the nonce value.
 
-Nonces should never be relied on for authentication authorization, or access control. Protect your functions using `current_user_can` function, always assume nonce value can be compromised.
+Nonces should never be relied on for authentication authorization, or access control. Protect your functions using the `current_user_can` function, always assume the nonce value can be compromised.
 
 Example of function implementation :
 

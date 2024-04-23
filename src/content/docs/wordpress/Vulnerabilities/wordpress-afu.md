@@ -3,7 +3,6 @@ title: Arbitrary File Upload
 contributors:
     - rafiem
 ---
-
 ## Introduction
 
 This article covers cases of possible Arbitrary File Upload on WordPress. This includes improper file input handling inside of the plugin/theme which can be used to arbitrarily upload files including `.php` files to further achieve Remote Code Execution (RCE).
@@ -34,7 +33,7 @@ Several functions could be useful to identify a possible Arbitrary File Upload v
 
 ## Compressed File Extraction
 
-One of the processes to upload a file is through an extraction of the compressed file. The compressed itself can vary from zip, gz, tar, rar, xz, 7z, and etc. Most of the time, the developer forgets to implement a pre-check before the extraction process and it could lead to users uploading arbitrary files if the user is able to control the filename and the content of the extracted file.
+One of the processes to upload a file is through an extraction of the compressed file. The compressed itself can vary from zip, gz, tar, rar, xz, 7z, etc. Most of the time, the developer forgets to implement a pre-check before the extraction process and it could lead to users uploading arbitrary files if the user can control the filename and the content of the extracted file.
 
 Here are several functions that can be used to decompress a file:
 
@@ -67,7 +66,7 @@ function unpack_fonts(){
 }
 ``` 
 
-In order to bypass the above check, basically we need to prepare a valid zip file and add a malicious PHP file inside of the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check, basically we need to prepare a valid zip file and add a malicious PHP file inside of the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=unpack_fonts HTTP/1.1
@@ -120,7 +119,7 @@ function upload_image_check_mime(){
 }
 ```
 
-In order to bypass the above check, basically we need to prepare a valid PNG file and append a malicious PHP code on the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check, basically we need to prepare a valid PNG file and append a malicious PHP code on the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=upload_image_check_mime HTTP/1.1
@@ -163,7 +162,7 @@ function upload_image_getimagesize(){
 }
 ```
 
-In order to bypass the above check, basically we need to prepare a valid image file and append a malicious PHP code on the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check, basically we need to prepare a valid image file and append a malicious PHP code on the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=upload_image_getimagesize HTTP/1.1

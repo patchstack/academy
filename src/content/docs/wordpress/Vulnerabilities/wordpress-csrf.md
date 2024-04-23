@@ -28,7 +28,8 @@ function check_if_update(){
 }
 ```
 
-In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
+To exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
+
 
 ```html
 <html>
@@ -60,10 +61,8 @@ function delete_admin_menu(){
         if(current_user_can("manage_options")){
             delete_option("custom_admin_menu");
         }
-
     }
 }
-```
 
 In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
 
@@ -99,7 +98,7 @@ function update_post_data(){
 }
 ```
 
-In order to exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
+To exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do the sensitive actions.
 
 ```html
 <html>
