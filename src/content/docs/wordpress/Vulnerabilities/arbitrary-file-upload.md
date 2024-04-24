@@ -66,7 +66,7 @@ function unpack_fonts(){
 }
 ``` 
 
-To bypass the above check, basically we need to prepare a valid zip file and add a malicious PHP file inside of the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check we need to prepare a valid zip file and add a malicious PHP file inside the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=unpack_fonts HTTP/1.1
@@ -98,7 +98,7 @@ Several functions could be used to check for a file's MIME type. Here are severa
 - [exif_imagetype](https://www.php.net/manual/en/function.exif-imagetype.php)
 - [finfo_file](https://www.php.net/manual/en/function.finfo-file.php)
 
-Example of vulnerable code :
+Example of vulnerable code:
 
 ```php
 add_action("wp_ajax_nopriv_upload_image_check_mime", "upload_image_check_mime");
@@ -119,7 +119,8 @@ function upload_image_check_mime(){
 }
 ```
 
-To bypass the above check, basically we need to prepare a valid PNG file and append a malicious PHP code on the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check we need to prepare a valid PNG file and append a malicious PHP code to the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+
 
 ```http
 POST /wp-admin/admin-ajax.php?action=upload_image_check_mime HTTP/1.1
@@ -140,7 +141,7 @@ Content-Type: image/png
 
 Most of the file upload process is for an image type of file. Sometimes, developers only check for conditions that are related to an image file. One of the common functions to be used for image-related checks is [`getimagesize`](https://www.php.net/manual/en/function.getimagesize.php) function.
 
-Example of vulnerable code :
+Example of vulnerable code:
 
 ```php
 add_action("wp_ajax_nopriv_upload_image_getimagesize", "upload_image_getimagesize");
@@ -162,7 +163,7 @@ function upload_image_getimagesize(){
 }
 ```
 
-To bypass the above check, basically we need to prepare a valid image file and append a malicious PHP code on the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check we need to prepare a valid image file and append a malicious PHP code to the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php?action=upload_image_getimagesize HTTP/1.1

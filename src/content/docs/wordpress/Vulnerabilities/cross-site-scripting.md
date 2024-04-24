@@ -24,7 +24,7 @@ define( 'DISALLOW_UNFILTERED_HTML', true );
 
 Currently, this particular XSS type is very popular in the WordPress security space. This is because there are a lot of features or cases that could result in this type of XSS. In this section, we will cover possible cases for this XSS type.
 
-The attack vector of this particular issue lies where the Contributor+ role user creates a drafted post that could contain an XSS payload and it can be triggered on other users such as Administrators user when the user tries to preview the post created by the Contributor+ role user.
+The attack vector of this particular issue lies where the Contributor+ role user creates a drafted post that could contain an XSS payload and it can be triggered on other users such as the Administrator user when the user tries to preview the post created by the Contributor+ role user.
 
 ### Shortcode XSS
 
@@ -42,7 +42,7 @@ Shortcodes can also be used with additional `attributes` as the following exampl
 [gallery id="123" size="medium"]
 ```
 
-Developers of plugins and themes can register their custom Shortcodes using [`add_shortcode`](https://developer.wordpress.org/reference/functions/add_shortcode/) function such as:
+Plugin and theme developers can register their custom Shortcodes using [`add_shortcode`](https://developer.wordpress.org/reference/functions/add_shortcode/) function such as:
 
 ```php
 add_shortcode( 'custom_link', 'custom_link_callback' );
@@ -87,7 +87,7 @@ An example Gutenberg block for a gallery with additional attributes looks like t
 <!-- wp:heading {\"style\":{\"elements\":{\"link\":{\"color\":{\"text\":\"var:preset|color|pale-pink\"}}}},\"backgroundColor\":\"vivid-red\",\"textColor\":\"pale-pink\"} -->\n<h2 class=\"wp-block-heading has-pale-pink-color has-vivid-red-background-color has-text-color has-background has-link-color\"></h2>\n<!-- /wp:heading -->
 ```
 
-Developers of plugins and themes can register their custom Gutenberg blocks using [`register_block_type`](https://developer.wordpress.org/reference/functions/register_block_type/) function such as:
+Developers can register their custom Gutenberg blocks using [`register_block_type`](https://developer.wordpress.org/reference/functions/register_block_type/) function such as:
 
 ```php
 add_action( 'init', 'register_blocks' );
@@ -114,13 +114,13 @@ Same as the Shortcode XSS, by default, the value of the attribute on blocks does
 <!-- wp:custom-heading {\"heading-tag\":\"img src=x onerror=alert(document.domain)\",\"content\":\"test\"}>test<!-- /wp:custom-heading -->
 ```
 
-For security researchers, we recommend just searching for `render_callback` string to identify if a plugin or theme has a custom Gutenberg block implementation.
+For security researchers, we recommend just searching for the `render_callback` string to identify if a plugin or theme has a custom Gutenberg block implementation.
 
 ### Elementor Widget XSS
 
 Similar to the Gutenberg blocks, Elementor, which is the most popular page builder plugin in WordPress also has a custom content feature called [Elementor Widget](https://elementor.com/widgets/). In Elementor, widgets are the building blocks for websites. They add functionality to the post or page, allowing users to do everything from writing text to adding dynamic data.
 
-Developers of plugins and themes can register their custom Elememtor widget using [`elementor/widgets/register`](https://developers.elementor.com/docs/managers/registering-widgets/) hook. This [Simple Example](https://developers.elementor.com/docs/widgets/simple-example/) demonstrates how to create a simple custom Elementor widget.
+Developers of plugins and themes can register their custom Elememtor widget using the [`elementor/widgets/register`](https://developers.elementor.com/docs/managers/registering-widgets/) hook. This [Simple Example](https://developers.elementor.com/docs/widgets/simple-example/) demonstrates how to create a simple custom Elementor widget.
 
 In Elementor widgets, they usually use `settings` naming instead of attributes, however, both are similar value features that can be set from each of the Elementor widget configurations.
 
@@ -151,12 +151,12 @@ Example POST body request when updating the post or saving the drafted post:
 {"save_builder"%3a{"action"%3a"save_builder","data"%3a{"status"%3a"draft","elements"%3a[{"id"%3a"17d90c0","elType"%3a"container","isInner"%3afalse,"isLocked"%3afalse,"settings"%3a{},"elements"%3a[{"id"%3a"30247fe","elType"%3a"widget","isInner"%3afalse,"isLocked"%3afalse,"settings"%3a{"url"%3a"https%3a//test.com\"+onfocus%3dalert(document.domain)+autofocus%3d\""},"elements"%3a[],"title"%3a"oEmbed","categories"%3a["general"],"keywords"%3a["oembed","url","link"],"icon"%3a"eicon-code","widgetType"%3a"oembed","hideOnSearch"%3afalse}]}],"settings"%3a{"post_title"%3a"Elementor+%2344","post_status"%3a"draft"}}}}
 ```
 
-For security researchers, we recommend just searching for `elementor/widgets/register` and `render()` string to identify if a plugin or theme has a custom Elementor widget implementation.
+For security researchers, we recommend just searching for the `elementor/widgets/register` and `render()` strings to identify if a plugin or theme has a custom Elementor widget implementation.
 
 
 ## Reflected XSS
 
-Reflected XSS arises when an application receives data in an HTTP request and includes that data within the immediate response in an unsafe way. In WordPress, or generall PHP, the below global variables could be traced to find potential Reflected XSS:
+Reflected XSS arises when an application receives data in an HTTP request and includes that data within the immediate response in an unsafe way. In WordPress or generally PHP, the below global variables could be traced to find potential Reflected XSS:
 
 - $_GET
 - $_POST
@@ -191,7 +191,7 @@ function init_plugin_success() {
 add_action( 'admin_notices', 'init_plugin_success' );
 ```
 
-To exploit this, an unauthenticated user just need to send the below URL to the privileged users that have access to the `/wp-admin` area and it will trigger the XSS:
+To exploit this, an unauthenticated user just needs to send the below URL to the privileged users that have access to the `/wp-admin` area and it will trigger the XSS:
 
 ```json
 <WORDPRESS_BASE_URL>/wp-admin/index.php?message=<script>alert(document.domain);</script>
