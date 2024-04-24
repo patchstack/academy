@@ -8,14 +8,14 @@ contributors:
 
 This article covers cases of possible Broken Access Control on WordPress. This includes improper hook/function/code usage inside of the plugin/theme which can be used to access or update sensitive information.
 
-By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/wordpress/wordpress-internals/wordpress-functions/#current_user_can) function, and the nonce value check using [`wp_verify_nonce`](/wordpress/wordpress-internals/wordpress-functions/#wp_verify_nonce), [`check_admin_referer`](/wordpress/wordpress-internals/wordpress-functions/#check_admin_referer) or [`check_ajax_referer`](/wordpress/wordpress-internals/wordpress-functions/#check_ajax_referer) functions.
+By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/wordpress/wordpress-internals/functions/#current_user_can) function and the nonce value check using [`wp_verify_nonce`](/wordpress/wordpress-internals/functions/#wp_verify_nonce), [`check_admin_referer`](/wordpress/wordpress-internals/functions/#check_admin_referer) or [`check_ajax_referer`](/wordpress/wordpress-internals/functions/#check_ajax_referer) functions.
 
 
 ## `init` hook
 
-For more details on the `init` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#init-hook).
+For more details on the `init` hook, please refer to this [documentation](/wordpress/wordpress-internals/hooks/#init-hook).
 
-Example of vulnerable code :
+Example of vulnerable code:
 
 ```php
 add_action("init", "check_if_update");
@@ -25,8 +25,9 @@ function check_if_update(){
         update_option("user_data", sanitize_text_field($_GET_["data"]));
     }
 }
+```
 
-To exploit this, unauthenticated user just need to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
+To exploit this, an unauthenticated user just needs to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/?update=1&data=test
@@ -34,9 +35,9 @@ curl <WORDPRESS_BASE_URL>/?update=1&data=test
 
 ## `admin_init` hook
 
-For more details on the `admin_init` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#admin_init-hook).
+For more details about the `admin_init` hook, please refer to this [documentation](/wordpress/wordpress-internals/hooks/#admin_init-hook).
 
-Example of vulnerable code :
+Example of vulnerable code:
 
 ```php
 add_action("admin_init", "delete_admin_menu");
@@ -48,7 +49,7 @@ function delete_admin_menu(){
 }
 ```
 
-To exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoint specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
+To exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoints specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat -d "delete=1"
@@ -56,9 +57,9 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat -d "delete=1"
 
 ## `wp_ajax_{$action}` hook
 
-For more details on the `wp_ajax_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#wp_ajax_action-hook).
+For more details on the `wp_ajax_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/hooks/#wp_ajax_action-hook).
 
-Example of vulnerable code :
+Example of vulnerable code:
 
 ```php
 add_action("wp_ajax_update_post_data", "update_post_data");
@@ -79,9 +80,9 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data&update
 
 ## [`wp_ajax_nopriv_{$action}`](https://developer.wordpress.org/reference/hooks/wp_ajax_nopriv_action/) hook
 
-For more details on the `wp_ajax_nopriv_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-hooks/#wp_ajax_nopriv_action-hook).
+For more details on the `wp_ajax_nopriv_{$action}` hook, please refer to this [documentation](/wordpress/wordpress-internals/hooks/#wp_ajax_nopriv_action-hook).
 
-Example of vulnerable code :
+Example of vulnerable code:
 
 ```php
 add_action("wp_ajax_nopriv_toggle_menu_bar", "toggle_menu_bar");
@@ -104,9 +105,9 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "tog
 
 ## `register_rest_route` function
 
-For more details on the `register_rest_route` function, please refer to this [documentation](/wordpress/wordpress-internals/wordpress-functions/#register_rest_route-function).
+For more details on the `register_rest_route` function, please refer to this [documentation](/wordpress/wordpress-internals/functions/#register_rest_route-function).
 
-Sometimes, developers don't implement a proper permission check on the custom REST API route and use `__return_true` string as the permission callback. This makes the custom REST API route to be publicly accessible.
+Sometimes, developers don't implement a proper permission check on the custom REST API route and use the `__return_true` string as the permission callback. This makes the custom REST API route to be publicly accessible.
 
 ```php
 add_action( 'rest_api_init', function () {
