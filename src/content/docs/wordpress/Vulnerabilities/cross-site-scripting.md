@@ -1,0 +1,204 @@
+---
+title: Cross-Site Scripting (XSS)
+contributors:
+    - rafiem
+---
+
+## Introduction
+
+This article covers cases of possible XSS on WordPress. This includes improper user input handling inside of the plugin/theme which can be used to inject arbitrary JS code to the front-end of the WordPress site.
+
+## Editor+/Admin+ Stored XSS
+
+In WordPress security space, we usually mark vulnerability with this format `<MINIMUM_ROLE_REQUIRED_TO_EXPLOIT>+ <VULNERABILITY_TYPE>`. In this case, Editor+ or Admin+ Stored XSS would mean an XSS that can be exploited by the user that has a minimum of Editor or Administrator role.
+
+WordPress has a default capability or permission called `unfiltered_html`. The `unfiltered_html` permission is a security feature in WordPress that prevents users from using iframes and code snippets in WordPress posts, plus also more advanced code such as Javascript. By default, the `unfiltered_html` permission is only given to Super Admins (in Multi-Site configuration), Administrator, and Editor roles.
+
+Based on the above condition, we may encounter a false positive when testing for Editor+/Admin+ XSS. We need to disable the `unfiltered_html` permission if we want to test for XSS on the Editor+/Admin+ role. One of the ways of doing this is via the `DISALLOW_UNFILTERED_HTML` option. We can set the option to `true` inside of the `wp-config.php` file:
+
+```php
+define( 'DISALLOW_UNFILTERED_HTML', true );
+```
+
+## Contributor+ Stored XSS
+
+Currently, this particular XSS type is very popular in the WordPress security space. This is because there are a lot of features or cases that could result in this type of XSS. In this section, we will cover possible cases for this XSS type.
+
+The attack vector of this particular issue lies where the Contributor+ role user creates a drafted post that could contain an XSS payload and it can be triggered on other users such as Administrators user when the user tries to preview the post created by the Contributor+ role user.
+
+### Shortcode XSS
+
+WordPress has a feature called [Shortcode](https://codex.wordpress.org/Shortcode). Shortcodes are a powerful and versatile feature that lets users add dynamic content and functionality to the website without needing any coding skills. WordPress Shortcodes are essentially small code snippets that can be inserted into posts, pages, widgets, or theme files to display a specific function or content.
+
+An example shortcode for a gallery looks like this:
+
+```json
+[gallery]
+```
+
+Shortcodes can also be used with additional `attributes` as the following example shows:
+
+```json
+[gallery id="123" size="medium"]
+```
+
+Developers of plugins and themes can register their custom Shortcodes using [`add_shortcode`](https://developer.wordpress.org/reference/functions/add_shortcode/) function such as:
+
+```php
+add_shortcode( 'custom_link', 'custom_link_callback' );
+
+function custom_link_callback( $atts ) {
+	$atts = shortcode_atts( array(
+		'url' => '/',
+		'class' => 'none',
+        'text' => 'link'
+	), $atts);
+
+	return "<a href='" . esc_url($atts["url"]) . "' class='" . $atts["class"] . "'>" . $atts["text"] . "</a>";
+
+}
+```
+
+The above example code is vulnerable to a Shortcode XSS via the `$atts["class"]` value. By default, the value of the attribute on Shortcode doesn't escape characters like single-quote and double-quote but it will sanitize a supplied HTML tag. This leads to a DOM-based XSS if the supplied Shortcode attribute is not properly sanitized and placed inside of an HTML tag attribute.
+
+In this example, the `$atts["url"]` value is not vulnerable because it is already sanitized with [`esc_url`](https://developer.wordpress.org/reference/functions/esc_url/) function which will escape quotes. The `$atts["text"]` value is also not vulnerable since the HTML tag will be escaped or removed.
+
+To exploit this, the Contributor+ role user simply needs to create a drafted post with the below content and send the preview link to other privileged users to trigger the XSS:
+
+```json
+[custom_link url="https://patchstack.com" class="test' onfocus=alert(document.domain) autofocus='"]
+```
+
+For security researchers, we recommend just searching for `add_shortcode` string to identify if a plugin or theme has a custom Shortcode implementation.
+
+### Gutenberg Block XSS
+
+[Gutenberg](https://wordpress.org/gutenberg/) blocks, or just "blocks", are pre-built elements that can be added to a page or a post and then be further customized. Blocks can provide the basic components of a webpage, such as text and images, but they also open the door to more advanced features, such as buttons and tables.
+
+Gutenberg block content has this format on the content:
+
+```json
+<!-- wp:<block_name> {<block_attributes>} --> <!-- /wp:<block_name> -->
+```
+
+An example Gutenberg block for a gallery with additional attributes looks like this:
+
+```json
+<!-- wp:heading {\"style\":{\"elements\":{\"link\":{\"color\":{\"text\":\"var:preset|color|pale-pink\"}}}},\"backgroundColor\":\"vivid-red\",\"textColor\":\"pale-pink\"} -->\n<h2 class=\"wp-block-heading has-pale-pink-color has-vivid-red-background-color has-text-color has-background has-link-color\"></h2>\n<!-- /wp:heading -->
+```
+
+Developers of plugins and themes can register their custom Gutenberg blocks using [`register_block_type`](https://developer.wordpress.org/reference/functions/register_block_type/) function such as:
+
+```php
+add_action( 'init', 'register_blocks' );
+
+function register_blocks() {
+    register_block_type( 'custom-heading', array(
+        'render_callback' => 'custom_heading_block'
+    ) );
+
+}
+
+function custom_heading_block( $attributes, $content ) {
+    return sprintf(
+        '<%1$s>%2$s</%1$s>',
+        $attributes["heading-tag"],
+        $attributes["content"]
+    );
+}
+```
+
+Same as the Shortcode XSS, by default, the value of the attribute on blocks doesn't escape characters like single-quote and double-quote but it will sanitize a supplied HTML tag. To exploit this, the Contributor+ role user simply needs to create a drafted post with the below content (as the actual string sent to the save draft post request) and send the preview link to other privileged users to trigger the XSS:
+
+```json
+<!-- wp:custom-heading {\"heading-tag\":\"img src=x onerror=alert(document.domain)\",\"content\":\"test\"}>test<!-- /wp:custom-heading -->
+```
+
+For security researchers, we recommend just searching for `render_callback` string to identify if a plugin or theme has a custom Gutenberg block implementation.
+
+### Elementor Widget XSS
+
+Similar to the Gutenberg blocks, Elementor, which is the most popular page builder plugin in WordPress also has a custom content feature called [Elementor Widget](https://elementor.com/widgets/). In Elementor, widgets are the building blocks for websites. They add functionality to the post or page, allowing users to do everything from writing text to adding dynamic data.
+
+Developers of plugins and themes can register their custom Elememtor widget using [`elementor/widgets/register`](https://developers.elementor.com/docs/managers/registering-widgets/) hook. This [Simple Example](https://developers.elementor.com/docs/widgets/simple-example/) demonstrates how to create a simple custom Elementor widget.
+
+In Elementor widgets, they usually use `settings` naming instead of attributes, however, both are similar value features that can be set from each of the Elementor widget configurations.
+
+Let's modify the `render` function from the above example implementation to test for XSS:
+
+```php
+protected function render() {
+
+    $settings = $this->get_settings_for_display();
+    echo sprintf(
+        '<a href="%s">only for testing purpose</a>',
+        $settings['url']
+    );
+}
+```
+
+Similar to the Shortcode XSS, by default, the value from the `get_settings_for_display` function doesn't escape characters like single-quote and double-quote but it will sanitize a supplied HTML tag. To exploit this, the Contributor+ role user simply needs to create a drafted post with a customized Elementow widget setting configuration and send the preview link to other privileged users to trigger the XSS:
+
+Example XSS payload for the embed URL:
+
+```json
+https://test.com" onfocus=alert(document.domain) autofocus="
+```
+
+Example POST body request when updating the post or saving the drafted post:
+
+```json
+{"save_builder"%3a{"action"%3a"save_builder","data"%3a{"status"%3a"draft","elements"%3a[{"id"%3a"17d90c0","elType"%3a"container","isInner"%3afalse,"isLocked"%3afalse,"settings"%3a{},"elements"%3a[{"id"%3a"30247fe","elType"%3a"widget","isInner"%3afalse,"isLocked"%3afalse,"settings"%3a{"url"%3a"https%3a//test.com\"+onfocus%3dalert(document.domain)+autofocus%3d\""},"elements"%3a[],"title"%3a"oEmbed","categories"%3a["general"],"keywords"%3a["oembed","url","link"],"icon"%3a"eicon-code","widgetType"%3a"oembed","hideOnSearch"%3afalse}]}],"settings"%3a{"post_title"%3a"Elementor+%2344","post_status"%3a"draft"}}}}
+```
+
+For security researchers, we recommend just searching for `elementor/widgets/register` and `render()` string to identify if a plugin or theme has a custom Elementor widget implementation.
+
+
+## Reflected XSS
+
+Reflected XSS arises when an application receives data in an HTTP request and includes that data within the immediate response in an unsafe way. In WordPress, or generall PHP, the below global variables could be traced to find potential Reflected XSS:
+
+- $_GET
+- $_POST
+- $_REQUEST
+- $_SERVER['PHP_SELF']
+
+## Admin Notices XSS
+
+An admin notice is a notification block consisting of a white background, a colored left border, and some text. There are three types: green, orange, and red. Given the class names, they should be used for updating complete notices, update prompts, and errors respectively.
+
+Admin notices are an integral part of plugins and themes development, they allow users to show error/success/warning messages to other users on the admin area (`wp-admin`), prompting them for action or simply notifying them of something that has happened.
+
+Developers can create an admin notices message using [`admin_notices`](https://developer.wordpress.org/reference/hooks/admin_notices/) hook. Simply by attaching a function to the hook, developers should be able to generate an admin notices message.
+
+In a default implementation, a message from the attached function will be displayed across every endpoint in the admin area that starts with `/wp-admin`. If we can control part of the message on the admin notices function and the output is not sanitized or escaped, we can achieve a site-wide reflected and also stored XSS on the `/wp-admin` area because the message will be persisted unless a user is dismissing the admin notices.
+
+Example of vulnerable code:
+
+```php
+function init_plugin_success() {
+    $class = 'notice notice-success';
+    if(isset($_GET["message"])){
+        $message = $_GET["message"];
+    }
+    else{
+        $message = "plugin activation success";
+    }
+    
+    printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), $message );
+}
+
+add_action( 'admin_notices', 'init_plugin_success' );
+```
+
+To exploit this, an unauthenticated user just need to send the below URL to the privileged users that have access to the `/wp-admin` area and it will trigger the XSS:
+
+```json
+<WORDPRESS_BASE_URL>/wp-admin/index.php?message=<script>alert(document.domain);</script>
+```
+
+The endpoint used doesn't have to be `/wp-admin/index.php`, other endpoints that start with `/wp-admin` could also work. Below are some of the findings related to Admin Notices XSS:
+
+- [Site-Wide Reflected XSS in Freemius WordPress SDK Affecting Millions of Sites](https://patchstack.com/articles/site-wide-reflected-xss-in-freemius-wordpress-sdk-affecting-millions-of-sites/)
+- [XSS Vulnerability in LiteSpeed Cache Plugin Affecting 4+ Million Sites](https://patchstack.com/articles/xss-vulnerability-in-litespeed-cache-plugin-affecting-4-million-sites/)
+- [CSRF to wp-admin Site Wide XSS in UpdraftPlus Plugin](https://patchstack.com/articles/csrf-to-wp-admin-site-wide-xss-in-updraftplus-plugin/)
