@@ -44,6 +44,11 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_site_preference 
 
 After that, the user could just simply go to <WORDPRESS_BASE_URL>/wp-login.php?action=register and register an account with an administrator role.
 
+Below are some of the findings related to Arbitrary Option Update:
+
+- [Multiple Vulnerabilities Patched in Themify Ultra Theme](https://patchstack.com/articles/multiple-vulnerabilities-patched-in-themify-ultra-theme/#authenticated-arbitrary-settings-change)
+
+
 ## Arbitrary User Meta Update
 
 According to [official documentation](https://developer.wordpress.org/plugins/users/working-with-user-metadata/), the WordPress `users` table was designed to contain only the essential information about the user. Because of this, to store additional data, the `usermeta` table was introduced, which can store any arbitrary amount of data about a user.
@@ -76,6 +81,10 @@ To exploit this, any authenticated user just needs to perform a POST request to 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=change_user_bio -d "key=wp_capabilities&value[administrator]=1" -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
 ``` 
+
+Below are some of the findings related to Arbitrary User Meta Update:
+
+- [Thrive Theme Vulnerability: Dismiss Tooltip to Privilege Escalation](https://patchstack.com/articles/thrive-theme-dismiss-tooltip-to-privilege-escalation/#authenticated-privilege-escalation)
 
 ## Unrestricted User Registration
 
@@ -111,6 +120,15 @@ To exploit this, any unauthenticated user just needs to perform a POST request t
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=open_registration -d "reg_name=pwned&reg_password=pwned123&reg_email=pwned@mail.com&reg_fname=pwned&reg_lname=pwned&reg_role=administrator"
 ``` 
+
+Below are some of the findings related to Unrestricted User Registration:
+
+- [Vulnerability In Houzez Theme Exploited in The Wild](https://patchstack.com/articles/psa-houzez-theme-unauthenticated-privilege-escalation-vulnerability-exploited-in-the-wild/)
+- [Multiple Vulnerabilities Patched in Themify Ultra Theme](https://patchstack.com/articles/multiple-vulnerabilities-patched-in-themify-ultra-theme/#authenticated-privilege-escalation)
+- [Two Paths to Privilege Escalation Vulnerability In The Simple Membership Plugin](https://patchstack.com/articles/two-path-to-privilege-escalation-bugs-found-in-the-simple-membership-plugin/#unauthenticated-membership-role-privilege-escalation)
+- [Authenticated Privilege Escalation Vulnerability in Essential Addons for Elementor](https://patchstack.com/articles/authenticated-privilege-escalation-in-essential-addons-for-elementor-plugin/)
+- [Critical Privilege Escalation in HT Mega Plugin Affecting 100k+ Sites](https://patchstack.com/articles/critical-privilege-escalation-in-ht-mega-plugin-affecting-100k-sites/)
+- [Critical Privilege Escalation in Essential Addons for Elementor](https://patchstack.com/articles/critical-privilege-escalation-in-essential-addons-for-elementor-plugin-affecting-1-million-sites/)
 
 ## Unrestricted User Update
 
@@ -185,6 +203,11 @@ To exploit this, unauthenticated users just need to craft and serve a malicious 
 </html>
 ``` 
 
+Below are some of the findings related to Insecure Password Reset:
+
+- [Two Paths to Privilege Escalation Vulnerability In The Simple Membership Plugin](https://patchstack.com/articles/two-path-to-privilege-escalation-bugs-found-in-the-simple-membership-plugin/#authenticated-account-takeover)
+- [Critical Easy Digital Downloads Vulnerability](https://patchstack.com/articles/critical-easy-digital-downloads-vulnerability/)
+
 ## Insecure Authentication Cookie Set
 
 In some cases, the developer needs to log in as a user with a custom identifier or process. This process is mostly seen in a custom login with a third-party process, where users only need to specify some kind of unique identifier or token to be able to log in to a WordPress site.
@@ -235,3 +258,7 @@ To exploit this, any unauthenticated user just needs to perform a POST request t
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=configure_platform_callback -d "user_id=1&fbid=1337"
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=login_third_party?fb-login=1&fbid=1337
 ``` 
+
+Below are some of the findings related to Insecure Authentication Cookie Set:
+
+- [Critical Vulnerabilities Patched in Jupiter X Core Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-jupiter-x-core-plugin/#unauthenticated-account-takeover)

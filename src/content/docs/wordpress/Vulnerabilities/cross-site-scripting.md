@@ -153,6 +153,11 @@ Example POST body request when updating the post or saving the drafted post:
 
 For security researchers, we recommend just searching for the `elementor/widgets/register` and `render()` strings to identify if a plugin or theme has a custom Elementor widget implementation.
 
+Below are some of the findings related to Contributor+ XSS:
+
+- [Authenticated Stored XSS in WooCommerce and Jetpack Plugin](https://patchstack.com/articles/authenticated-stored-xss-in-woocommerce-and-jetpack-plugin/)
+- [Arbitrary Attachment Render to XSS in Elementor Plugin](https://patchstack.com/articles/arbitrary-attachment-render-to-xss-in-elementor-plugin/)
+- [WordPress Core 6.3.2 Security Update - Technical Advisory](https://patchstack.com/articles/wordpress-core-6-3-2-security-update-technical-advisory/)
 
 ## Reflected XSS
 
@@ -162,6 +167,12 @@ Reflected XSS arises when an application receives data in an HTTP request and in
 - $_POST
 - $_REQUEST
 - $_SERVER['PHP_SELF']
+
+Below are some of the findings related to Reflected XSS:
+
+- [Multiple High and Critical Vulnerabilities in Avada Theme and Plugin](https://patchstack.com/articles/multiple-high-and-critical-vulnerabilities-in-avada-theme-and-plugin/#reflected-cross-site-scripting)
+- [Multiple High Severity Vulnerabilities in Ninja Forms Plugin](https://patchstack.com/articles/multiple-high-severity-vulnerabilities-in-ninja-forms-plugin/#reflected-xss)
+- [Reflected XSS in Advanced Custom Fields Plugins Affecting 2+ Million Sites](https://patchstack.com/articles/reflected-xss-in-advanced-custom-fields-plugins-affecting-2-million-sites/)
 
 ## Admin Notices XSS
 
@@ -197,7 +208,9 @@ To exploit this, an unauthenticated user just needs to send the below URL to the
 <WORDPRESS_BASE_URL>/wp-admin/index.php?message=<script>alert(document.domain);</script>
 ```
 
-The endpoint used doesn't have to be `/wp-admin/index.php`, other endpoints that start with `/wp-admin` could also work. Below are some of the findings related to Admin Notices XSS:
+The endpoint used doesn't have to be `/wp-admin/index.php`, other endpoints that start with `/wp-admin` could also work. 
+
+Below are some of the findings related to Admin Notices XSS:
 
 - [Site-Wide Reflected XSS in Freemius WordPress SDK Affecting Millions of Sites](https://patchstack.com/articles/site-wide-reflected-xss-in-freemius-wordpress-sdk-affecting-millions-of-sites/)
 - [XSS Vulnerability in LiteSpeed Cache Plugin Affecting 4+ Million Sites](https://patchstack.com/articles/xss-vulnerability-in-litespeed-cache-plugin-affecting-4-million-sites/)
