@@ -1,5 +1,7 @@
 ---
 title: About WordPress
+sidebar:
+  order: 1
 contributors:
     - dhakalananda
 ---

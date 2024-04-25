@@ -1,5 +1,7 @@
 ---
 title: Introduction to WordPress Hacking
+sidebar:
+  order: 2
 contributors:
     - dhakalananda
 ---
