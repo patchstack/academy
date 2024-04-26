@@ -38,6 +38,22 @@ The Trunks section has the latest development code in the plugin. We can browser
 
 Now that we have a brief idea of all the sections of the SVN, we can easily browse the code of any version of the plugin without having to download it through the WordPress plugin directory.
 
+### WordPress Trac
+
+The trac is primarily used to track down all the code changes in the plugin/theme. This is the most useful tool that a hacker can have to track down all the changes and see if any vulnerabilities were patched/introduced in the latest version.
+
+If you go to https://plugins.trac.wordpress.org/browser/elementor, you can see that it's almost the same as SVN. However, the major difference between the two is that Trac allows navigating through the different commits made on the plugin.
+
+Navigating to https://plugins.trac.wordpress.org/log/elementor/trunk allows you to view the history of different changes pushed to the plugin.
+
+![Trac Changes](../../../../../public/images/trac-changes.png)
+
+Selecting two different commits and clicking on "View changes" displays all the changes within the plugin files.
+
+![Elementor Changelog](../../../../../public/images/elementor-changelog.png)
+
+The code changes in a newly released version can be seen through this method. Again, this can be used to check if there has been any security issues patched/introduced in the newly released version of the plugin.
+
 ## Mass-hunting Code Patterns
 
 Let's assume that you found a code pattern that leads to a certain vulnerability which exists across mulitple plugins/themes. How do you mass-scan the vulnerability across the WordPress repository?
