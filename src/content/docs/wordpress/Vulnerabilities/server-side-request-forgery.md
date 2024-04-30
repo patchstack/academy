@@ -35,7 +35,8 @@ Below is an example of vulnerable code:
 add_action("wp_ajax_nopriv_fetch_image_url", "fetch_image_url");
 
 function fetch_image_url(){
-    $image_data = wp_remote_get($_GET["image_url"]);
+    $response = wp_remote_get($_GET["image_url"]);
+    $image_data = wp_remote_retrieve_body($response);
     echo $image_data;
     die();
 }

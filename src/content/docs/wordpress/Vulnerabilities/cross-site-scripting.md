@@ -93,7 +93,7 @@ Developers can register their custom Gutenberg blocks using [`register_block_typ
 add_action( 'init', 'register_blocks' );
 
 function register_blocks() {
-    register_block_type( 'custom-heading', array(
+    register_block_type( 'vulnerability-playground/custom-heading', array(
         'render_callback' => 'custom_heading_block'
     ) );
 
@@ -111,7 +111,7 @@ function custom_heading_block( $attributes, $content ) {
 Same as the Shortcode XSS, by default, the value of the attribute on blocks doesn't escape characters like single-quote and double-quote but it will sanitize a supplied HTML tag. To exploit this, the Contributor+ role user simply needs to create a drafted post with the below content (as the actual string sent to the save draft post request) and send the preview link to other privileged users to trigger the XSS:
 
 ```json
-<!-- wp:custom-heading {\"heading-tag\":\"img src=x onerror=alert(document.domain)\",\"content\":\"test\"}>test<!-- /wp:custom-heading -->
+<!-- wp:vulnerability-playground/custom-heading {\"heading-tag\":\"img src=x onerror=alert(document.domain)\",\"content\":\"test\"} -->xxx<!-- /wp:vulnerability-playground/custom-heading -->
 ```
 
 For security researchers, we recommend just searching for the `render_callback` string to identify if a plugin or theme has a custom Gutenberg block implementation.
