@@ -17,7 +17,7 @@ Several functions could be useful to identify a possible Arbitrary File Deletion
     - [`rmdir`](https://www.php.net/manual/en/function.rmdir.php)
 
 - WordPress related
-    - [`wp_delete_file](https://developer.wordpress.org/reference/functions/wp_delete_file/)
+    - [`wp_delete_file`](https://developer.wordpress.org/reference/functions/wp_delete_file/)
     - [`wp_delete_file_from_directory`](https://developer.wordpress.org/reference/functions/wp_delete_file_from_directory/)
     - [`WP_Filesystem_Direct::delete`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/delete/)
     - [`WP_Filesystem_Direct::rmdir`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/rmdir/)
