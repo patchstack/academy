@@ -145,7 +145,7 @@ function custom_update_profile(){
     $user_data = array();
 
     foreach($_POST["data"] as $key => $value){
-        $user_data[$key] = $value
+        $user_data[$key] = $value;
     }
     
     $user_data["ID"] = get_current_user_id();

@@ -48,7 +48,7 @@ function unpack_fonts(){
     $file = $_FILES["file"];
     $ext = end(explode('.',$file_name));
 
-    if($ext !=== "zip"){
+    if($ext !== "zip"){
         die();
     }
     

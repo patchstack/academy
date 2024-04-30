@@ -32,7 +32,7 @@ add_action("init", "rest_init_setup");
 function rest_init_setup(){
     register_rest_route( "myplugin/v1", '/deletemedia/', array(
         'methods'                   =>  "POST",
-        'callback'                  =>  array( $this, 'delete_media_upload' ),
+        'callback'                  =>  'delete_media_upload',
         'permission_callback' => '__return_true',
     ) );
 }
