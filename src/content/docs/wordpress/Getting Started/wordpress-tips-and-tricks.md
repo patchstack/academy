@@ -1,5 +1,5 @@
 ---
-title: WordPress Tips and Tricks for easier hacking
+title: WordPress Hacking Tips and Tricks
 sidebar:
   order: 4
 contributors:
