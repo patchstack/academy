@@ -43,7 +43,7 @@ Example of vulnerable code:
 add_action("admin_init", "delete_admin_menu");
 
 function delete_admin_menu(){
-    if(isset($_POST_["delete"])){
+    if(isset($_POST["delete"])){
         delete_option("custom_admin_menu");
     }
 }
@@ -65,8 +65,8 @@ Example of vulnerable code:
 add_action("wp_ajax_update_post_data", "update_post_data_2");
 
 function update_post_data_2(){
-    if(isset($_POST_["update"])){
-        $post_id = get_post($_GET["id"]);
+    if(isset($_POST["update"])){
+        $post_id = get_post($_POST["id"]);
         update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
     }
 }
@@ -88,7 +88,7 @@ Example of vulnerable code:
 add_action("wp_ajax_nopriv_toggle_menu_bar", "toggle_menu_bar");
 
 function toggle_menu_bar(){
-    if ($_POST_["toggle"] === "1"){
+    if ($_POST["toggle"] === "1"){
         update_option("custom_toggle", 1);
     }
     else{
