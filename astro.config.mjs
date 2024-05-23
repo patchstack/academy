@@ -1,12 +1,14 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import icon from "astro-icon";
+import sitemap from "@astrojs/sitemap";
 const site_url = process.env.URL;
 const site = site_url || 'http://localhost:4321';
 
+
 // https://astro.build/config
 export default defineConfig({
-  site,
+  site: site,
   integrations: [starlight({
     title: 'Patchstack Academy',
     favicon: '/images/psfavicon.svg',
@@ -28,8 +30,8 @@ export default defineConfig({
       ThemeProvider: './src/components/ThemeProvider.astro',
       ThemeSelect: './src/components/ThemeSelect.astro',
       Head: './src/components/Head.astro',
-	    PageSidebar: './src/components/PageSidebar.astro',
-      MarkdownContent: './src/components/MarkdownContent.astro',
+      PageSidebar: './src/components/PageSidebar.astro',
+      MarkdownContent: './src/components/MarkdownContent.astro'
     },
     sidebar: [{
       label: '👋 Welcome',
@@ -60,5 +62,5 @@ export default defineConfig({
         collapsed: true
       }
     }]
-  }), icon()]
+  }), icon(), sitemap()]
 });
