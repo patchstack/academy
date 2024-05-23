@@ -12,6 +12,7 @@ const canonicalImageSrc = new URL(imageSrc, Astro.site);
 ---
 <Default {...Astro.props}><slot /></Default>
 <meta property="og:image" content={canonicalImageSrc} />
+<meta name="google-site-verification" content="EUHJIOL0FDdVtcpY92rKZaoq8IEPafmsafa5oBnrzHs" />
 
 <script>
 import '/src/libs/glightbox/js/glightbox.min.js';
