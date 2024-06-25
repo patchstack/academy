@@ -47,11 +47,11 @@ If you go to https://plugins.trac.wordpress.org/browser/elementor, you can see t
 
 Navigating to https://plugins.trac.wordpress.org/log/elementor/trunk allows you to view the history of different changes pushed to the plugin.
 
-![Trac Changes](/images/trac-changes.png)
+![Trac Changes](@images/trac-changes.png)
 
 Selecting two different commits and clicking on "View changes" displays all the changes within the plugin files.
 
-![Elementor Changelog](/images/elementor-changelog.png)
+![Elementor Changelog](@images/elementor-changelog.png)
 
 The code changes in a newly released version can be seen through this method. Again, this can be used to check if there have been any security issues patched/introduced in the newly released version of the plugin.
 
@@ -63,7 +63,7 @@ There is a site called [WPdirectory](https://wpdirectory.net) that allows you to
 
 For example, we want to look for the `unserialize()` function being used in the plugin that takes in user input from the GET parameter potentially leading to PHP object injection. This would be the regex to achieve that goal: `unserialize\(\$_GET.*\)`
 
-![Regex Scan Result](/images/wpdirectory-scan-result.png)
+![Regex Scan Result](@images/wpdirectory-scan-result.png)
 
 Similarly, we can create our regex pattern as per our requirements and mass-search for the pattern using WPdirectory.
 

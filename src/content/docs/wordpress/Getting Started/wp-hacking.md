@@ -22,13 +22,13 @@ One of the objectives of **Patchstack Academy** is to enhance readers' understan
 
 According to our [State of WordPress Security in 2024](https://patchstack.com/whitepaper/state-of-wordpress-security-in-2024) whitepaper, a total of 5948 vulnerabilities were added to the Patchstack DB, out of which almost 97% vulnerabilities were found in the plugins. The core only had 13 vulnerabilities fixed out of which there were no significant exploitable scenarios.
 
-![WP vulns by percentage](/images/wp-vulns-by-percentage.png)
+![WP vulns by percentage](@images/wp-vulns-by-percentage.png)
 
 These statistics highlight that attackers primarily target plugins, given that most vulnerabilities are found there.
 
 With plugins being the primary target, the requirement for authentication is another important factor that comes into play for any vulnerability to be exploited. The less the privilege required, the higher the chance of exploitation. In the real-world scenario, the most exploited vulnerabilities are the ones that require no authentication.
 
-![WP vulns by unauth privilege percentage](/images/unauth-vulns-percentage.png)
+![WP vulns by unauth privilege percentage](@images/unauth-vulns-percentage.png)
 
 The above statistics show that almost 59% of the plugins require no authentication for exploitation, making a huge amount of vulnerabilities highly prone to exploitation by malicious threat actors.
 
