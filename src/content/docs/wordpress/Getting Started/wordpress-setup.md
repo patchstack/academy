@@ -4,6 +4,7 @@ sidebar:
   order: 3
 contributors:
     - dhakalananda
+    - palmiak
 ---
 
 ## Introduction
@@ -33,6 +34,55 @@ References:
 - [Digital Ocean Blog on WP Docker](https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-docker-compose)
 - [Hostinger Blog on WP Docker](https://www.hostinger.com/tutorials/run-docker-wordpress)
 - [DDEV](https://ddev.readthedocs.io/en/stable/users/quickstart/#wordpress)
+
+### wp-now Setup
+
+**wp-now** is a zero-config development environment based on [WordPress Playground](https://wordpress.org/playground/). It allows you to launch WordPress with all the required plugins and themes in a matter of minutes.
+
+To download a certain version of a plugin and a theme you need to:
+1. Create a `wp-content` folder in the root of your project.
+
+2. Add a `blueprint.json` like below. By using the `"resource" : "url"` you can easily download any version of a plugin or a plugin not from the official WordPress repository.
+```json
+{
+    "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+    "preferredVersions": {
+        "php": "latest",
+        "wp": "latest"
+    },
+    "steps": [
+        {
+            "step": "login"
+        },
+        {
+            "step": "installTheme",
+            "themeZipFile": {
+                "resource": "wordpress.org/themes",
+                "slug": "twentytwentyfour"
+            },
+            "options": {
+                "activate": true
+            }
+        },
+        {
+            "step": "installPlugin",
+            "pluginZipFile": {
+                "resource": "url",
+                "url": "https://downloads.wordpress.org/plugin/classic-editor.1.6.2.zip"
+            },
+            "options": {
+                "activate": true
+            }
+        }
+    ]
+}
+```
+3. Run `npx @wp-now/wp-now start --blueprint=blueprint.json` in the root of your project.
+
+[wp-now official GitHub respoitory](https://github.com/WordPress/playground-tools/tree/trunk/packages/wp-now)
+
+References:
+- [WordPress Playground Documentation](https://wordpress.github.io/wordpress-playground/)
 
 ## Debugging WordPress
 
