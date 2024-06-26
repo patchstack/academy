@@ -1,0 +1,36 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import type { Props } from '@astrojs/starlight/props';
+
+const { editUrl, labels } = Astro.props;
+---
+
+{
+	editUrl && (
+        <a href={editUrl}>
+        <strong class="heading">
+            Found a tpyo ✍ or a bug 🐞?
+        </strong>
+        <span>Submit a <strong>Pull Request</strong> and fix it.</span>
+        </a>
+	)
+}
+
+<style>
+	a {
+		text-decoration: none;
+		color: var(--sl-color-gray-2);
+        display: block;
+        padding: 1.3rem 1rem;
+        width: 100%;
+        background-color: var(--sl-color-accent-low);
+        border-radius: 0.5rem;
+        border: 0.1rem solid var(--sl-color-gray-5);
+        box-shadow: var(--sl-shadow-md);
+	}
+	a:hover {
+		color: var(--sl-color-white);
+        background-color: var(--sl-color-black);
+        border-color: var(--sl-color-accent);
+	}
+</style>
