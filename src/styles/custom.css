@@ -59,6 +59,9 @@
 	}
 }
 
+a {
+	transition: all 0.2s;
+}
 
 .starlight-aside--note {
     --sl-color-asides-text-accent: white;
