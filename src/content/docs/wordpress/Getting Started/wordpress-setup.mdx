@@ -6,6 +6,7 @@ contributors:
     - dhakalananda
     - palmiak
 ---
+import { Steps } from '@astrojs/starlight/components';
 
 ## Introduction
 
@@ -13,7 +14,7 @@ Now that we know WordPress and its ecosystem, it is finally time to set up WordP
 
 Since the local setup is widely covered on the internet, a Google search can provide a ton of articles. We will not be re-inventing the wheel from scratch here either. Instead, we will reference some articles that provide a detailed guideline for setting up.
 
-#### Apache/MySQL method
+### Apache/MySQL method
 
 The first and the most common method of setting up WordPress is through the traditional LAMP, WAMP, or XAMPP stack. A locally running Apache and MySQL server is required to set this up.
 
@@ -23,7 +24,7 @@ References:
 - [WordPress Ubuntu Setup](https://ubuntu.com/tutorials/install-and-configure-wordpress#1-overview)
 - [Laragon](https://laragon.org/index.html)
 
-#### Docker Setup
+### Docker Setup
 
 An official WordPress docker image can be used to set up everything as well. Due to the simplicity of the setup and cross-platform compatibility, it's the preferred way to use it.
 
@@ -40,44 +41,47 @@ References:
 **wp-now** is a zero-config development environment based on [WordPress Playground](https://wordpress.org/playground/). It allows you to launch WordPress with all the required plugins and themes in a matter of minutes.
 
 To download a certain version of a plugin and a theme you need to:
+
+<Steps>
 1. Create a `wp-content` folder in the root of your project.
 
 2. Add a `blueprint.json` like below. By using the `"resource" : "url"` you can easily download any version of a plugin or a plugin not from the official WordPress repository.
-```json
-{
-    "$schema": "https://playground.wordpress.net/blueprint-schema.json",
-    "preferredVersions": {
-        "php": "latest",
-        "wp": "latest"
-    },
-    "steps": [
-        {
-            "step": "login"
+    ```json
+    {
+        "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+        "preferredVersions": {
+            "php": "latest",
+            "wp": "latest"
         },
-        {
-            "step": "installTheme",
-            "themeZipFile": {
-                "resource": "wordpress.org/themes",
-                "slug": "twentytwentyfour"
+        "steps": [
+            {
+                "step": "login"
             },
-            "options": {
-                "activate": true
-            }
-        },
-        {
-            "step": "installPlugin",
-            "pluginZipFile": {
-                "resource": "url",
-                "url": "https://downloads.wordpress.org/plugin/classic-editor.1.6.2.zip"
+            {
+                "step": "installTheme",
+                "themeZipFile": {
+                    "resource": "wordpress.org/themes",
+                    "slug": "twentytwentyfour"
+                },
+                "options": {
+                    "activate": true
+                }
             },
-            "options": {
-                "activate": true
+            {
+                "step": "installPlugin",
+                "pluginZipFile": {
+                    "resource": "url",
+                    "url": "https://downloads.wordpress.org/plugin/classic-editor.1.6.2.zip"
+                },
+                "options": {
+                    "activate": true
+                }
             }
-        }
-    ]
-}
-```
+        ]
+    }
+    ```
 3. Run `npx @wp-now/wp-now start --blueprint=blueprint.json` in the root of your project.
+</Steps>
 
 [wp-now official GitHub respoitory](https://github.com/WordPress/playground-tools/tree/trunk/packages/wp-now)
 
