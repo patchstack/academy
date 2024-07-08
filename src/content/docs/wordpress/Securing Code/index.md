@@ -4,8 +4,6 @@ contributors:
     - rafiem
 ---
 
-## Introduction
+In the [Vulnerabilities](wordpress/vulnerabilities/) section you already learned about different types of vulnerabilities. Here you'll discover ways to secure code to prevent possible vulnerabilities.
 
-This article covers various ways to securing a code in a WordPress environment to prevent possible vulnerabilites.
-
-The content will be divided by each possible vulnerability type and will have a content of possible ways of securing the code from each cases of the vulnerability type.
+The content will be divided by each possible vulnerability type and will explain ways of securing the code from each of them.

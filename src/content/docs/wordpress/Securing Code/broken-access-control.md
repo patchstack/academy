@@ -6,13 +6,13 @@ contributors:
 
 ## Introduction
 
-This article covers cases of possible ways to secure the code from a common Broken Access Conrol vulnerability on WordPress. This includes applying a proper function to check for users permission.
+This article covers cases of possible ways to secure the code from a common Broken Access Control vulnerability on WordPress. This includes applying a proper function to check for the user's permission.
 
-By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check and also a nonce check.
+By default, processes on hooks or functions that are used on plugins or themes don’t have a permission and nonce value check, that’s why the developer needs to manually perform a permission check and also a nonce check.
 
 ## Affected Hooks
 
-Below are some of the hooks and actions that are mostly used to handle sensitive actions and potentially vulnerable to a Broken Access Control attack if there is no permission and nonce check applied:
+Below are some of the hooks and actions that are mostly used to handle sensitive actions and are potentially vulnerable to a **Broken Access Control** attack if there is no permission and nonce check applied:
 
 - `wp_ajax_nopriv_{$action}`
 - `wp_ajax_{$action}`
@@ -23,23 +23,23 @@ Below are some of the hooks and actions that are mostly used to handle sensitive
 - `load-{$pagenow}`
 - `admin_notices`
 
-Above lists are only an example of hooks that are commonly used to handle sensitive actions on the plugin or theme. There are others hooks that are also could be affected by a Broken Access Control attack if not properly implement a permission check. 
+The above list is only an example of hooks that are commonly used to handle sensitive actions in plugins or themes. Other hooks can also be affected by a **Broken Access Control** attack if the permission check isn't implemented properly..
 
-For some cases, Broken Access Control can also exist outside of the above hooks that are implemented. This kind of Broken Access Control usually exist on a normal function or hook that are not expected to have a sensitive action process.
+In some cases, **Broken Access Control** can also exist outside of the above hooks. It usually exists on a normal function or hook that is not expected to have a sensitive action process.
 
 ## Permission Check
 
-Permission check for an authenticated context, should always be paired with a nonce check. To properly check user's permission, WordPress Core provide users with a couple of function that can be easily used:
+Permission check for an authenticated context should always be paired with a nonce check. To properly check user’s permission, WordPress Core provides users with a couple of functions that can be easily used:
 
 ### [`current_user_can`](https://developer.wordpress.org/reference/functions/current_user_can/)
 
-This function should be the main function to check for users permission in the WordPress context. This function will check whether the current user has the specified capability.
+This function should be the main function to check for user permission in the WordPress context. This function will check whether the current user has the specified capability.
 
-This function also accepts an ID of an object to check against if the capability is a meta capability. Meta capabilities such as `edit_post` and `edit_user` are capabilities used by the `map_meta_cap()` function to map to primitive capabilities that a user or role has, such as `edit_posts` and `edit_others_posts`. The implementation of this function for most cases should be performed with nonce check using `wp_verify_nonce()` function or other nonce check function.
+This function also accepts an ID of an object to check against if the capability is a meta capability. Meta capabilities such as `edit_post` and `edit_user` are capabilities used by the `map_meta_cap()` function to map to primitive capabilities that a user or role has, such as `edit_posts` and `edit_others_posts`. The implementation of this function for most cases should be performed with a nonce check using the `wp_verify_nonce()` function or another nonce check function.
 
-For detailed list of default roles and capabilities in WordPress, please refer to [`this`](https://wordpress.org/documentation/article/roles-and-capabilities/) official documentation.
+For detailed list of default roles and capabilities in WordPress, please refer to [`the official documentation`](https://wordpress.org/documentation/article/roles-and-capabilities/).
 
-One of the example implementation of the function is when developer when to check if certain users has a `manage_options` capability which is by default is attached to the administrator+ role users. The example implementation for such case:
+Check this example implementation when the developer checks if certain users have a `manage_options` capability which is by default attached to the administrator+ role users:
 
 ```php
 add_action("init", "check_if_update_4");
@@ -55,7 +55,7 @@ function check_if_update_4(){
 }
 ```
 
-Another example of case is where the developer when to check if the current user has a capability or permission to edit a specific post object. The example implementation for such case:
+Below you'll find another example where the developer checks if the current user has the capability or permission to edit a specific post object:
 
 ```php
 add_action("wp_ajax_update_post_data", "update_post_data_4");
@@ -76,10 +76,7 @@ function update_post_data_4(){
 
 ### [`wp_get_current_user`](https://developer.wordpress.org/reference/functions/wp_get_current_user/)
 
-Other alternative to check for user permission is by utilizing this function. The function itself is not a direct process for checking user permission. This function only retrieves the current user object and developer able to then check for user permission by checking their role, for example. The implementation of this function for most cases should be performed with nonce check using `wp_verify_nonce()` function or other nonce check function.
-
-Example implementation:
-
+Another alternative to check for user permission is by utilizing this function. The function itself doesn't directly check for permissions. It only retrieves the current user object and the developer can check for user permission by checking their role. The implementation of this function for most cases should be performed with a nonce check using `wp_verify_nonce()` function or other nonce check function:
 ```php
 
 add_action("admin_init", "delete_admin_menu_4");
@@ -98,8 +95,7 @@ function delete_admin_menu_4(){
 ```
 
 
-## Common Misconception
+## Common Misconceptions
+In WordPress, there are certain functions in which naming indicates that it can be used for permission check, while in reality, it does something different.
 
-It is known that in WordPress, there is a misconception for a certain function. The function naming can indicate that the function can be used to check for permission, while the real case scenario is that the function actually can't be used to check for user permission. 
-
-One of the function is the [`is_admin`](https://developer.wordpress.org/reference/functions/is_admin/) function. Many developers use this function and assume that this function will check if the user is an administrator role user. However, this function actually only checks that the request is being sent to an admin related page such as `wp-admin` endpoint and this endpoint can be easily accessed by any authenticated users.
+One of those functions is the [`is_admin()`](https://developer.wordpress.org/reference/functions/is_admin/) function. Many developers use this function and assume that this function will check if the user has an administrator role user. However, this function only checks that the request is being sent to an admin-related page such as `wp-admin` endpoint and this endpoint can be easily accessed by any authenticated users.
