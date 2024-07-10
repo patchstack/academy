@@ -1,5 +1,6 @@
 ---
 import type { Props } from '@astrojs/starlight/props';
+import { Image } from 'astro:assets';
 
 const data = Astro.props.entry.data;
 ---
@@ -8,9 +9,17 @@ const data = Astro.props.entry.data;
 }
 { data.contributors?.length > 0 && (
     data.contributors.map(function(contributor) {
+        const imgUrl = 'https://github.com/' + contributor + '.png?size=50';
         return (
             <a href={ 'https://github.com/' + contributor } target="_blank">
-                <img src={ 'https://github.com/' + contributor + '.png?size=50' } alt={contributor} />
+                <Image src={ imgUrl } alt={ contributor } format="webp" width="50" height="50" />
             </a>
         ) 
 } )  ) }
+
+<style>
+    a{
+        display:inline-block;
+        margin: 0 10px 0 0!important;
+    }
+</style>
