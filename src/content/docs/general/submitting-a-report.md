@@ -104,7 +104,7 @@ Example:
 ![Component Type](@images/submitting-report/vuln-information.png)
 
 
-### Submitter details
+## Submitter details
 
 This is left as a task for the researchers.
 
