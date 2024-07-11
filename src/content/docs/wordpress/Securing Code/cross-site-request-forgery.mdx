@@ -4,11 +4,18 @@ contributors:
     - rafiem
 ---
 
+import { LinkCard } from '@astrojs/starlight/components';
+
 ## Introduction
 
 This article covers cases of possible ways to secure the code from CSRF vulnerability on WordPress. This includes applying a proper function to check for an anti-CSRF token, or in this case, a nonce value to prevent a malicious actor from tricking other users to perform unwanted actions.
 
 By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check and also a nonce check.
+
+<LinkCard
+  title="Learn more about CSRF"
+  href="/wordpress/vulnerabilities/cross-site-request-forgery/"
+/>
 
 ## Affected Hooks
 
