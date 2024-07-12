@@ -3,9 +3,7 @@ title: Cross-Site Scripting (XSS)
 contributors:
     - rafiem
 ---
-
 import { LinkCard } from '@astrojs/starlight/components';
-
 
 ## Introduction
 
@@ -20,7 +18,7 @@ Depending on the context of the process, in most cases, the user’s input will 
 
 ## [`esc_attr`](https://developer.wordpress.org/reference/functions/esc_attr/)
 
-This function should be the main function to use when the developer wants to escape a string inside of an HTML attribute. It works by encoding the <, >, &, " and ' (less than, greater than, ampersand, double quote, and single quote) characters and will never double encode entities.
+This function should be the main function to use when the developer wants to escape a string inside of an HTML attribute. It works by encoding the `<`, `>`, `&`, `"` and `'` (less than, greater than, ampersand, double quote, and single quote) characters and will never double encode entities.
 
 Only use this function inside of the HTML attributes where the escaped value is wrapped inside of a single or double quotes:
 
@@ -35,7 +33,7 @@ Only use this function inside of the HTML attributes where the escaped value is 
 
 ## [`esc_html`](https://developer.wordpress.org/reference/functions/esc_html/)
 
-This function should be the main function to use when the developer wants to escape a string for HTML blocks. This function will simply perform a wide HTML escape process to the string and will convert <, >, &, ", ' characters to HTML entities.
+This function should be the main function to use when the developer wants to escape a string for HTML blocks. This function will simply perform a wide HTML escape process to the string and will convert `<`, `>`, `&`, `"`, `'` characters to HTML entities.
 
 Developers can use this function when trying to escape a user's input outside of the HTML tag context:
 
