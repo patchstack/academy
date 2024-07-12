@@ -10,6 +10,11 @@ This article covers possible ways to secure the code from XSS vulnerability on W
 
 Depending on the context of the process, in most cases, the user’s input will not be escaped or sanitized by default, that’s why the developer needs to manually process the input.
 
+<LinkCard
+  title="Learn more about XSS"
+  href="/wordpress/vulnerabilities/cross-site-scripting/"
+/>
+
 ## [`esc_attr`](https://developer.wordpress.org/reference/functions/esc_attr/)
 
 This function should be the main function to use when the developer wants to escape a string inside of an HTML attribute. It works by encoding the <, >, &, " and ' (less than, greater than, ampersand, double quote, and single quote) characters and will never double encode entities.
