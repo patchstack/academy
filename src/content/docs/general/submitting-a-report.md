@@ -31,7 +31,7 @@ You need to select whether the issue was found in a plugin, theme, or the WP cor
 
 Example:
 
-![Component Type](@images/submitting-report/component-type.png)
+![Component Types](@images/submitting-report/component-type.png)
 
 **Component Name**
 
@@ -51,7 +51,7 @@ A link to the component repository where one can download/access the plugin/them
 
 Example:
 
-![Component Type](@images/submitting-report/component-details.png)
+![Component Details](@images/submitting-report/component-details.png)
 
 
 ## Vulnerability Details
@@ -70,7 +70,7 @@ This field offers a wider range of vulnerability types. Select the proper class 
 
 Example:
 
-![Component Type](@images/submitting-report/vuln-class.png)
+![Vulnerability class](@images/submitting-report/vuln-class.png)
 
 
 ### Pre-requisite
@@ -79,7 +79,7 @@ You need to select the least privilege required to exploit the vulnerability.
 
 Example:
 
-![Component Type](@images/submitting-report/prerequisite.png)
+![Pre-requisite](@images/submitting-report/prerequisite.png)
 
 ### Vulnerability details
 
@@ -101,7 +101,7 @@ This is also an optional field if you wish to attach video PoC or scripts. A ful
 
 Example:
 
-![Component Type](@images/submitting-report/vuln-information.png)
+![Vulnerability details](@images/submitting-report/vuln-information.png)
 
 
 ## Submitter details
