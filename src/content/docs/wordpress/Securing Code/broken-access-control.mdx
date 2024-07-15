@@ -1,0 +1,109 @@
+---
+title: Broken Access Control
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers cases of possible ways to secure the code from a common Broken Access Control vulnerability on WordPress. This includes applying a proper function to check for the user's permission.
+
+By default, processes on hooks or functions that are used on plugins or themes don’t have a permission and nonce value check, that’s why the developer needs to manually perform a permission check and also a nonce check.
+
+<LinkCard
+  title="Learn more about Broken Access Control"
+  href="/wordpress/vulnerabilities/broken-access-control/"
+/>
+
+## Affected Hooks
+
+Below are some of the hooks and actions that are mostly used to handle sensitive actions and are potentially vulnerable to a **Broken Access Control** attack if there is no permission and nonce check applied:
+
+- `wp_ajax_nopriv_{$action}`
+- `wp_ajax_{$action}`
+- `admin_init`
+- `init`
+- `admin_post_nopriv_{$action}`
+- `admin_post_{$action}`
+- `load-{$pagenow}`
+- `admin_notices`
+
+The above list is only an example of hooks that are commonly used to handle sensitive actions in plugins or themes. Other hooks can also be affected by a **Broken Access Control** attack if the permission check isn't implemented properly..
+
+In some cases, **Broken Access Control** can also exist outside of the above hooks. It usually exists on a normal function or hook that is not expected to have a sensitive action process.
+
+## Permission Check
+
+Permission check for an authenticated context should always be paired with a nonce check. To properly check user’s permission, WordPress Core provides users with a couple of functions that can be easily used:
+
+### [`current_user_can`](https://developer.wordpress.org/reference/functions/current_user_can/)
+
+This function should be the main function to check for user permission in the WordPress context. This function will check whether the current user has the specified capability.
+
+This function also accepts an ID of an object to check against if the capability is a meta capability. Meta capabilities such as `edit_post` and `edit_user` are capabilities used by the `map_meta_cap()` function to map to primitive capabilities that a user or role has, such as `edit_posts` and `edit_others_posts`. The implementation of this function for most cases should be performed with a nonce check using the `wp_verify_nonce()` function or another nonce check function.
+
+For detailed list of default roles and capabilities in WordPress, please refer to [`the official documentation`](https://wordpress.org/documentation/article/roles-and-capabilities/).
+
+Check this example implementation when the developer checks if certain users have a `manage_options` capability which is by default attached to the administrator+ role users:
+
+```php
+add_action("init", "check_if_update_4");
+
+function check_if_update_4(){
+    if(isset($_GET["update"])){
+        if(current_user_can("manage_options")){
+            if(wp_verify_nonce($_POST["sec_nonce"], "update-user-data")){
+                update_option("user_data", sanitize_text_field($_GET_["data"]));
+            }
+        }
+    }
+}
+```
+
+Below you'll find another example where the developer checks if the current user has the capability or permission to edit a specific post object:
+
+```php
+add_action("wp_ajax_update_post_data", "update_post_data_4");
+
+function update_post_data_4(){
+    if(!current_user_can("edit_post", $_POST["id"])){
+        die("No permission");
+    }
+
+    check_ajax_referer("update-post-data", "security");
+    
+    if(isset($_POST["update"])){
+        $post_id = get_post($_POST["id"]);
+        update_post_meta($post_id, "data", sanitize_text_field($_POST["data"]));
+    }
+}
+```
+
+### [`wp_get_current_user`](https://developer.wordpress.org/reference/functions/wp_get_current_user/)
+
+Another alternative to check for user permission is by utilizing this function. The function itself doesn't directly check for permissions. It only retrieves the current user object and the developer can check for user permission by checking their role. The implementation of this function for most cases should be performed with a nonce check using `wp_verify_nonce()` function or other nonce check function:
+```php
+
+add_action("admin_init", "delete_admin_menu_4");
+
+function delete_admin_menu_4(){
+    if(isset($_POST["delete"])){
+        check_admin_referer("delete-admin-menu");
+        $user = wp_get_current_user();
+
+        if ( in_array( 'administrator', (array) $user->roles ) ) {
+            delete_option("custom_admin_menu");
+        }
+        
+    }
+}
+```
+
+
+## Common Misconceptions
+In WordPress, there are certain functions in which naming indicates that it can be used for permission check, while in reality, it does something different.
+
+One of those functions is the [`is_admin()`](https://developer.wordpress.org/reference/functions/is_admin/) function. Many developers use this function and assume that this function will check if the user has an administrator role user. However, this function only checks that the request is being sent to an admin-related page such as `wp-admin` endpoint and this endpoint can be easily accessed by any authenticated users.
