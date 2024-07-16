@@ -3,6 +3,9 @@ import type { Props } from '@astrojs/starlight/props';
 import Default from '@astrojs/starlight/components/Head.astro';
 
 const { isFallback, lang } = Astro.props;
+
+const isDev = import.meta.env.type === 'development';
+
 let path = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '');
 if ( path === '' ) {
 	path = 'index';
@@ -14,6 +17,9 @@ const canonicalImageSrc = new URL(imageSrc, Astro.site);
 <meta property="og:image" content={canonicalImageSrc} />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <meta name="google-site-verification" content="EUHJIOL0FDdVtcpY92rKZaoq8IEPafmsafa5oBnrzHs" />
+
+{!isDev && <meta name="google-site-verification" content="EUHJIOL0FDdVtcpY92rKZaoq8IEPafmsafa5oBnrzHs" />}
+{isDev && <meta name="robots" content="noindex" />}
 
 <script>
 import '/src/libs/glightbox/js/glightbox.min.js';

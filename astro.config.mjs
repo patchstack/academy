@@ -5,10 +5,14 @@ import sitemap from "@astrojs/sitemap";
 const site_url = process.env.URL;
 const site = site_url || 'http://localhost:4321';
 
+const base_var = process.env.BASE;
+const base = base_var || '';
+
 
 // https://astro.build/config
 export default defineConfig({
   site: site,
+  base: base,
   image: {
 		service: passthroughImageService(),
 	},
