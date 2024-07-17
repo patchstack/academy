@@ -10,7 +10,7 @@ let path = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '').replace('aca
 if ( path === '' ) {
 	path = 'index';
 }
-const imageSrc = '/open-graph/' + path + '.png';
+const imageSrc = path + '.png';
 const canonicalImageSrc = new URL(imageSrc, Astro.site);
 ---
 <Default {...Astro.props}><slot /></Default>
