@@ -1,1 +1,6 @@
-<meta http-equiv="refresh" content="0;url=/welcome/" />
+---
+const base_var = process.env.BASE;
+const base = base_var || '';
+const url = '/' + base + '/welcome/'.replace('//', '/');
+---
+<meta http-equiv="refresh" content={'0;url=' + url} />
