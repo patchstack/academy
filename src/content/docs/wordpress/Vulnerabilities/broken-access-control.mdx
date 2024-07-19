@@ -14,7 +14,7 @@ This article covers cases of possible Broken Access Control on WordPress. This i
 By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/wordpress/wordpress-internals/functions/#current_user_can) function and the nonce value check using [`wp_verify_nonce`](/wordpress/wordpress-internals/functions/#wp_verify_nonce), [`check_admin_referer`](/wordpress/wordpress-internals/functions/#check_admin_referer) or [`check_ajax_referer`](/wordpress/wordpress-internals/functions/#check_ajax_referer) functions.
 
 <LinkCard
-  title="Learn how to secure you code against Broken Access Control"
+  title="Learn how to secure your code against Broken Access Control"
   href="/wordpress/securing-code/broken-access-control/"
 />
 

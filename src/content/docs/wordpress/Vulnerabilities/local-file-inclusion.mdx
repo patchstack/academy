@@ -4,9 +4,17 @@ contributors:
     - rafiem
 ---
 
+import { LinkCard } from '@astrojs/starlight/components';
+
+
 ## Introduction
 
 This article covers cases of possible LFI on WordPress. This includes improper file inclusion inside of the plugin/theme which can be used to gain RCE on the server.
+
+<LinkCard
+  title="Learn how to secure your code against Local File Inclusion"
+  href="/wordpress/securing-code/local-file-inclusion/"
+/>
 
 ## Useful Functions
 
@@ -42,6 +50,6 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=render_lesson&template_
 Below are some of the findings related to Local File Inclusion:
 
 - [Critical Vulnerabilities Patched in REHub Theme and Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-rehub-theme-and-plugin/)
-- [Security Vulnerability In OceanWP Theme <= 3.4.1](https://patchstack.com/articles/subscriber-path-traversal-leading-to-local-file-inclusion-in-oceanwp-theme/)
+- [Security Vulnerability In OceanWP Theme \<= 3.4.1](https://patchstack.com/articles/subscriber-path-traversal-leading-to-local-file-inclusion-in-oceanwp-theme/)
 - [Vulnerability In Rank Math SEO Plugin](https://patchstack.com/articles/authenticated-path-traversal-leading-to-local-file-inclusion-in-rank-math-seo-plugin/)
-- [Multiple Critical Vulnerabilities Fixed In LearnPress Plugin Version <= 4.1.7.3.2](https://patchstack.com/articles/multiple-critical-vulnerabilities-fixed-in-learnpress-plugin-version/)
+- [Multiple Critical Vulnerabilities Fixed In LearnPress Plugin Version \<= 4.1.7.3.2](https://patchstack.com/articles/multiple-critical-vulnerabilities-fixed-in-learnpress-plugin-version/)

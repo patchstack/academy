@@ -1,0 +1,57 @@
+---
+title: Server Side Request Forgery (SSRF)
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers cases of possible ways to secure the code from Server Side Request Forgery vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+
+
+<LinkCard
+  title="Learn more about Server Side Request Forgery"
+  href="/wordpress/vulnerabilities/server-side-request-forgery/"
+/>
+
+## How to secure
+
+If the plugin or theme need to fetch or perform a request to an external URL, we can use WordPress builtin functions depending on the HTTP methods such as:
+
+- [`wp_safe_remote_head`](https://developer.wordpress.org/reference/functions/wp_safe_remote_head/)
+- [`wp_safe_remote_get`](https://developer.wordpress.org/reference/functions/wp_safe_remote_get/)
+- [`wp_safe_remote_post`](https://developer.wordpress.org/reference/functions/wp_safe_remote_post/)
+- [`wp_safe_remote_request`](https://developer.wordpress.org/reference/functions/wp_safe_remote_request/)
+
+Above functions mostly will protect from SSRF vulnerability and deny access to an internal service. However, please not that above functions currently are not 100% secure and has some rare cases that still allows for internal service access. Please refer to this article:
+
+- [Exploring the Unknown: Beneath the Surface of Unpatched WordPress SSRF](https://patchstack.com/articles/exploring-the-unpatched-wordpress-ssrf/)
+
+With that condition, we recommend to not trust the entire URL string to user's input and apply some limitation before passing the URL to the above functions.
+
+Example implementation:
+
+```php
+add_action("wp_ajax_nopriv_fetch_image_url", "fetch_image_url_2");
+
+function fetch_image_url_2(){
+    $image_url = parse_url($_GET["image_url"]);
+    
+    if(!image_url){
+        die()
+    }
+
+    $allowed = array("image.com", "storeimage.com", "loadimage.com");
+    if(!in_array($image_url["host"], $allowed)){
+        die();
+    }
+
+    $response = wp_safe_remote_get($_GET["image_url"]);
+    $image_data = wp_remote_retrieve_body($response);
+    echo $image_data;
+    die();
+}
+```

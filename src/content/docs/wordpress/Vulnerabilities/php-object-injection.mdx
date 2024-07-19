@@ -4,9 +4,17 @@ contributors:
     - rafiem
 ---
 
+import { LinkCard } from '@astrojs/starlight/components';
+
+
 ## Introduction
 
 This article covers cases of possible PHP Object Injection on WordPress. This includes improper usage of the unserialization process inside of the plugin/theme which can be used to inject an arbitrary PHP object which in the worst case could turn into RCE depending on the available gadget chain.
+
+<LinkCard
+  title="Learn how to secure your code against PHP Object Injection"
+  href="/wordpress/securing-code/php-object-injection/"
+/>
 
 ## Useful Functions
 
@@ -81,8 +89,8 @@ curl "<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=load_ig_data&data=x:<B
 
 Below are some of the findings related to PHP Object Injection:
 
-- [Unauthenticated PHP Object Injection in Flatsome Theme <= 3.17.5](https://patchstack.com/articles/unauthenticated-php-object-injection-in-flatsome-theme-3-17-5/)
-- [Unauthenticated PHP Object Injection in Gravity Forms Plugin <= 2.7.3](https://patchstack.com/articles/unauthenticated-php-object-injection-in-gravity-forms-plugin/)
+- [Unauthenticated PHP Object Injection in Flatsome Theme \<= 3.17.5](https://patchstack.com/articles/unauthenticated-php-object-injection-in-flatsome-theme-3-17-5/)
+- [Unauthenticated PHP Object Injection in Gravity Forms Plugin \<= 2.7.3](https://patchstack.com/articles/unauthenticated-php-object-injection-in-gravity-forms-plugin/)
 - [User Registration Plugin Vulnerability](https://patchstack.com/articles/authenticated-php-object-injection-in-user-registration-plugin/)
 - [Critical Vulnerabilities Patched in REHub Theme and Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-rehub-theme-and-plugin/)
 - [Multiple Vulnerabilities Patched in Themify Ultra Theme](https://patchstack.com/articles/multiple-vulnerabilities-patched-in-themify-ultra-theme/)

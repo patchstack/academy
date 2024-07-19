@@ -4,9 +4,18 @@ contributors:
     - rafiem
 ---
 
+import { LinkCard } from '@astrojs/starlight/components';
+
+
 ## Introduction
 
 This article covers cases of possible SQLi on WordPress. This includes improper usage of functions and user input handling inside of the plugin/theme which can be used to inject a malicious query into the SQL execution to leak sensitive data.
+
+<LinkCard
+  title="Learn how to secure your code against SQL Injection"
+  href="/wordpress/securing-code/sql-injection/"
+/>
+
 
 ## Useful Functions
 
@@ -63,6 +72,6 @@ Below are some of the findings related to SQLi:
 - [Critical Vulnerabilities Patched in REHub Theme and Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-rehub-theme-and-plugin/)
 - [Critical SQL Injection Found in Porto Theme's Plugin](https://patchstack.com/articles/critical-sql-injection-found-in-porto-themes-plugin/)
 - [Multiple High and Critical Vulnerabilities in Avada Theme and Plugin](https://patchstack.com/articles/multiple-high-and-critical-vulnerabilities-in-avada-theme-and-plugin/)
-- [Critical Unauthenticated SQL Injection in Quiz And Survey Master <= 8.1.4](https://patchstack.com/articles/critical-unauthenticated-sql-injection-in-quiz-and-survey-master/)
-- [Multiple Vulnerabilities Fixed In WP Statistics Plugin Version <= 13.2.10](https://patchstack.com/articles/multiple-authenticated-sql-injection-fixed-in-wp-statistics-plugin-version-13-2-10/)
-- [Multiple Critical Vulnerabilities Fixed In LearnPress Plugin Version <= 4.1.7.3.2](https://patchstack.com/articles/multiple-critical-vulnerabilities-fixed-in-learnpress-plugin-version/)
+- [Critical Unauthenticated SQL Injection in Quiz And Survey Master \<= 8.1.4](https://patchstack.com/articles/critical-unauthenticated-sql-injection-in-quiz-and-survey-master/)
+- [Multiple Vulnerabilities Fixed In WP Statistics Plugin Version \<= 13.2.10](https://patchstack.com/articles/multiple-authenticated-sql-injection-fixed-in-wp-statistics-plugin-version-13-2-10/)
+- [Multiple Critical Vulnerabilities Fixed In LearnPress Plugin Version \<= 4.1.7.3.2](https://patchstack.com/articles/multiple-critical-vulnerabilities-fixed-in-learnpress-plugin-version/)
