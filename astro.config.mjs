@@ -3,10 +3,10 @@ import starlight from '@astrojs/starlight';
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
 const site_url = process.env.URL;
-const site = site_url || 'http://localhost:4321';
+const site = site_url || 'http://localhost:4321/academy/';
 
 const base_var = process.env.BASE;
-const base = base_var || '';
+const base = base_var ? base_var : 'academy';
 
 
 // https://astro.build/config
