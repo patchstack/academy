@@ -9,7 +9,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible ways to secure the code from PHP Object Injection vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+This article covers ways to secure the code from PHP Object Injection vulnerability. This includes applying a proper function to check for the user's input.
 
 
 <LinkCard
@@ -19,11 +19,9 @@ This article covers cases of possible ways to secure the code from PHP Object In
 
 ## How to secure
 
-In general, we strongly do not recommend usage of deserialization process using `unserialize` or `maybe_unserialize` function. For more complex data, we can use other data format such as JSON. 
+We do not recommend doing the deserialization using the `unserialize` or `maybe_unserialize` functions. For more complex data, we can use other data formats such as JSON. 
 
-If `unserialize` or `maybe_unserialize` function are still need to be used, the best approach we can do to try prevent PHP Object Injection is to set `allowed_classes` parameter to `false` value on the function options parameter. This approach will not accept classes object on the deserialization process and mostly can prevent from worst impact.
-
-Example implementation:
+If the `unserialize` or `maybe_unserialize` functions are still needed, the best approach we can take to prevent PHP Object Injection is to set the `allowed_classes` parameter to a `false` value on the function options parameter. This approach will not accept class objects in the deserialization process and usually can prevent the worst from happening:
 
 ```php
 function load_ig_data_2() {

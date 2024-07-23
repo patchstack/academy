@@ -9,8 +9,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible ways to secure the code from SQL Injection vulnerability on WordPress. This includes applying a proper function to check for the user's input.
-
+This article covers ways to secure the code from SQL Injection vulnerability. This includes applying a proper function to check for the user's input.
 
 <LinkCard
   title="Learn more about SQL Injection"
@@ -19,18 +18,16 @@ This article covers cases of possible ways to secure the code from SQL Injection
 
 ## Prepared Statement
 
-One of the most standard way to secure code from possible SQL Injection is using a query prepared statement. A prepared statement is a parameterized and reusable SQL query which forces the developer to write the SQL command and the user-provided data separately. The SQL command is executed safely, preventing SQL Injection vulnerabilities.
+One of the most standard ways to secure code from possible SQL Injection is using a query-prepared statement. A prepared statement is a parameterized and reusable SQL query that forces the developer to write the SQL command and the user-provided data separately. The SQL command is executed safely, preventing SQL Injection vulnerabilities.
 
-WordPress has a builtin function for a prepared statement, which use [`wpdb::prepare`](https://developer.wordpress.org/reference/classes/wpdb/prepare/) function. The following placeholders can be used in the query string:
+WordPress has a built-in function for a prepared statement, which uses [`wpdb::prepare`](https://developer.wordpress.org/reference/classes/wpdb/prepare/) function. The following placeholders can be used in the query string:
 
 - %d (integer)
 - %f (float)
 - %s (string)
 - %i (identifier, e.g. table/field names)
 
-According to the official documentation, all placeholders MUST be left unquoted in the query string. A corresponding argument MUST be passed for each placeholder.
-
-Example implementation:
+According to the official documentation, all placeholders MUST be left unquoted in the query string. A corresponding argument MUST be passed for each placeholder:
 
 ```php
 add_action("wp_ajax_fetch_post_count", "fetch_post_count");
@@ -54,19 +51,15 @@ function fetch_post_count(){
 
 ## [`esc_sql`](https://developer.wordpress.org/reference/functions/esc_sql/)
 
-This function could also be used as an alternative from prepared statement. However, for most of the time, please use a prepared statement for the query execution. This function will simpy escapes data for use in a SQL query.
+This function could also be used as an alternative to the prepared statement. However, most of the time it's better to use a prepared statement for the query execution. This function will escape data for use in a SQL query.
 
-According to the official documentation, users must be careful in using this function correctly. It will only escape values to be used in strings in the query. That is, it only provides escaping for values that will be within quotes in the SQL (as in `field = '{$escaped_value}'`). If your value is not going to be within quotes, your code will still be vulnerable to SQL injection. 
-
-For example, take a look at below example implementation of `esc_sql` function:
+According to the official documentation, users must be careful when using this function. It will only escape values used in strings in the query. That is, it only provides escaping for values within quotes in the SQL (as in `field = '{$escaped_value}'`). If your value is not within quotes, your code will still be vulnerable to SQL injection:
 
 ```
 ORDER BY {$escaped_value}
 ```
 
-This implementation is vulnerable, because the escaped value is not surrounded by quotes in the SQL query. As such, this function does not escape unquoted numeric values, field names, or SQL keywords. Additional note that this function was formerly just an alias for $wpdb->escape(), but that function has now been deprecated.
-
-Example implementation:
+This implementation is vulnerable because the escaped value is not surrounded by quotes in the SQL query. As such, this function does not escape unquoted numeric values, field names, or SQL keywords. Additional note that this function was formerly just an alias for $wpdb->escape(), but that function has now been deprecated:
 
 ```php
 add_action("wp_ajax_fetch_post_by_title", "fetch_post_by_title");
@@ -87,11 +80,9 @@ function fetch_post_by_title(){
 
 ## [`sanitize_sql_orderby`](https://developer.wordpress.org/reference/functions/sanitize_sql_orderby/)
 
-For value on the ORDER related query, especially on a `order by` clause, we can use this function. This function ensures a string is a valid SQL `order by` clause.
+We can use the `sanitize_sql_orderby` function for values in the ORDER-related query, especially on an `order by` clause. This function ensures a string is a valid SQL `order by` clause.
 
-According to the official documentation, this function accepts one or more columns, with or without a sort order (ASC / DESC). e.g. `column_1`, `column_1, column_2`, `column_1 ASC, column_2 DESC` etc. It Also accepts ‘RAND()’.
-
-Example implementation:
+According to the official documentation, this function accepts one or more columns, with or without a sort order (ASC / DESC). e.g. `column_1`, `column_1, column_2`, `column_1 ASC, column_2 DESC` etc. It also accepts ‘RAND()’:
 
 ```php
 add_action("wp_ajax_fetch_post_by_order", "fetch_post_by_order");
