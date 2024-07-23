@@ -2,6 +2,8 @@
 const base_var = process.env.BASE;
 const base = base_var ? base_var + "/" : '/';
 const url = base + 'welcome/'.replace('//', '/');
-const redirect = Astro.site.href + url;
+
+const base_url = process.env.DEPLOY_PRIME_URL ? process.env.DEPLOY_PRIME_URL + '/' : Astro.site.href;
+const redirect = base_url + url;
 ---
 <meta http-equiv="refresh" content={'0;url=' + redirect} />
