@@ -1,0 +1,49 @@
+---
+title: PHP Object Injection
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from PHP Object Injection vulnerability. This includes applying a proper function to check for the user's input.
+
+
+<LinkCard
+  title="Learn more about PHP Object Injection"
+  href="/academy/wordpress/vulnerabilities/php-object-injection/"
+/>
+
+## How to secure
+
+We do not recommend doing the deserialization using the `unserialize` or `maybe_unserialize` functions. For more complex data, we can use other data formats such as JSON. 
+
+If the `unserialize` or `maybe_unserialize` functions are still needed, the best approach we can take to prevent PHP Object Injection is to set the `allowed_classes` parameter to a `false` value on the function options parameter. This approach will not accept class objects in the deserialization process and usually can prevent the worst from happening:
+
+```php
+function load_ig_data_2() {
+	$data = isset( $_GET['data'] ) ? (string) $_GET['data'] : '';
+
+	list( $hash, $value ) = explode( ':', $data, 2 );
+
+	if ( empty( $value ) || empty( $hash ) ) {
+		wp_send_json_error( 'Invalid data' );
+	}
+
+	$atts     = unserialize( base64_decode( $value ), ['allowed_classes' => false] );
+	$tick     = ceil( time() / MONTH_IN_SECONDS );
+	$expected = substr( wp_hash( $tick . $value ), -12, 10 );
+
+	if ( ! hash_equals( $expected, $hash ) ) {
+		wp_send_json_error( 'Invalid hash' );
+	}
+
+
+	wp_send_json_success( "testing success" );
+}
+
+add_action( 'wp_ajax_nopriv_load_ig_data', 'load_ig_data_2' );
+```

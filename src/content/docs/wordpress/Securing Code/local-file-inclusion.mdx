@@ -1,0 +1,54 @@
+---
+title: Local File Inclusion (LFI)
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from Local File Inclusion vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+
+<LinkCard
+  title="Learn more about Local File Inclusion"
+  href="/academy/wordpress/vulnerabilities/local-file-inclusion/"
+/>
+
+## How to secure
+
+In general, do not allow users to fully control string passed to these functions:
+
+- [`include`](https://www.php.net/manual/en/function.include.php)
+- [`include_once`](https://www.php.net/manual/en/function.include-once.php)
+- [`require`](https://www.php.net/manual/en/function.require.php)
+- [`require_once`](https://www.php.net/manual/en/function.require-once.php)
+
+In some cases, where users can supply part of the string passed to the above functions, apply a proper limitation. The most ideal way to secure the code is a whitelist check on what `.php` files can be included by the users. Make sure to also directly put a `.php` string at the end of the formatted string, so users are only able to include a `.php` file and not other files:
+
+```php
+add_action("init", "load_template_public");
+
+function load_template_public(){
+    $template = $_GET["template"];
+    $allowed = array("sun", "moon", "water", "earth", "ocean");
+
+    if(in_array($template, $allowed)){
+        include __DIR__ . "/public/templates/{$template}.php";
+    }
+}
+```
+
+In some cases where users are allowed to include all of the `.php` files inside a directory, applying a standard sanitization using the `sanitize_file_name` function could also work:
+
+```php
+add_action("init", "load_template_public");
+
+function load_template_public(){
+    $template = $_GET["template"];
+    $template = sanitize_file_name($template);
+
+    include __DIR__ . "/public/templates/{$template}.php";
+}
+```

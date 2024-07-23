@@ -13,7 +13,7 @@ This article covers cases of possible CSRF on WordPress. This includes improper 
 By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/academy/wordpress/wordpress-internals/functions/#current_user_can) function and the nonce value check using [`wp_verify_nonce`](/academy/wordpress/wordpress-internals/functions/#wp_verify_nonce), [`check_admin_referer`](/academy/wordpress/wordpress-internals/functions/#check_admin_referer) or [`check_ajax_referer`](/academy/wordpress/wordpress-internals/functions/#check_ajax_referer) functions.
 
 <LinkCard
-  title="Learn how to secure you code against CSRF"
+  title="Learn how to secure your code against CSRF"
   href="/academy/wordpress/securing-code/cross-site-request-forgery/"
 />
 
