@@ -1,12 +1,18 @@
+import { loadEnv } from "vite";
+const { DEPLOY_PRIME_URL } = loadEnv(process.env.DEPLOY_PRIME_URL, process.cwd(), "");
+const { BASE } = loadEnv(process.env.BASE, process.cwd(), "");
+const { URL } = loadEnv(process.env.URL, process.cwd(), "");
+
 import { defineConfig, passthroughImageService } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
-const site_url = process.env.URL;
+
+const site_url = DEPLOY_PRIME_URL || URL;
 const site = site_url || 'http://localhost:4321/academy/';
 
-const base_var = process.env.BASE;
-const base = base_var ? base_var : 'academy';
+const base_var = BASE;
+const base = base_var || 'academy';
 
 
 // https://astro.build/config
