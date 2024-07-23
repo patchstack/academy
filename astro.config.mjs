@@ -2,8 +2,7 @@ import { defineConfig, passthroughImageService } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
-
-const site_url = process.env.DEPLOY_PRIME_URL || process.env.URL;
+const site_url = process.env.URL;
 const site = site_url || 'http://localhost:4321';
 
 const base_var = process.env.BASE;
