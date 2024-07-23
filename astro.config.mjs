@@ -2,10 +2,10 @@ import { defineConfig, passthroughImageService } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
-const site_url = 'https://deploy-preview-29--patchstack-academy.netlify.app/';
+const site_url = process.env.URL;
 const site = site_url || 'http://localhost:4321/academy/';
 
-const base_var = 'academy';
+const base_var = process.env.BASE;
 const base = base_var ? base_var : 'academy';
 
 
