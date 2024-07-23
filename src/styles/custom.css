@@ -3,7 +3,7 @@
 	font-family: 'Faktum';
 	font-style: normal;
 	font-weight: 400;
-	src: url('/fonts/faktum-regular.woff2') format('woff2'); 
+	src: url('/academy/fonts/faktum-regular.woff2') format('woff2'); 
 }
 
 @font-face {
@@ -11,7 +11,7 @@
 	font-family: 'Faktum';
 	font-style: normal;
 	font-weight: 600;
-	src: url('/fonts/faktum-semibold.woff2') format('woff2'); 
+	src: url('/academy/fonts/faktum-semibold.woff2') format('woff2'); 
 }
 
 /* Dark mode colors. */
