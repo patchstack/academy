@@ -1,0 +1,55 @@
+---
+title: Arbitrary File Deletion
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers cases of possible ways to secure the code from Arbitrary File Deletion vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+
+<LinkCard
+  title="Learn more about Arbitrary File Deletion"
+  href="/academy/wordpress/vulnerabilities/arbitrary-file-deletion/"
+/>
+
+## How to secure
+
+In general, we recommend to never allow users to fully control the path to the files or directories that will be deleted. Also, always put a prefix and additionally a suffix value to the formatted value that can be partially controlled by the users.
+
+Since files or directories deletion is a sensitive action in the first place, it should be protected by some kind of permission and nonce check also. We can also try to limit what files are being deleted using some kind of whitelist or regex check and also `sanitize_file_name` function to prevent for path traversal when deleting a files or directories.
+
+Example implementation:
+
+```php
+add_action("init", "rest_init_setup");
+
+function check_permission(){
+    return current_user_can("manage_options");
+}
+
+function rest_init_setup_2(){
+    register_rest_route( "myplugin/v1", '/deletetxt/', array(
+        'methods'                   =>  "POST",
+        'callback'                  =>  'delete_media_test_txt_2',
+        'permission_callback' => 'check_permission',
+    ) );
+}
+
+function delete_media_test_txt_2($request){
+    $args = json_decode($request->get_body(),true);
+    $data = array('status'=>false);
+    $upload_dir   = wp_upload_dir();
+    $file_name = sanitize_file_name($args['media']['file']);
+    $file = $upload_dir['basedir'] . '/testing/' . $file_name . '.txt'
+
+    if(!empty($file_name) ){
+        wp_delete_file( $file );
+        $data = array('status'=>true);
+    }
+    return new WP_REST_Response( $data, 200 );
+}
+```
