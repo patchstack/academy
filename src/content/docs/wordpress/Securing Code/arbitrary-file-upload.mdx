@@ -18,15 +18,12 @@ This article covers cases of possible ways to secure the code from Arbitrary Fil
 
 ## [`wp_check_filetype_and_ext`](https://developer.wordpress.org/reference/functions/wp_check_filetype_and_ext/)
 
-This is the first or main function that we can use to secure our code from arbitrary file upload vulnerability. According to the official documentation, this function attempts to determine the real file type of a file. If unable to, the file name extension will be used to determine type. If it’s determined that the extension does not match the file’s real type, then the "proper_filename" value will be set with a proper filename and extension.
+This is the first or main function that we can use to secure our code from arbitrary file upload vulnerability. According to the official documentation, this function attempts to determine the real file type of a file. If unable to, the file name extension will be used to determine the type. If it’s determined that the extension does not match the file’s real type, then the "proper_filename" value will be set with a proper filename and extension.
 
-The first input parameter is `$file` which is the full path of the file that will be checked. The second input parameter is `$filename` which is the name of the file (may differ from $file due to $file being in a tmp directory). The third and final input parameter is `$mimes` which consist of array of allowed mime types keyed by their file extension regex and set to be [`get_allowed_mime_types`](https://developer.wordpress.org/reference/functions/get_allowed_mime_types/) by default.
+The first input parameter is `$file` which is the full path of the file that will be checked. The second input parameter is `$filename` which is the name of the file (may differ from $file due to $file being in a tmp directory). The third and final input parameter is `$mimes` which consists of an array of allowed mime types keyed by their file extension regex and set to be [`get_allowed_mime_types`](https://developer.wordpress.org/reference/functions/get_allowed_mime_types/) by default.
 
-The function will return array of `ext` which is the determined file extension, `type` which is the file mime type and `proper_filename` which is the filename with its correct extension, or false if it cannot be determined.
+The function will return an array of `ext` which is the determined file extension, `type` which is the file mime type, and `proper_filename` which is the filename with its correct extension, or false if it cannot be determined:
 
-
-
-Example implementation:
 
 ```php
 add_action("wp_ajax_nopriv_upload_image_user", "upload_image_user");

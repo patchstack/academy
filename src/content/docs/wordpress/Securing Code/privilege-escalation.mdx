@@ -9,7 +9,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible ways to secure the code from Privilege Escalation vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+This article covers ways to secure the code from Privilege Escalation vulnerability. This includes applying a proper function to check for the user's input.
 
 <LinkCard
   title="Learn more about Privilege Escalation"
@@ -18,9 +18,7 @@ This article covers cases of possible ways to secure the code from Privilege Esc
 
 ## Arbitrary Option Update
 
-For this case of privilege escalation, the process to secure the code is simple, implement a proper permission and nonce check and also limit the `option_name` that will be updted. This limitation process can use a whitelist check or using a prefix or suffix to the `option_name` that will be updated.
-
-Example implementation:
+For this case of privilege escalation, the process to secure the code is simple, implement proper permission and nonce check and also limit the `option_name` that will be updated. This limitation process can use a whitelist check or using a prefix or suffix to the `option_name` that will be updated:
 
 ```php
 add_action("wp_ajax_update_site_preference_2", "update_site_preference_2");
@@ -51,9 +49,7 @@ function update_site_preference_2(){
 
 ## Arbitrary User Meta Update
 
-For this case of privilege escalation, the process to secure the code is simple, implement a proper permission and nonce check if needed and also limit the `meta_key` that will be updted. This limitation process can use a whitelist check or using a prefix or suffix to the `meta_key` that will be updated.
-
-Example implementation:
+For this case of privilege escalation, the process to secure the code is simple, implement proper permission and nonce check if needed and also limit the `meta_key` that will be updated. This limitation process can use a whitelist check or using a prefix or suffix to the `meta_key` that will be updated:
 
 ```php
 add_action("wp_ajax_change_user_bio_2", "change_user_bio_2");
@@ -78,9 +74,7 @@ function change_user_bio_2(){
 
 ## Unrestricted User Registration
 
-The fix for this case is simple, don't allow users to set their `role` field when registering a new account. By default, user will have role that already assigned on the general WordPress configuration and it will be Subscriber role by default.
-
-Example implementation:
+The fix for this case is simple, don't allow users to set their `role` field when registering a new account. By default, the user will have a role that is already assigned on the general WordPress configuration and it will be a Subscriber role by default:
 
 ```php
 add_action("wp_ajax_nopriv_open_registration_2", "open_registration_2");
@@ -104,9 +98,7 @@ function open_registration_2(){
 
 ## Unrestricted User Update
 
-For this case of privilege escalation, the process to secure the code is simple, implement a proper permission and nonce check if needed and also limit the user's field that will be updted. This limitation process can use a whitelist check to the user's field that will be updated.
-
-Example implementation:
+For this case of privilege escalation, the process to secure the code is simple, implement proper permission and nonce check if needed and also limit the user's field that will be updated. This limitation process can use a whitelist check to the user's field that will be updated:
 
 ```php
 add_action("wp_ajax_custom_update_profile_2", "custom_update_profile_2");
@@ -131,9 +123,7 @@ function custom_update_profile_2(){
 
 ## Insecure Password Reset
 
-For this case of privilege escalation, implement [`check_password_reset_key`](https://developer.wordpress.org/reference/functions/check_password_reset_key/) function. According to the official documentation, this function will retrieves a user row based on password reset key and login. It will return `WP_User` object on success, `WP_Error` object for invalid or expired keys.
-
-Example implementation:
+For this case of privilege escalation, implement the [`check_password_reset_key`](https://developer.wordpress.org/reference/functions/check_password_reset_key/) function. According to the official documentation, this function will retrieve a user row based on the password reset key and login. It will return the `WP_User` object on success, and the `WP_Error` object for invalid or expired keys:
 
 ```php
 add_action("wp_ajax_reset_your_password_2", "reset_your_password_2");
@@ -151,4 +141,4 @@ function reset_your_password_2(){
 
 ## Insecure Authentication Cookie Set
 
-This privilege escalation case is more abstract compared to other cases. In general, usage of authentication cookie set process is mostly for autologin process and thir-party login process. In order to secure your code against this privilege escalation case, you need to apply a proper check and request for the authentication cookie set process. For a third-party login process, make sure that the configured UID value and other secret key value can only be configured from a trusted source such as the related third-party service endpoint and are not coming directly from user's input.
+This privilege escalation case is more abstract compared to other cases. In general, usage of the authentication cookie set process is mostly for the autologin process and third-party login process. To secure your code against this privilege escalation case, you need to apply a proper check and request for the authentication cookie set process. For a third-party login process, make sure that the configured UID value and other secret key values can only be configured from a trusted source such as the related third-party service endpoint, and are not coming directly from the user's input.

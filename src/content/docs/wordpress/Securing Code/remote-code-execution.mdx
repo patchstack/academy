@@ -9,7 +9,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible ways to secure the code from RCE vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+This article covers possible ways to secure the code from RCE vulnerability. This includes applying a proper function to check for the user's input.
 
 <LinkCard
   title="Learn more about RCE"
@@ -18,9 +18,7 @@ This article covers cases of possible ways to secure the code from RCE vulnerabi
 
 ## How to secure
 
-For a dynamic function call or function call using `call_user_func` function, we recommend using a whitelist check on the allowed functions that can be called.
-
-Example implementation:
+For a dynamic function call or function call using the `call_user_func` function, we recommend using a whitelist check on the allowed functions that can be called:
 
 ```php
 function image_render_callback($atts) {
