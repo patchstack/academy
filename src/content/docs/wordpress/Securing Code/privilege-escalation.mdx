@@ -1,0 +1,144 @@
+---
+title: Privilege Escalation
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from Privilege Escalation vulnerability. This includes applying a proper function to check for the user's input.
+
+<LinkCard
+  title="Learn more about Privilege Escalation"
+  href="/academy/wordpress/vulnerabilities/privilege-escalation/"
+/>
+
+## Arbitrary Option Update
+
+For this case of privilege escalation, the process to secure the code is simple, implement proper permission and nonce check and also limit the `option_name` that will be updated. This limitation process can use a whitelist check or using a prefix or suffix to the `option_name` that will be updated:
+
+```php
+add_action("wp_ajax_update_site_preference_2", "update_site_preference_2");
+
+function update_site_preference_2(){
+    check_admin_referer("update-options-site");
+
+    if(!current_user_can("manage_options")){
+        die();
+    }
+
+    if(empty($_POST['key']) || empty($_POST['value'])){
+        echo 'Unable to update key.';
+        die();
+    }
+
+    $allow_list = array("enable_cache", "dark_mode", "large_res");
+    
+    if(!in_array($_POST['key'], $allow_list)){
+        die();
+    }
+
+    update_option($_POST['key'], intval($_POST['value']));
+    echo "site preference updated";
+    die();
+}
+```
+
+## Arbitrary User Meta Update
+
+For this case of privilege escalation, the process to secure the code is simple, implement proper permission and nonce check if needed and also limit the `meta_key` that will be updated. This limitation process can use a whitelist check or using a prefix or suffix to the `meta_key` that will be updated:
+
+```php
+add_action("wp_ajax_change_user_bio_2", "change_user_bio_2");
+
+function change_user_bio_2(){
+    check_ajax_referer("chang-bio");
+
+    $user_id = get_current_user_id();
+    $bio_key = $_POST["key"];
+    $bio_value = $_POST["value"];
+
+    $allow_list = array("first_name", "last_name", "description");
+    
+    if(!in_array($bio_key, $allow_list)){
+        die();
+    }
+
+    update_user_meta($user_id, $bio_key, esc_html($bio_value));
+    echo "bio updated";
+}
+```
+
+## Unrestricted User Registration
+
+The fix for this case is simple, don't allow users to set their `role` field when registering a new account. By default, the user will have a role that is already assigned on the general WordPress configuration and it will be a Subscriber role by default:
+
+```php
+add_action("wp_ajax_nopriv_open_registration_2", "open_registration_2");
+
+function open_registration_2(){
+    $user_data = array(
+        'user_login'    => !empty( $_POST['reg_name'] ) ? esc_html($_POST['reg_name']): "",
+        'user_pass'     => !empty( $_POST['reg_password'] ) ? $_POST['reg_password']: "",
+        'user_email'    => !empty( $_POST['reg_email'] ) ? sanitize_email($_POST['reg_email']): "",
+        'user_url'      => !empty( $_POST['reg_website'] ) esc_html(? $_POST['reg_website']): "",
+        'first_name'    => !empty( $_POST['reg_fname'] ) ? esc_html($_POST['reg_fname']): "",
+        'last_name'     => !empty( $_POST['reg_lname'] ) ? esc_html($_POST['reg_lname']): "",
+        'nickname'      => !empty( $_POST['reg_nickname'] ) ? esc_html($_POST['reg_nickname']): "",
+        'description' => !empty( $_POST['reg_bio'] ) ? esc_html($_POST['reg_bio'])  : "",
+    );    
+
+    $register_user = wp_insert_user( $user_data );
+    echo "user registration complete";
+}
+```
+
+## Unrestricted User Update
+
+For this case of privilege escalation, the process to secure the code is simple, implement proper permission and nonce check if needed and also limit the user's field that will be updated. This limitation process can use a whitelist check to the user's field that will be updated:
+
+```php
+add_action("wp_ajax_custom_update_profile_2", "custom_update_profile_2");
+
+function custom_update_profile_2(){
+    check_ajax_referer("update-profile-user);
+    $user_data = array();
+    $allow_list = array("user_nicename", "user_url");
+
+    foreach($_POST["data"] as $key => $value){
+        if(in_array($key, $allow_list)){
+            $user_data[$key] = sanitize_text_field($value);
+        }
+    }
+    
+    $user_data["ID"] = get_current_user_id();
+
+    wp_update_user( $user_data );
+    echo "user profile updated";
+}
+```
+
+## Insecure Password Reset
+
+For this case of privilege escalation, implement the [`check_password_reset_key`](https://developer.wordpress.org/reference/functions/check_password_reset_key/) function. According to the official documentation, this function will retrieve a user row based on the password reset key and login. It will return the `WP_User` object on success, and the `WP_Error` object for invalid or expired keys:
+
+```php
+add_action("wp_ajax_reset_your_password_2", "reset_your_password_2");
+
+function reset_your_password_2(){
+    check_ajax_referer("reset-your-password");
+    $user = get_user_by( 'ID', get_current_user_id());
+    $key = $_POST["key"];
+    $valid_user = check_password_reset_key($key, $user->user_login);
+    
+    wp_set_password($_POST["new_password"], $valid_user->id);
+    echo "reset password success";
+}
+```
+
+## Insecure Authentication Cookie Set
+
+This privilege escalation case is more abstract compared to other cases. In general, usage of the authentication cookie set process is mostly for the autologin process and third-party login process. To secure your code against this privilege escalation case, you need to apply a proper check and request for the authentication cookie set process. For a third-party login process, make sure that the configured UID value and other secret key values can only be configured from a trusted source such as the related third-party service endpoint, and are not coming directly from the user's input.

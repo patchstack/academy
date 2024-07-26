@@ -4,9 +4,17 @@ contributors:
     - rafiem
 ---
 
+import { LinkCard } from '@astrojs/starlight/components';
+
+
 ## Introduction
 
 This article covers cases of possible direct RCE on WordPress. This includes improper usage of functions inside of the plugin/theme which can be used to directly execute code or command on the server.
+
+<LinkCard
+  title="Learn how to secure your code against RCE"
+  href="/academy/wordpress/securing-code/remote-code-execution/"
+/>
 
 ## Useful Functions
 
@@ -57,7 +65,7 @@ function image_render_callback($atts) {
         $text = call_user_func( $chosen_callback, $atts["text"] );
     }
 
-    return sprintf("<img src='%s'>%s</img>", esc_attr($atts["src"]), $text);
+    return sprintf("<img src='%s'>%s</img>", esc_attr($atts["src"]), esc_html($text));
 
 }
 

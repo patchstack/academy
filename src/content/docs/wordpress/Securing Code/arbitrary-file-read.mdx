@@ -1,0 +1,49 @@
+---
+title: Arbitrary File Read
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from Arbitrary File Read vulnerability. This includes applying a proper function to check for the user's input.
+
+<LinkCard
+  title="Learn more about Arbitrary File Read"
+  href="/academy/wordpress/vulnerabilities/arbitrary-file-read/"
+/>
+
+## How to secure
+
+In general, we recommend never allowing users to fully control the path to the local files that will be viewed. Also, always put a prefix and a suffix value in the formatted value that can be partially controlled by the users.
+
+Since reading local files is a sensitive action in the first place, it should be protected by some kind of permission and a nonce check. We can also try to limit what files are being viewed using a whitelist or regex check and also the `sanitize_file_name` function to prevent path traversal when reading local files:
+
+```php
+add_action("wp_ajax_get_file", "ajax_get_file_2");
+
+public function ajax_get_file_2(){
+    global $wp_filesystem;
+
+    check_ajax_referer("get_file");
+
+    if(!current_user_can("manage_options")){
+        die();
+    }
+
+    // Make sure that the above variable is properly setup.
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    WP_Filesystem();
+
+    $filename = sanitize_file_name($_GET["filename"]);
+    $upload_dir   = wp_upload_dir();
+    $file = $upload_dir['basedir'] . '/block-test/' . $filename . '.json'
+    $data = $wp_filesystem->get_contents($file);
+    $data = json_encode( $data );
+    echo $data;
+    die();
+}
+```
