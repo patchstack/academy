@@ -34,4 +34,4 @@ Altering your website looks is never a headache when using WordPress due to the 
 
 Similar to plugins, WordPress themes are easy to install and manage through the WordPress admin dashboard. They allow website owners to change the look and feel of their site without altering the underlying content or functionality.
 
-As of writing this article, there are more than 12k free and open-source WordPress themes available on the [official WordPress repository](https://wordpress.org/themes/). There are tons of premium plugins as well that are available to buy through sources like [ThemeForest](https://themeforest.net).
+As of writing this article, there are more than 12k free and open-source WordPress themes available on the [official WordPress repository](https://wordpress.org/themes/). There are tons of premium themes as well that are available to buy through sources like [ThemeForest](https://themeforest.net).
