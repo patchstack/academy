@@ -18,7 +18,7 @@ Let's make it clear - we don't have any hidden agenda. We always wanted to creat
 ## I'm here to learn 🧪
 That's great - check out the **sidebar menu**(it's on the left or, if you are viewing this site on mobile, on your right) and pick the article that interests you the most. 
 
-If you didn't find what you need - use our **search** or this article with [resources](/academy/general/resources).
+If you didn't find what you need - use our **search** or this article with [resources](/academy/general/resources/).
 
 ## I'm here to contribute 🖊️
 That's even better. We love adding new articles here. Before you start creating or fixing anything, check out our [how to contribute](/academy/welcome/how-to-contribute/) guide.
