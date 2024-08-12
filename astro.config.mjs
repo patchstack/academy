@@ -31,7 +31,7 @@ export default defineConfig({
       github: 'https://github.com/patchstack/academy',
       discord: 'https://discord.gg/rkE8yxtNmS',
       'x.com': 'https://twitter.com/patchstackapp',
-      linkedin: 'https://www.linkedin.com/company/patchtsack'
+      linkedin: 'https://www.linkedin.com/company/patchstack'
     },
     components: {
       ThemeProvider: './src/components/ThemeProvider.astro',
