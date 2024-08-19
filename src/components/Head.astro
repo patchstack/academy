@@ -4,7 +4,7 @@ import Default from '@astrojs/starlight/components/Head.astro';
 
 const { isFallback, lang } = Astro.props;
 
-const isDev = import.meta.env.type === 'development';
+const isDev = import.meta.env.type === 'development' || import.meta.env.type === undefined;
 
 let path = Astro.url.pathname.replace(/^\//, '').replace(/\/$/, '').replace('academy/', 'academy/open-graph/');
 if ( path === '' ) {
@@ -20,6 +20,17 @@ const canonicalImageSrc = new URL(imageSrc, Astro.site);
 
 {!isDev && <meta name="google-site-verification" content="EUHJIOL0FDdVtcpY92rKZaoq8IEPafmsafa5oBnrzHs" />}
 {isDev && <meta name="robots" content="noindex" />}
+
+{!isDev && 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V3Z4NFMXH9"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'G-V3Z4NFMXH9');
+</script>
+}
 
 <script>
 import '/src/libs/glightbox/js/glightbox.min.js';
