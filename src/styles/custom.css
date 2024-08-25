@@ -93,3 +93,7 @@ h1, h2, h3, span.link-title, summary .large {
 p, li {
     font-family: "Faktum", sans-serif;
 }
+
+.hidden {
+	display: none;
+}

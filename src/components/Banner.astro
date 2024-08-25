@@ -1,0 +1,50 @@
+---
+import Config from '../../astro.config.mjs'
+---
+{ Config.banner.enabled && 
+    <div class="sl-banner hidden"><span set:html={Config.banner?.content} /> <span class="close_button"><a href="#">✕</a></span></div>
+}
+<style>
+	.sl-banner {
+		--__sl-banner-text: var(--sl-color-banner-text, var(--sl-color-text-invert));
+		padding: var(--sl-nav-pad-y) var(--sl-nav-pad-x);
+		background-color: var(--sl-color-banner-bg, var(--sl-color-bg-accent));
+		color: var(--__sl-banner-text);
+		line-height: var(--sl-line-height-headings);
+		text-align: center;
+		text-wrap: balance;
+		box-shadow: var(--sl-shadow-sm);
+        position: fixed;
+        bottom:0px;
+        z-index:100;
+        width: 100%;
+	}
+	.sl-banner :global(a) {
+		color: var(--__sl-banner-text);
+	}
+
+    .sl-banner span {
+        font-weight: bold;
+    }
+
+    .sl-banner .close_button a{
+        text-decoration: none;
+        margin-left: 10px;
+    }
+</style>
+
+<script>
+    import Cookies from 'js-cookie'
+    const hideBanner = Cookies.get('hideBanner');
+
+    if (hideBanner != 'true') {
+        console.log('showing banner');
+        document.querySelector('.sl-banner').classList.remove('hidden');
+    }
+
+    document.querySelector('.sl-banner .close_button a').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector('.sl-banner').classList.add('hidden');
+        Cookies.set('hideBanner', 'true', { expires: 7 });
+    });
+</script>
