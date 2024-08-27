@@ -18,6 +18,7 @@ import Config from '../../astro.config.mjs'
         bottom:0px;
         z-index:100;
         width: 100%;
+        font-family: Faktum, sans-serif;
 	}
 	.sl-banner :global(a) {
 		color: var(--__sl-banner-text);
@@ -38,13 +39,12 @@ import Config from '../../astro.config.mjs'
     const hideBanner = Cookies.get('hideBanner');
 
     if (hideBanner != 'true') {
-        console.log('showing banner');
         document.querySelector('.sl-banner').classList.remove('hidden');
     }
 
     document.querySelector('.sl-banner .close_button a').addEventListener('click', function(e) {
         e.preventDefault();
         document.querySelector('.sl-banner').classList.add('hidden');
-        Cookies.set('hideBanner', 'true', { expires: 7 });
+        Cookies.set('hideBanner', 'true', { expires: 14 });
     });
 </script>
