@@ -97,3 +97,7 @@ p, li {
 .hidden {
 	visibility: hidden;
 }
+
+.main-frame {
+	margin-bottom: 30px;
+}
