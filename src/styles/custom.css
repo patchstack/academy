@@ -101,3 +101,7 @@ p, li {
 .main-frame {
 	margin-bottom: 30px;
 }
+
+.content-panel p, li{
+	font-size: 1.125rem;
+}
