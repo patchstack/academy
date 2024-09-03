@@ -93,3 +93,15 @@ h1, h2, h3, span.link-title, summary .large {
 p, li {
     font-family: "Faktum", sans-serif;
 }
+
+.hidden {
+	visibility: hidden;
+}
+
+.main-frame {
+	margin-bottom: 30px;
+}
+
+.content-panel p, li{
+	font-size: 1.125rem;
+}

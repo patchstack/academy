@@ -16,6 +16,11 @@ export default defineConfig({
   image: {
 		service: passthroughImageService(),
 	},
+  banner: {
+    enabled: true,
+    content: 'Biggest Bounty Update Ever - <a href="https://patchstack.com/articles/biggest-wordpress-bug-bounty-program-upgrade-is-here/" target="about:blank">learn more</a>',
+
+  },
   integrations: [starlight({
     title: 'Patchstack Academy',
     favicon: '/images/psfavicon.svg',
@@ -39,7 +44,8 @@ export default defineConfig({
       Head: './src/components/Head.astro',
       PageSidebar: './src/components/PageSidebar.astro',
       MarkdownContent: './src/components/MarkdownContent.astro',
-      EditLink: './src/components/EditLink.astro'
+      EditLink: './src/components/EditLink.astro',
+      PageFrame: './src/components/PageFrame.astro',
     },
     sidebar: [{
       label: '👋 Welcome',
