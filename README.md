@@ -1,9 +1,9 @@
 # Patchstack Academy
 
 ## What is it
-**Patchstack Academy** is a community-built website created by people fascinated with web security. 
+**Patchstack Academy** is a community-built website created by people fascinated with web security.
 
-[**Join our Community**](https://discord.com/servers/patchstack-alliance-1024691600619745334) to meet us better.
+[**Join our Community**](https://discord.com/invite/patchstack-alliance-1024691600619745334) to meet us better.
 
 ## Installation
 **Prerequisites**

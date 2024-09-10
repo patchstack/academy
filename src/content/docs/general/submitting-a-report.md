@@ -18,7 +18,7 @@ Reporting a security issue can be divided into three parts:
 If you want to submit a report, go to [this page](https://patchstack.com/database/report). Make sure to read the [Bug Bounty Guidelines & Rules](https://patchstack.com/articles/bug-bounty-guidelines-rules/) before submitting the report.
 
 :::tip[Don't be affraid to ask]
-In case you're having any doubts or questions, join our [Discord Community](https://discord.com/servers/patchstack-alliance-1024691600619745334) and create a support ticket. We'll try to answer it as soon as possible.
+In case you're having any doubts or questions, join our [Discord Community](https://discord.com/invite/patchstack-alliance-1024691600619745334) and create a support ticket. We'll try to answer it as soon as possible.
 :::
 
 ## Component Details
