@@ -75,3 +75,35 @@ Below are some of the findings related to SQLi:
 - [Critical Unauthenticated SQL Injection in Quiz And Survey Master \<= 8.1.4](https://patchstack.com/articles/critical-unauthenticated-sql-injection-in-quiz-and-survey-master/)
 - [Multiple Vulnerabilities Fixed In WP Statistics Plugin Version \<= 13.2.10](https://patchstack.com/articles/multiple-authenticated-sql-injection-fixed-in-wp-statistics-plugin-version-13-2-10/)
 - [Multiple Critical Vulnerabilities Fixed In LearnPress Plugin Version \<= 4.1.7.3.2](https://patchstack.com/articles/multiple-critical-vulnerabilities-fixed-in-learnpress-plugin-version/)
+
+
+## Magic Quotes
+
+Magic Quotes is/was a feature in PHP designed to automatically escape certain characters in user input to prevent SQL injection (SQLi) attacks. Specifically, it would escape single quotes ('), double quotes ("), backslashes (\), and NULL characters by automatically adding backslashes before them. This was done to protect against common vulnerabilities like SQL injection, where an attacker might try to insert malicious SQL code into a query.
+
+It is not the perfect solution. It is mostly incosistent, meaning that it only escapes certain characters. Depending on how the code works it might still allow for SQL injections or corrupted data in the database.
+
+It was an optionality for PHP but it is disabled. Why we are mentioning it here if you ask, it still lives on WordPress via [wp_magic_quotes()
+](https://developer.wordpress.org/reference/functions/wp_magic_quotes/).
+
+As mentioned on the page, it is a private function so developers doesn't need to implement it. If any code is executed inside WordPress hooks, inputs ($_GET, $_POST, $_COOKIE, and $_SERVER ) will go through the [add_magic_quotes()](https://developer.wordpress.org/reference/functions/add_magic_quotes/)
+
+```php
+function add_magic_quotes( $input_array ) {
+	foreach ( (array) $input_array as $k => $v ) {
+		if ( is_array( $v ) ) {
+			$input_array[ $k ] = add_magic_quotes( $v );
+		} elseif ( is_string( $v ) ) {
+			$input_array[ $k ] = addslashes( $v );
+		}
+	}
+
+	return $input_array;
+}
+```
+
+and gets sanitized due to [addslashes()](https://www.php.net/manual/en/function.addslashes.php).
+
+So even a super simple vulnerable looking code like `select * from users where '$injection_here'` will be escaped and turn into something like `SELECT * FROM patchstack WHERE vulnerable = 'yes' AND published RLIKE '\' OR (select sleep(5))--' ) ORDER BY steps.ID DESC LIMIT 25` inside a WordPress hook and you will not be able to exploit it in almost all scenarios.
+
+If the input is unslashed using [wp_unslash()](https://developer.wordpress.org/reference/functions/wp_unslash/) it will still be exploitable.
