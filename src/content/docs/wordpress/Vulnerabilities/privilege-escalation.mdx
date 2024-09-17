@@ -270,3 +270,54 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=login_third_party?fb-lo
 Below are some of the findings related to Insecure Authentication Cookie Set:
 
 - [Critical Vulnerabilities Patched in Jupiter X Core Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-jupiter-x-core-plugin/#unauthenticated-account-takeover)
+
+## User Supplied Value to [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) Function 
+
+Just like wp_set_auth_cookie() which is mentioned above, wp_set_current_user() function in WordPress is responsible for setting the current user object. It is typically used when WordPress needs to impersonate a different user within the same session. The function takes a user ID, email, or username as input and sets the current user to the one that matches.
+
+While this function is essential for WordPress’ user management system, incorrect usage or insufficient validation around it can lead to several vulnerabilities, including privilege escalation, user impersonation, and authentication bypass.
+
+As mentioned on the Wordpress Developer Resources, this function takes either a user id or an username.
+
+```php
+wp_set_current_user( int|null $id, string $name = ” ): WP_User
+
+```
+
+So we can supply a user ID or an username like the following.
+
+```php
+wp_set_current_user( 1 );  // Set current user to the admin (ID = 1)
+wp_set_current_user( 'admin' );  // Set current user to 'admin' by username
+```
+Well unlike [`wp_set_auth_cookie`](https://developer.wordpress.org/reference/functions/wp_set_auth_cookie/) , [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) doesn't log the user in. It just sets the the global user variables. Only way for an attacker to login an account is, if it is supported by by wp_set_auth_cookies and a wp_login action calls.
+
+```php
+$user_id = $_GET['user_id'];
+$user = get_user_by( 'id', $user_id ); 
+wp_set_current_user( $user_id );
+wp_set_auth_cookie( $user_id );
+do_action( 'wp_login', $user->user_login, $user );
+```
+
+Does that mean that is the only way to exploit this? No. Just like mentioned in the [Critical Privilege Escalation in LiteSpeed Cache Plugin Affecting 5+ Million Sites](https://patchstack.com/articles/critical-privilege-escalation-in-litespeed-cache-plugin-affecting-5-million-sites/) it is possible to call `/wp-json/wp/v2/users` REST API to generate a new user with high privileges.
+
+Other custom functionality that is relaying on capability checks will also by bypassed.
+
+```php
+
+$user_id = $_GET['user_id'];
+wp_set_current_user( $user_id );
+
+function elavate_me(){
+    if(current_user_can("manage_options") == true){
+        // Super dangerious code like eval()
+    }
+}
+```
+
+In this setting since we set our capabilities to user with user ID 1 ( which is highly likely an administrator ) we can get pass through the capability check to acces internal functionality.
+
+Below are some of the findings related to this vulnerable setting:
+
+- [Critical Privilege Escalation in LiteSpeed Cache Plugin Affecting 5+ Million Sites](https://patchstack.com/articles/critical-privilege-escalation-in-litespeed-cache-plugin-affecting-5-million-sites/)
