@@ -271,7 +271,7 @@ Below are some of the findings related to Insecure Authentication Cookie Set:
 
 - [Critical Vulnerabilities Patched in Jupiter X Core Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-jupiter-x-core-plugin/#unauthenticated-account-takeover)
 
-## User Supplied Value to [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) Function 
+## Insecure Current User Object Set
 
 Just like wp_set_auth_cookie() which is mentioned above, wp_set_current_user() function in WordPress is responsible for setting the current user object. It is typically used when WordPress needs to impersonate a different user within the same session. The function takes a user ID, email, or username as input and sets the current user to the one that matches.
 
@@ -318,7 +318,6 @@ function elavate_me(){
 
 In this setting since we set our capabilities to user with user ID 1 ( which is highly likely an administrator ) we can get pass through the capability check to acces internal functionality.
 
-## Insecure Current User Object Set
 
 ```php
 add_action( 'init', 'patchstack_secure_func' );
@@ -329,19 +328,11 @@ wp_set_current_user( $user_id );
 }
 ```
 
-In this example code we can call the function using cURL like this to set our capabilities:
+In this example code we can call the function using cURL like this to set our capabilities and add a new user.
 
 ```bash
-curl -X GET "http://patchstack.com/?user_id=1" \
-     -H "Cookie: Cookies"
-```
-
-Then with the same credentials we can create a new user using:
-
-```bash
-curl -X POST "http://yourwordpresssite.com/wp-json/wp/v2/users" \
+curl -X POST "http://yourwordpresssite.com/wp-json/wp/v2/users?user_id=1" \
      -H "Content-Type: application/json" \
-     -H "Authorization: Bearer your_access_token_here" \
      -d '{
            "username": "newadminuser",
            "email": "newadmin@example.com",
