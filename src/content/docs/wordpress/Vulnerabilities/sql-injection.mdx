@@ -104,6 +104,40 @@ function add_magic_quotes( $input_array ) {
 
 and gets sanitized due to [addslashes()](https://www.php.net/manual/en/function.addslashes.php).
 
-So even a super simple vulnerable looking code like `select * from users where '$injection_here'` will be escaped and turn into something like `SELECT * FROM patchstack WHERE vulnerable = 'yes' AND published RLIKE '\' OR (select sleep(5))--' ) ORDER BY steps.ID DESC LIMIT 25` inside a WordPress hook and you will not be able to exploit it in almost all scenarios.
+So even a super simple vulnerable looking code like `select * from users where '$injection_here';` will be escaped and turn into something like `SELECT * FROM users where '\'testpayload';` inside a WordPress hook and you will not be able to exploit it in almost all scenarios.
+
+Safe Code:
+
+```php
+add_action('init', function() {
+    $input = $_POST['input']; 
+    global $wpdb;
+    $query = "SELECT * FROM users WHERE name = '$input'";
+    $result = $wpdb->get_results($query);
+    // Display the result
+    if ($result) {
+        foreach ($result as $row) {
+            echo "User: " . esc_html($row->name);
+        }
+    }
+});
+```
+
+Vulnerable Code:
+
+```php
+add_action('init', function() {
+    $input = wp_unslash($_POST['input']); 
+    global $wpdb;
+    $query = "SELECT * FROM users WHERE name = '$input'";
+    $result = $wpdb->get_results($query);
+    // Display the result
+    if ($result) {
+        foreach ($result as $row) {
+            echo "User: " . esc_html($row->name);
+        }
+    }
+});
+```
 
 If the input is unslashed using [wp_unslash()](https://developer.wordpress.org/reference/functions/wp_unslash/) it will still be exploitable.
