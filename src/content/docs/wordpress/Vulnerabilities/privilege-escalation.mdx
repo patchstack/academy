@@ -2,6 +2,7 @@
 title: Privilege Escalation
 contributors:
     - rafiem
+    - bk273
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -273,24 +274,24 @@ Below are some of the findings related to Insecure Authentication Cookie Set:
 
 ## Insecure Current User Object Set
 
-Just like wp_set_auth_cookie() which is mentioned above, wp_set_current_user() function in WordPress is responsible for setting the current user object. It is typically used when WordPress needs to impersonate a different user within the same session. The function takes a user ID, email, or username as input and sets the current user to the one that matches.
+Just like the `wp_set_auth_cookie()` mentioned above, the `wp_set_current_user()` function in WordPress is responsible for setting the current user object. It is typically used when WordPress needs to impersonate a different user within the same session. The function takes a user ID, email, or username as input and sets the current user to the one that matches.
 
 While this function is essential for WordPress’ user management system, incorrect usage or insufficient validation around it can lead to several vulnerabilities, including privilege escalation, user impersonation, and authentication bypass.
 
-As mentioned on the Wordpress Developer Resources, this function takes either a user id or an username.
+As mentioned in the WordPress Developer Resources, this function takes either a user id or a username.
 
 ```php
 wp_set_current_user( int|null $id, string $name = ” ): WP_User
 
 ```
 
-So we can supply a user ID or an username like the following.
+So we can supply a user ID or a username like the following.
 
 ```php
 wp_set_current_user( 1 );  // Set current user to the admin (ID = 1)
 wp_set_current_user( 'admin' );  // Set current user to 'admin' by username
 ```
-Well unlike [`wp_set_auth_cookie`](https://developer.wordpress.org/reference/functions/wp_set_auth_cookie/) , [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) doesn't log the user in. It just sets the the global user variables. Only way for an attacker to login an account is, if it is supported by by wp_set_auth_cookies and a wp_login action calls.
+Well unlike [`wp_set_auth_cookie`](https://developer.wordpress.org/reference/functions/wp_set_auth_cookie/) , [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) doesn't log the user in. It just sets the global user variables. The only way for an attacker to log in to an account is if it is supported by `wp_set_auth_cookies` and a `wp_login` action calls.
 
 ```php
 $user_id = $_GET['user_id'];
@@ -302,7 +303,7 @@ do_action( 'wp_login', $user->user_login, $user );
 
 Does that mean that is the only way to exploit this? No. Just like mentioned in the [Critical Privilege Escalation in LiteSpeed Cache Plugin Affecting 5+ Million Sites](https://patchstack.com/articles/critical-privilege-escalation-in-litespeed-cache-plugin-affecting-5-million-sites/) it is possible to call `/wp-json/wp/v2/users` REST API to generate a new user with high privileges.
 
-Other custom functionality that is relaying on capability checks will also by bypassed.
+Other custom functionality that is relaying on capability checks will also be bypassed.
 
 ```php
 
@@ -316,7 +317,7 @@ function elavate_me(){
 }
 ```
 
-In this setting since we set our capabilities to user with user ID 1 ( which is highly likely an administrator ) we can get pass through the capability check to acces internal functionality.
+In this setting since we set our capabilities to a user with the user ID 1 (which is highly likely an administrator) we can pass through the capability check to access the internal functionality.
 
 
 ```php
@@ -328,7 +329,7 @@ wp_set_current_user( $user_id );
 }
 ```
 
-In this example code we can call the function using cURL like this to set our capabilities and add a new user.
+In this example code, we can call the function using cURL like this to set our capabilities and add a new user.
 
 ```bash
 curl -X POST "http://yourwordpresssite.com/wp-json/wp/v2/users?user_id=1" \
