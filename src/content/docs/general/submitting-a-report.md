@@ -11,13 +11,27 @@ Reporting a security issue can be divided into three parts:
 
 - Details of the affected component
 - Details of the vulnerability
-- Details of the researcher
+- Details of the researcher (For first-timers)
 
 ## Submmiting a Report
 
-If you want to submit a report, go to [this page](https://patchstack.com/database/report). Make sure to read the [Bug Bounty Guidelines & Rules](https://patchstack.com/articles/bug-bounty-guidelines-rules/) before submitting the report.
+### Submitting your first report?
+ 
+You need to go to [this page](https://patchstack.com/database/report).
 
-:::tip[Don't be affraid to ask]
+### Already submitted at least one valid report?
+
+We have a researcher portal for those who've submitted at least one valid bug. You can access the portal [here](https://vdp.patchstack.com/researchers/login).
+
+![Researcher Portal](@images/submitting-report/researcher-portal.png)
+
+1. Go to https://vdp.patchstack.com/researchers/login and enter your email
+2. Check your email for the login link (in some cases it's worth also checking the spam folder)
+3. Access the portal and click on New report
+
+Make sure to read the [Bug Bounty Guidelines & Rules](https://patchstack.com/articles/bug-bounty-guidelines-rules/) before submitting the report.
+
+:::tip[Don't be afraid to ask]
 In case you're having any doubts or questions, join our [Discord Community](https://discord.com/invite/patchstack-alliance-1024691600619745334) and create a support ticket. We'll try to answer it as soon as possible.
 :::
 
@@ -106,7 +120,7 @@ Example:
 
 ## Submitter details
 
-This is left as a task for the researchers.
+This field is not needed if you are submitting the report through our researcher portal. For the first reporters, this is required.
 
 ## How not to report?
 
