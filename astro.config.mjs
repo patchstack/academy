@@ -74,7 +74,11 @@ export default defineConfig({
       autogenerate: {
         directory: 'to-do',
         collapsed: true
-      }
+      },
+      
+    }, {
+      label: '⭐ Patchstack',
+      link: "https://patchstack.com",
     }]
   }), icon(), sitemap()]
 });
