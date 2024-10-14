@@ -227,7 +227,7 @@ curl -F 'file=@pwn.php' 'http://localhost/wp-admin/admin-ajax.php?action=upload_
 
 ### Blacklist Bypass With .htaccess File
 
-It is quite common for blacklist-based extensions check to forget to include `.htaccess` files. Unfortunately, uploading a .htaccess file can lead to Remote Code Execution (RCE) because this file is used to configure how the web server (usually Apache) processes requests.
+It is common for blacklist-based extension checks to forget to include `.htaccess` files. Unfortunately, uploading a .htaccess file can lead to Remote Code Execution (RCE) because this file is used to configure how the web server (usually Apache) processes requests.
 
 For example, an attacker could use the .htaccess file to modify URL rewriting rules, allowing them to execute arbitrary PHP code embedded in user-controlled inputs or uploaded files. Additionally, directives like `AddHandler` or `SetHandler` can be used to force non-PHP files (like text files or images) to be interpreted as PHP, enabling the attacker to run server-side scripts that they previously uploaded.
 
@@ -255,7 +255,7 @@ function upload_image(){
 }
 ```
 
-To bypass the above check we need to prepare and upload a valid .htaccess file containing a malicious SetHandler attribute that would result in files with .jpg extension being executed as PHP code. Below is the example of such a .htaccess file:
+To bypass the above check we need to prepare and upload a valid `.htaccess` file containing a malicious SetHandler attribute that would result in files with .jpg extension being executed as PHP code. Below is an example of such a `.htaccess` file:
 
 ```htaccess
 <FilesMatch "\.jpg$">
