@@ -17,7 +17,7 @@ export default defineConfig({
 		service: passthroughImageService(),
 	},
   banner: {
-    enabled: true,
+    enabled: false,
     content: 'Vote for Patchstack - <a href="https://www.templatemonster.com/awards/category/security-wordpress-plugins/" target="about:blank">learn more</a>',
 
   },

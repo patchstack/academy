@@ -39,10 +39,10 @@ import Config from '../../astro.config.mjs'
     const hideBanner = Cookies.get('hideBanner');
 
     if (hideBanner != 'true') {
-        document.querySelector('.sl-banner').classList.remove('hidden');
+        document.querySelector('.sl-banner')?.classList.remove('hidden');
     }
 
-    document.querySelector('.sl-banner .close_button a').addEventListener('click', function(e) {
+    document.querySelector('.sl-banner .close_button a')?.addEventListener('click', function(e) {
         e.preventDefault();
         document.querySelector('.sl-banner').classList.add('hidden');
         Cookies.set('hideBanner', 'true', { expires: 14 });
