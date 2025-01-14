@@ -5,6 +5,7 @@ head:
       content: Learn about Cross-Site Scripting (XSS)
 contributors:
     - rafiem
+    - chazz0x0
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -198,7 +199,7 @@ If not correctly processed, these functions can be abused to create a URL that w
 
 This can be mitigated in one of two ways:
 
-- Use the `esc_url()` function to sanitize the URL before it is rendered.
+- Use the `esc_url()` function to sanitize the URL before rendering it.
 - Define a URL to append queries to, and selectively allow only specific, individually sanitized query arguments to be reflected.
 
 ## Admin Notices XSS
