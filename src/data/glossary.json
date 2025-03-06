@@ -1,0 +1,154 @@
+[
+  {
+    "name": "SQL Injection",
+    "description": "This could allow a malicious actor to directly interact with your database, including but not limited to stealing information."
+  },
+  {
+    "name": "Cross Site Scripting (XSS)",
+    "description": "This could allow a malicious actor to inject malicious scripts, such as redirects, advertisements, and other HTML payloads into your website which will be executed when guests visit your site. "
+  },
+  {
+    "name": "Arbitrary Code Execution",
+    "description": "This could allow a malicious actor to remotely execute malicious code on your site."
+  },
+  {
+    "name": "Arbitrary Content Deletion",
+    "description": "This could allow a malicious actor to delete content from your website such as pictures, posts or pages."
+  },
+  {
+    "name": "Arbitrary File Deletion",
+    "description": "This could allow a malicious actor to delete files from your website. If core files are deleted from your website, it could cause your site to break and stop functioning."
+  },
+  {
+    "name": "Arbitrary File Download",
+    "description": "This could allow a malicious actor to download any file from your website. This includes but is not limited to files that contain login credentials or backup files."
+  },
+  {
+    "name": "Arbitrary File Upload",
+    "description": "This could allow a malicious actor to upload any type of file to your website. This can include backdoors which are then executed to gain further access to your website."
+  },
+  {
+    "name": "Backdoor",
+    "description": "A backdoor is a malicious file which could allow a malicious actor to gain access and exploit your website at any time they desire. One example would be to execute a payload to inject advertisements on your website."
+  },
+  {
+    "name": "Broken Access Control",
+    "description": "A broken access control issue refers to a missing authorization, authentication or nonce token check in a function that could lead to an unprivileged user to executing a certain higher privileged action."
+  },
+  {
+    "name": "Broken Authentication",
+    "description": "This can be abused by a malicious actor to perform action which normally should only be able to be executed by higher privileged users. These actions might allow the malicious actor to gain admin access to the website."
+  },
+  {
+    "name": "Bypass Vulnerability",
+    "description": "A bypass vulnerability could allow a malicious actor to bypass certain restrictions in the code."
+  },
+  {
+    "name": "Clickjacking",
+    "description": "This could allow a malicious actor to trick users into clicking a webpage element which is not visible or disguised as something else."
+  },
+  {
+    "name": "Content Injection",
+    "description": "This could allow a malicious actor to inject their own content into pages and posts of your website. This could also be abused to inject phishing pages into your website."
+  },
+  {
+    "name": "Content Spoofing",
+    "description": "This could allow a malicious actor to inject their own content into pages and posts of your website. This could also be abused to inject phishing pages into your website."
+  },
+  {
+    "name": "CRLF Injection",
+    "description": "A carriage return line feed injection vulnerability could allow a malicious actor to hide attacks in log files and interact with HTTP responses."
+  },
+  {
+    "name": "Cross Site Request Forgery (CSRF)",
+    "description": "This could allow a malicious actor to force higher privileged users to execute unwanted actions under their current authentication."
+  },
+  {
+    "name": "Cross-Frame Scripting (XFS)",
+    "description": "This could allow a malicious actor to exploit browser bugs to then eavesdrop on users through a malicious JavaScript file."
+  },
+  {
+    "name": "CSV Injection",
+    "description": "This could allow a malicious actor to craft malicious formulas to then exploit vulnerabilities in the spreadsheet software or to execute commands to gain access to the victim';s PC."
+  },
+  {
+    "name": "Denial of Service Attack",
+    "description": "A denial of service attack occurs when a malicious actor can cause the endpoint, or website, to crash or refuse to serve requests to one or more users by causing it to hang, crash or make unusable."
+  },
+  {
+    "name": "Deserialization of untrusted data",
+    "description": "This can be used to exploit logic in websites, cause a denial of service, or execute arbitrary code. A malicious actor could potentially execute commands to gain access to the admin panel."
+  },
+  {
+    "name": "Direct static code injection",
+    "description": "Direct static code injection is a vulnerability which could allow a malicious actor to inject machine or script code which is directly executed by the target website. This could allow a malicious actor to create a backdoor and gain full control of the website."
+  },
+  {
+    "name": "Directory Traversal",
+    "description": "This could allow a malicious actor to see all files in a given directory or determine if certain files/directories exist in given folder. This can be used to exploit other weaknesses in the system"
+  },
+  {
+    "name": "Enumeration",
+    "description": "This could allow a malicious actor to determine if something does or does not exist in a database or filesystem. This can be used to exploit other weaknesses in the system."
+  },
+  {
+    "name": "Full Path Disclosure (FPD)",
+    "description": "This could allow a malicious actor to find the full path of a folder or file. This can be used to exploit other weaknesses in the system."
+  },
+  {
+    "name": "Information Disclosure",
+    "description": "This could allow a malicious actor to view sensitive information about a website, such as file paths or credentials. This can be used to exploit other weaknesses in the system."
+  },
+  {
+    "name": "Sensitive Data Exposure",
+    "description": "This could allow a malicious actor to view sensitive information that is normally not available to regular users. This can be used to exploit other weaknesses in the system."
+  },
+  {
+    "name": "Insecure Direct Object References (IDOR)",
+    "description": "An insecure direct object reference vulnerability could allow a malicious actor to bypass authorization, authentication, access sensitive files/folders or interact with the database. "
+  },
+  {
+    "name": "Local File Inclusion",
+    "description": "This could allow a malicious actor to include local files of the target website and show its output onto the screen. Files which store credentials, such as database credentials, could potentially allow complete database takeover depending on the configuration."
+  },
+  {
+    "name": "Multiple Vulnerabilities",
+    "description": "Multiple vulnerabilities were found. Due to the large number of vulnerabilities, this has been grouped in this category."
+  },
+  {
+    "name": "Open Redirection",
+    "description": "This could allow a malicious actor to redirect users from one site to the other due to the redirect URL not being validated. Users could be tricked to visiting a legitimate site to then be redirected to a malicious site and cause a phishing incident."
+  },
+  {
+    "name": "PHP Object Injection",
+    "description": "This could allow a malicious actor to execute code injection, SQL injection, path traversal, denial of service, and more if a proper POP chain is present."
+  },
+  {
+    "name": "Privilege Escalation",
+    "description": "This could allow a malicious actor to escalate their low privileged account to something with higher privileges. After this they could take full control of the website if high privileges are gained."
+  },
+  {
+    "name": "Remote Code Execution (RCE)",
+    "description": "This could allow a malicious actor to execute commands on the target website. This can be used to gain backdoor access to then take full control of the website."
+  },
+  {
+    "name": "Remote File Inclusion",
+    "description": "This could allow a malicious actor to get a website to load an external website or script which will then be executed on the website. This could allow the malicious actor to create backdoors on the site or take full control of the website."
+  },
+  {
+    "name": "Server Side Request Forgery (SSRF)",
+    "description": "This could allow a malicious actor to cause a website to execute website requests to an arbitrary domain of the attacker. This could allow a malicious actor to find sensitive information of other services running on the system."
+  },
+  {
+    "name": "Session Hijacking",
+    "description": "This could allow a malicious actor to hijack a session of a higher privileged user. Once the session is hijacked, the malicious actor can gain full control of the website."
+  },
+  {
+    "name": "Unvalidated Redirects and Forwards",
+    "description": "Unvalidated redirects and forwards could allow a malicious actor to redirect users from one site to the other due to the redirect URL not being validated. Users could be tricked to visiting a legitimate site to then be redirected to a malicious site and cause a phishing incident."
+  },
+  {
+    "name": "XML External Entity (XXE)",
+    "description": "A XXE attack could allow a malicious actor to inject arbitrary XML which could lead the website to leak sensitive information, cause a denial of service, and server side request forgery."
+  }
+]
