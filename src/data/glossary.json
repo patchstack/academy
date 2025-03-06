@@ -5,7 +5,7 @@
   },
   {
     "name": "Cross Site Scripting (XSS)",
-    "description": "This could allow a malicious actor to inject malicious scripts, such as redirects, advertisements, and other HTML payloads into your website which will be executed when guests visit your site. "
+    "description": "This could allow a malicious actor to inject malicious scripts, such as redirects, advertisements, and other HTML payloads into your website which will be executed when guests visit your site."
   },
   {
     "name": "Arbitrary Code Execution",
@@ -33,7 +33,7 @@
   },
   {
     "name": "Broken Access Control",
-    "description": "A broken access control issue refers to a missing authorization, authentication or nonce token check in a function that could lead to an unprivileged user to executing a certain higher privileged action."
+    "description": "A broken access control issue refers to a missing authorization, authentication or nonce token check in a function that could lead to an unprivileged user executing a certain higher privileged action."
   },
   {
     "name": "Broken Authentication",
@@ -69,7 +69,7 @@
   },
   {
     "name": "CSV Injection",
-    "description": "This could allow a malicious actor to craft malicious formulas to then exploit vulnerabilities in the spreadsheet software or to execute commands to gain access to the victim';s PC."
+    "description": "This could allow a malicious actor to craft malicious formulas to then exploit vulnerabilities in the spreadsheet software or to execute commands to gain access to the victim's PC."
   },
   {
     "name": "Denial of Service Attack",
@@ -85,7 +85,7 @@
   },
   {
     "name": "Directory Traversal",
-    "description": "This could allow a malicious actor to see all files in a given directory or determine if certain files/directories exist in given folder. This can be used to exploit other weaknesses in the system"
+    "description": "This could allow a malicious actor to see all files in a given directory or determine if certain files/directories exist in given folder. This can be used to exploit other weaknesses in the system."
   },
   {
     "name": "Enumeration",
@@ -105,15 +105,11 @@
   },
   {
     "name": "Insecure Direct Object References (IDOR)",
-    "description": "An insecure direct object reference vulnerability could allow a malicious actor to bypass authorization, authentication, access sensitive files/folders or interact with the database. "
+    "description": "An insecure direct object reference vulnerability could allow a malicious actor to bypass authorization, authentication, access sensitive files/folders or interact with the database."
   },
   {
     "name": "Local File Inclusion",
     "description": "This could allow a malicious actor to include local files of the target website and show its output onto the screen. Files which store credentials, such as database credentials, could potentially allow complete database takeover depending on the configuration."
-  },
-  {
-    "name": "Multiple Vulnerabilities",
-    "description": "Multiple vulnerabilities were found. Due to the large number of vulnerabilities, this has been grouped in this category."
   },
   {
     "name": "Open Redirection",
