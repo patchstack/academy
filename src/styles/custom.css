@@ -105,3 +105,7 @@ p, li {
 .content-panel p, li{
 	font-size: 1.125rem;
 }
+
+.glossary-item {
+	padding-bottom: 2rem;
+}

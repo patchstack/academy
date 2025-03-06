@@ -1,0 +1,15 @@
+---
+import data from '../data/glossary.json';
+import sortJsonByName from '../../lib/sortJsonByName';
+import slug from '../../lib/slug';
+
+const sortedData = sortJsonByName(data);
+---
+
+{sortedData.map ((item) => (
+    <div class="glossary-item">
+        <h3 id={slug(item.name)}>{item.name}</h3>
+        <p set:html={item.description} />
+        {item.link && <p><a href={item.link}>Read more</a></p>}
+    </div>
+))}
