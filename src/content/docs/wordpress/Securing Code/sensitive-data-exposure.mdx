@@ -1,0 +1,52 @@
+---
+title: Sensitive Data Exposure
+head:
+    - tag: title
+      content: Protect against Sensitive Data Exposure
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from Sensitive Data Exposure vulnerability on WordPress. Before returning the requested information to the user, ensure to check whether the user has the permission to view the resource.
+
+<LinkCard
+  title="Learn more about Sensitive Data Exposure"
+  href="/academy/wordpress/vulnerabilities/sensitive-data-exposure/"
+/>
+
+## How to secure
+
+It is necessary to beware of the data being returned to user before proceeding with returning the data. For an example, if an ajax hook is implemented to return the post information, it is necessary to check whether the post is publicly accessible for unauthenticated users. For higher privileged users like administrators, any post type can be returned. Apply a manual logic check for all the features that include retrieval of data is necessary.
+
+```php
+add_action("wp_ajax_nopriv_view_course", "view_course");
+
+function view_course(){
+    $course_id = urldecode( $_POST['course_id'] ?? '' );
+    
+    if ( empty( $course_id ) ) {
+        wp_send_json_error( [ 'message' => 'Invalid Course ID' ] );
+    }
+    
+    $course = get_post( $course_id );
+    
+    if ( ! $course || 'publish' !== get_post_status( $course ) ) {
+        wp_send_json_error( [ 'message' => 'Course not found' ] );
+    }
+    
+    wp_send_json_success( [
+        'id'      => $course->ID,
+        'title'   => $course->post_title,
+        'content' => $course->post_content,
+        'excerpt' => $course->post_excerpt,
+        'url'     => get_permalink( $course->ID ),
+    ] );
+};
+```
+
+In the above example, the strict check for the "publish" status of the post prevents malicious users from accessing the sensitive data.

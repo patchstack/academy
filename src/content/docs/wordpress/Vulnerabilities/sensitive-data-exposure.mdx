@@ -1,0 +1,52 @@
+---
+title: Sensitive Data Exposure
+head:
+    - tag: title
+      content: Learn about Sensitive Data Exposure
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers cases of possible sensitive data exposure on WordPress. This is a subset of Broken Access Control which impacts the confidentiality instead of integrity. This vulnerability occurs due to the lack of proper confidentiality check on the requested resource.
+
+<LinkCard
+  title="Learn how to secure your code against Sensitive Data Exposure"
+  href="/academy/wordpress/securing-code/sensitive-data-exposure/"
+/>
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("wp_ajax_nopriv_view_course", "view_course");
+
+function view_course(){
+    $course_id = urldecode( $_POST['course_id'] ?? '' );
+    
+    if ( empty( $course_id ) ) {
+        wp_send_json_error( [ 'message' => 'Invalid Course ID' ] );
+    }
+    
+    $course = get_post( $course_id );
+    
+    wp_send_json_success( [
+        'id'      => $course->ID,
+        'title'   => $course->post_title,
+        'content' => $course->post_content,
+        'excerpt' => $course->post_excerpt,
+        'url'     => get_permalink( $course->ID ),
+    ] );
+};
+```
+
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the post ID which is not in the published state to view any post information. This can lead to attacker viewing draft, password-protected and pending posts.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=view_course&course_id=1337
+```
