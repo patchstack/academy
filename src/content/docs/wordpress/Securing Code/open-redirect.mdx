@@ -1,0 +1,55 @@
+---
+title: Open Redirect
+head:
+    - tag: title
+      content: Protect against Open Redirect
+contributors:
+    - rafiem
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from Open Redirect vulnerability on WordPress. This includes applying a proper function to check for the user's input.
+
+<LinkCard
+  title="Learn more about Open Redirect"
+  href="/academy/wordpress/vulnerabilities/open-redirect/"
+/>
+
+## How to secure
+
+In general, do not allow users to fully control string passed to these functions:
+
+- [`wp_redirect`](https://developer.wordpress.org/reference/functions/wp_redirect/)
+- [`header`](https://www.php.net/manual/en/function.header.php)
+
+Always use `wp_safe_redirect()` if only the internal redirection is required.
+
+```php
+add_action("template_redirect", "redirect");
+
+function redirect(){
+    $url      = urldecode( $_GET['url'] ?? '' );
+    wp_safe_redirect($url);
+    die();
+}
+```
+
+In some cases, where users need to be sent to an external domain, apply a strict whitelisting of the domain names to ensure no malicious redirections are performed:
+
+```php
+add_action("template_redirect", "redirect");
+
+function redirect(){
+    $url      = urldecode( $_GET['url'] ?? '' );
+    $allowed = array("https://patchstack.com", "https://google.com", "https://example.com");
+
+    if(in_array($url, $allowed)){
+        wp_redirect($url);
+    }
+    die();
+}
+```

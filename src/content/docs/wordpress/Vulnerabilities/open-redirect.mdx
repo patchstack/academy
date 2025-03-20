@@ -1,0 +1,43 @@
+---
+title: Open Redirect
+head:
+    - tag: title
+      content: Learn about Open Redirect
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers cases of possible Open Redirect on WordPress. An open redirect allows a user to be redirected to a malicious site set by an attacker.
+
+<LinkCard
+  title="Learn how to secure your code against Open Redirect"
+  href="/academy/wordpress/securing-code/open-redirect/"
+/>
+
+## Useful Functions
+
+Several functions could be useful to identify a possible Open Redirect vulnerability:
+
+- [`wp_redirect`](https://developer.wordpress.org/reference/functions/wp_redirect/)
+- [`header`](https://www.php.net/manual/en/function.header.php)
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("template_redirect", "redirect");
+
+function redirect(){
+    $url      = urldecode( $_GET['url'] ?? '' );
+    wp_redirect($url);
+    die();
+}
+```
+
+To exploit this, an attacker needs to send the link `<WORDPRESS_BASE_URL>/?url=https://evil.net` to the victim. When the victim clicks the link, they will be redirected to `evil.net`.
