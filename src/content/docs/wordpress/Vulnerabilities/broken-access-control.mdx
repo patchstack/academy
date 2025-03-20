@@ -16,18 +16,16 @@ This article covers cases of possible Broken Access Control on WordPress. This i
 
 By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/academy/wordpress/wordpress-internals/functions/#current_user_can) function and the nonce value check using [`wp_verify_nonce`](/academy/wordpress/wordpress-internals/functions/#wp_verify_nonce), [`check_admin_referer`](/academy/wordpress/wordpress-internals/functions/#check_admin_referer) or [`check_ajax_referer`](/academy/wordpress/wordpress-internals/functions/#check_ajax_referer) functions.
 
-## IDOR
-
-Insecure Direct Object Reference (IDOR) is one of the vulnerabilities which results due to broken access control. It involves changing any entity's ID to another which a user is not supposed to access.
-
-For example, if there is a page that views orders by order id in the URL using the ?order_id=X parameter, if the user can just change the order ID to view another user's order details, it is called an IDOR.
-
-
-
 <LinkCard
   title="Learn how to secure your code against Broken Access Control"
   href="/academy/wordpress/securing-code/broken-access-control/"
 />
+
+## Insecure Direct Object Reference
+
+Insecure Direct Object Reference (IDOR) is one of the vulnerabilities caused by broken access control. It involves changing any entity's ID to another that a user is not supposed to access.
+
+For example, if a page views orders by order ID in the URL using the `?order_id=X` parameter, and the user can just change the order ID to view another user's order details, it is an IDOR.
 
 ## `init` hook
 
