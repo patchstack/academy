@@ -21,6 +21,12 @@ By default, processes on hooks or functions that are used on plugins or themes d
   href="/academy/wordpress/securing-code/broken-access-control/"
 />
 
+## Insecure Direct Object Reference
+
+Insecure Direct Object Reference (IDOR) is one of the vulnerabilities caused by broken access control. It involves changing any entity's ID to another that a user is not supposed to access.
+
+For example, if a page views orders by order ID in the URL using the `?order_id=X` parameter, and the user can just change the order ID to view another user's order details, it is an IDOR.
+
 ## `init` hook
 
 For more details on the `init` hook, please refer to this [documentation](/academy/wordpress/wordpress-internals/hooks/#init-hook).
