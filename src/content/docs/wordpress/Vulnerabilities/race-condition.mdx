@@ -1,0 +1,78 @@
+---
+title: Race Condition
+head:
+    - tag: title
+      content: Learn about Race Condition
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers cases of possible Race Condition on WordPress. A race condition occurs when the same component is requested in parallel, leading to multiple processes accessing and modifying shared resources simultaneously, which can result in duplicate operations, unauthorized actions, or unexpected behavior due to the lack of proper synchronization mechanisms.
+
+<LinkCard
+  title="Learn how to secure your code against Race Condition"
+  href="/academy/wordpress/securing-code/race-condition/"
+/>
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("wp_ajax_send_money", "send_money");
+
+function send_money() {
+    global $wpdb;
+
+    $amount      = urldecode( $_GET['amount'] ?? '' );
+    $receiver = urldecode( $_GET['receiver_id'] ?? '' );
+    $sender = get_current_user_id();
+    
+    // Check balance
+    $balance = $wpdb->get_var($wpdb->prepare(
+        "SELECT balance FROM bank_accounts WHERE user_id = %d", $sender
+    ));
+
+    if ($balance < $amount) {
+        return "Not enough balance.";
+    }
+
+    // Deduct amount
+    $wpdb->query($wpdb->prepare(
+        "UPDATE bank_accounts SET balance = balance - %d WHERE user_id = %d",
+        $amount, $sender
+    ));
+
+    // Send amount
+    $wpdb->query($wpdb->prepare(
+        "UPDATE bank_accounts SET balance = balance + %d WHERE user_id = %d",
+        $amount, $receiver
+    ));
+
+    return "Money sent successful!";
+}
+```
+
+When two concurrent requests are sent to hit the above code at the same time, it will create a duplicate transaction leading to the money being sent twice. Here's how it works:
+
+1. Attacker has a balance of $12
+2. Attacker sends two requests at the exact same time to send $10 from the account
+3. Both requests pass through the ` if ($balance < $amount)` check at the same time and return `false` leading to both requests proceeding forward
+4. The database operation is done and the transaction is successful for two $10 to another account.
+
+To exploit this, any authenticated user just needs to perform two or more parallel POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameters.
+
+Note: This might not work on a single try. Trying to send more than two concurrent requests is recommended to increase the chance of success.
+
+```bash
+curl "<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=send_money&amount=10&receiver_id=1" & \
+curl "<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=send_money&amount=10&receiver_id=1" & \
+curl "<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=send_money&amount=10&receiver_id=1" & \
+curl "<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=send_money&amount=10&receiver_id=1" &
+wait
+```
