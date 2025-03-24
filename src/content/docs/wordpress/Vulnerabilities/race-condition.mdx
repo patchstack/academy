@@ -59,15 +59,6 @@ function send_money() {
 }
 ```
 
-When two concurrent requests are sent to hit the above code at the same time, it will create a duplicate transaction leading to the money being sent twice. Here's how it works:
-
-1. Attacker has a balance of $12
-2. Attacker sends two requests at the exact same time to send $10 from the account
-3. Both requests pass through the ` if ($balance < $amount)` check at the same time and return `false` leading to both requests proceeding forward
-4. The database operation is done and the transaction is successful for two $10 to another account.
-
-To exploit this, any authenticated user just needs to perWhen two concurrent requests are sent to hit the above code at the same time, it will create a duplicate transaction leading to the money being sent twice. Here's how it works:
-
 1. Attacker has a balance of $12
 2. The attacker sends two requests at the exact same time to send $10 from the account
 3. Both requests pass through the `if ($balance < $amount)` check at the same time and return `false` leading to both requests proceeding forward
