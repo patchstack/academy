@@ -1,0 +1,75 @@
+---
+title: Race Condition
+head:
+    - tag: title
+      content: Protect against Race Condition
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from **Race Condition** vulnerability on WordPress. This includes setting a proper lock on the resource before proceeding to prevent concurrent access to the same resource.
+
+<LinkCard
+  title="Learn more about Race Condition"
+  href="/academy/wordpress/vulnerabilities/race-condition/"
+/>
+
+## How to secure
+
+In raw PHP, there is no standard or default way of fixing race condition. Manual logic needs to be implemented. Below is an example of using WordPress transients to lock the resource and fix the race condition mentioned [here](/academy/wordpress/vulnerabilities/race-condition).
+
+```php
+add_action("wp_ajax_send_money", "send_money");
+
+function send_money() {
+    global $wpdb;
+
+    $amount = urldecode($_GET['amount'] ?? '');
+    $receiver = urldecode($_GET['receiver_id'] ?? '');
+    $sender = get_current_user_id();
+
+    // Apply transient lock for sender
+    $lock_key = "send_money_lock_{$sender}";
+    
+    if (get_transient($lock_key)) {
+        wp_send_json_error("Transaction is already in progress. Please wait.");
+        return;
+    }
+
+    set_transient($lock_key, 1, 5); // Lock for 5 seconds to prevent race condition
+
+    // Check balance
+    $balance = $wpdb->get_var($wpdb->prepare(
+        "SELECT balance FROM bank_accounts WHERE user_id = %d", $sender
+    ));
+
+    if ($balance < $amount) {
+        delete_transient($lock_key); // Release lock
+        wp_send_json_error("Not enough balance.");
+        return;
+    }
+
+    // Deduct amount safely
+    $wpdb->query($wpdb->prepare(
+        "UPDATE bank_accounts SET balance = balance - %d WHERE user_id = %d AND balance >= %d",
+        $amount, $sender, $amount
+    ));
+
+    // Send amount safely
+    $wpdb->query($wpdb->prepare(
+        "UPDATE bank_accounts SET balance = balance + %d WHERE user_id = %d",
+        $amount, $receiver
+    ));
+
+    delete_transient($lock_key); // Release lock
+
+    wp_send_json_success("Money sent successfully!");
+}
+```
+
+In this example, a user's transaction is locked for 5 seconds by using transient to ensure only one transaction is allowed at the same time for a user, fixing the **Race Condition** vulnerability.
