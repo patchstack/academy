@@ -12,7 +12,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers ways to secure the code from Race Condition vulnerability on WordPress. This includes setting a proper lock on the resource before proceeding to prevent concurrent accessing of the same resource.
+This article covers ways to secure the code from **Race Condition** vulnerability on WordPress. This includes setting a proper lock on the resource before proceeding to prevent concurrent access to the same resource.
 
 <LinkCard
   title="Learn more about Race Condition"
@@ -21,8 +21,7 @@ This article covers ways to secure the code from Race Condition vulnerability on
 
 ## How to secure
 
-In raw PHP, there is no standard or a default way of fixing race condition. Manual logic needs to be implemented. Below is an example of using WordPress transients to lock the resource and fix race condition mentioned [here](/academy/wordpress/vulnerabilities/race-condition).
-
+In raw PHP, there is no standard or default way of fixing race condition. Manual logic needs to be implemented. Below is an example of using WordPress transients to lock the resource and fix the race condition mentioned [here](/academy/wordpress/vulnerabilities/race-condition).
 
 ```php
 add_action("wp_ajax_send_money", "send_money");
@@ -73,4 +72,4 @@ function send_money() {
 }
 ```
 
-In this example, a user's transaction is locked for 5 seconds by using transient to ensure only one transaction is allowed at the same time for a user, fixing the Race Condition vulnerability.
+In this example, a user's transaction is locked for 5 seconds by using transient to ensure only one transaction is allowed at the same time for a user, fixing the **Race Condition** vulnerability.
