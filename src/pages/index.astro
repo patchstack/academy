@@ -6,4 +6,8 @@ const url = base + 'welcome/'.replace('//', '/');
 const base_url = process.env.DEPLOY_PRIME_URL ? process.env.DEPLOY_PRIME_URL + '/' : Astro.site.href;
 const redirect = base_url + url;
 ---
-<meta http-equiv="refresh" content={'0;url=' + redirect} />
+<html>
+<head>
+    <meta http-equiv="refresh" content={'0;url=' + redirect} />
+    <title>Redirecting...</title>
+</html>

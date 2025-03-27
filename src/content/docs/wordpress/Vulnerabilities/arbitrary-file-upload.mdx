@@ -259,7 +259,7 @@ function upload_image(){
 
 To bypass the above check we need to prepare and upload a valid `.htaccess` file containing a malicious SetHandler attribute that would result in files with .jpg extension being executed as PHP code. Below is an example of such a `.htaccess` file:
 
-```htaccess
+```bash
 <FilesMatch "\.jpg$">
     SetHandler application/x-httpd-php
 </FilesMatch>
