@@ -1,5 +1,5 @@
 ---
-title: To Do
+title: Idea list
 sidebar:
   order: 1
 ---
