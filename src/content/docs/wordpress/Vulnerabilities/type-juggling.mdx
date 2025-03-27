@@ -1,0 +1,55 @@
+---
+title: Type Juggling
+head:
+    - tag: title
+      content: Learn about Type Juggling
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+PHP has two types of string comparisons- loose comparision (`==` & `!=`) and strict comparison (`===` & `!==`). Loose comparison only checks whether both variables have the same value, whereas, strict comparison checks if both variables have the same value and same type. When loose comparison is used, it can be manipulated to make the program think that the variable has the same value even when it does not.
+
+Type juggling offered a vast range of possibilties in PHP5 with slight lesser possibilties in PHP7 and a lot of cases being fixed in PHP8. However, this does not mean that type juggling is not a thing anymore.
+
+More information about string comparison can be found at [`PHP Comparison Table`](https://www.php.net/manual/en/types.comparisons.php).
+
+<LinkCard
+  title="Learn how to secure your code against Type Juggling"
+  href="/academy/wordpress/securing-code/type-juggling/"
+/>
+
+
+## Example Cases
+
+Below is an example of vulnerable code:
+
+```php
+add_action("wp_ajax_nopriv_get_config", "get_config");
+
+function get_config(){
+    $secret_key = get_option('my_secret_key'); // my_secret_key = test1235
+
+    $data = json_decode(stripslashes($_GET['data']), true);
+
+    if ($data['key'] != $secret_key) {
+        exit;
+    }
+
+    echo "Sensitive information for admin only!";
+}
+```
+
+To exploit this, any unauthenticated user just needs to perform a request to the `/wp-admin/admin-ajax.php` endpoint specifying the `key` value to `true` in JSON endpoint.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=get_config&data={"key":true}
+```
+
+More on Type Juggling:
+
+[Patchstack Weekly #47: What Is Type Juggling in PHP?](https://patchstack.com/articles/what-is-type-juggling-in-php/)
