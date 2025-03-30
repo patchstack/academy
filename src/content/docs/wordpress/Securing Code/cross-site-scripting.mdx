@@ -48,7 +48,7 @@ echo esc_html( $text );
 
 ## [`esc_url`](https://developer.wordpress.org/reference/functions/esc_url/)
 
-This function should be the main function to use when the developer wants to escape a URL inside of an HTML attribute. It removes all the characters that are not valid in URL scheme like `<>`, `{}` and so on. It encodes the valid special characters to ensure it is not possible to break out of the attribute and inject malicious JS. The special characters like `'`, `"`, ` ` (spacebar) and so on are encoded.
+This function should be the main function to use when the developer wants to escape a URL inside of an HTML attribute. It removes all the characters that are not valid in URL schemes like `<>`, `{}`, and similar. It encodes the valid special characters to ensure it is not possible to break out of the attribute and inject malicious JS. The special characters like `'`, `"`, ` ` (spacebar), and similar are encoded.
 
 It is optimal to use this function when a URL value is being taken from the user.
 
