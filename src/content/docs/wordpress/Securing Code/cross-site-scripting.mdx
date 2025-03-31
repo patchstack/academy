@@ -5,6 +5,7 @@ head:
       content: Protect against Cross-Site Scripting (XSS)
 contributors:
     - rafiem
+    - dhakalananda
 ---
 import { LinkCard } from '@astrojs/starlight/components';
 
@@ -43,4 +44,14 @@ Developers can use this function when trying to escape a user's input outside of
 ```php
 $text = "<p><b> Message for you: " . $_GET["message"] . "</b></p>";
 echo esc_html( $text );
+```
+
+## [`esc_url`](https://developer.wordpress.org/reference/functions/esc_url/)
+
+This function should be the main function to use when the developer wants to escape a URL inside of an HTML attribute. It removes all the characters that are not valid in URL schemes like `<>`, `{}`, and similar. It encodes the valid special characters to ensure it is not possible to break out of the attribute and inject malicious JS. The special characters like `'`, `"`, ` ` (spacebar), and similar are encoded.
+
+It is optimal to use this function when a URL value is being taken from the user.
+
+```php
+<a href="<?php echo esc_url($_GET['url']);?>">Click Me</a>
 ```
