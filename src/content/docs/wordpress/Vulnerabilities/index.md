@@ -1,5 +1,7 @@
 ---
 title: Introduction
+sidebar:
+    order: 3.2
 contributors:
     - rafiem
 ---
