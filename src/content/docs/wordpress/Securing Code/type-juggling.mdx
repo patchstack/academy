@@ -1,0 +1,41 @@
+---
+title: Type Juggling
+head:
+    - tag: title
+      content: Protect against Type Juggling
+contributors:
+    - dhakalananda
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+
+## Introduction
+
+This article covers ways to secure the code from Type Juggling vulnerability on WordPress.
+
+<LinkCard
+  title="Learn more about Type Juggling"
+  href="/academy/wordpress/vulnerabilities/type-juggling/"
+/>
+
+## How to secure
+
+Always use strict comparison instead of loose comparison to prevent the risks of type juggling. The example below showcases how using `!==` can fix type juggling issues.
+
+
+```php
+add_action("wp_ajax_nopriv_get_config", "get_config");
+
+function get_config(){
+    $secret_key = get_option('my_secret_key'); // my_secret_key = test1235
+
+    $data = json_decode(stripslashes($_GET['data']), true);
+
+    if ($data['key'] !== $secret_key) { //Using !== instead of !=
+        exit;
+    }
+
+    echo "Sensitive information for admin only!";
+}
+```
