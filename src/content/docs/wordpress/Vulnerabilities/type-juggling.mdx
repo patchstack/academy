@@ -12,7 +12,11 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-PHP has two types of string comparisons- loose comparision (`==` & `!=`) and strict comparison (`===` & `!==`). Loose comparison only checks whether both variables have the same value, whereas, strict comparison checks if both variables have the same value and same type. When loose comparison is used, it can be manipulated to make the program think that the variable has the same value even when it does not.
+PHP has two types of string comparisons:
+- loose comparision (`==` & `!=`)
+- strict comparison (`===` & `!==`) 
+
+**Loose comparison** only checks whether both variables have the same value, whereas, **strict comparison** checks if both variables have the same value and same type. When loose comparison is used, it can be manipulated to make the program think that the variable has the same value even when it does not.
 
 Type juggling offered a vast range of possibilties in PHP5 with slight lesser possibilties in PHP7 and a lot of cases being fixed in PHP8. However, this does not mean that type juggling is not a thing anymore.
 
@@ -44,7 +48,7 @@ function get_config(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a request to the `/wp-admin/admin-ajax.php` endpoint specifying the `key` value to `true` in JSON endpoint.
+To exploit this, any unauthenticated can perform a request to the `/wp-admin/admin-ajax.php` endpoint specifying the `key` value to `true` in JSON endpoint.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=get_config&data={"key":true}
