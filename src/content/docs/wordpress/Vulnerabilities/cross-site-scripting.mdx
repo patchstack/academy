@@ -204,6 +204,9 @@ Examples of potentially vulnerable code:
 <a href="<?php echo remove_query_arg('key');?>">Click me!</a>
 ```
 
+To exploit this, all a malicious user would need to do is send someone a link including a `<script>` tag in the query arguments. For example: `<WORDPRESS_BASE_URL>/?'"><script>alert(1)</script>`.
+The exact URL could be any page in which an unescaped `*_query_arg` function is used.
+
 ## Admin Notices XSS
 
 An admin notice is a notification block consisting of a white background, a colored left border, and some text. There are three types: green, orange, and red. Given the class names, they should be used for updating complete notices, update prompts, and errors respectively.
