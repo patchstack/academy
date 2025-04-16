@@ -185,6 +185,28 @@ Below are some of the findings related to Reflected XSS:
 - [Multiple High Severity Vulnerabilities in Ninja Forms Plugin](https://patchstack.com/articles/multiple-high-severity-vulnerabilities-in-ninja-forms-plugin/#reflected-xss)
 - [Reflected XSS in Advanced Custom Fields Plugins Affecting 2+ Million Sites](https://patchstack.com/articles/reflected-xss-in-advanced-custom-fields-plugins-affecting-2-million-sites/)
 
+### Query Argument Reflected XSS
+
+A particularly tricky form of Reflected XSS is reflection via query arguments. WordPress provides multiple functions that can be used to add or remove query arguments from the URL:
+
+- [`add_query_arg`](https://developer.wordpress.org/reference/functions/add_query_arg/)
+- [`remove_query_arg`](https://developer.wordpress.org/reference/functions/remove_query_arg/)
+
+Both of these functions work similarly: they take a URI (by default the current `REQUEST_URI`) and add/remove query arguments from it.
+
+If not correctly escaped, these functions can be abused to create a URL that will trigger an XSS payload. By adding a malicious query argument to the URL, this will by default be reflected into the constructed URL, and generally then rendered onto the page.
+
+Examples of potentially vulnerable code:
+
+```php
+<a href="<?php echo add_query_arg('key', 'value');?>">Click me!</a>
+
+<a href="<?php echo remove_query_arg('key');?>">Click me!</a>
+```
+
+To exploit this, all a malicious user would need to do is send someone a link including a `<script>` tag in the query arguments. For example: `<WORDPRESS_BASE_URL>/?'"><script>alert(1)</script>`.
+The exact URL could be any page in which an unescaped `*_query_arg` function is used.
+
 ## Admin Notices XSS
 
 An admin notice is a notification block consisting of a white background, a colored left border, and some text. There are three types: green, orange, and red. Given the class names, they should be used for updating complete notices, update prompts, and errors respectively.
