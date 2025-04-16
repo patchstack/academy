@@ -50,8 +50,12 @@ echo esc_html( $text );
 
 This function should be the main function to use when the developer wants to escape a URL inside of an HTML attribute. It removes all the characters that are not valid in URL schemes like `<>`, `{}`, and similar. It encodes the valid special characters to ensure it is not possible to break out of the attribute and inject malicious JS. The special characters like `'`, `"`, ` ` (spacebar), and similar are encoded.
 
-It is optimal to use this function when a URL value is being taken from the user.
+It is optimal to use this function when a URL value is being taken from the user or when returning results from `add_query_arg` or `remove_query_arg`.
 
 ```php
+<!-- User provided URL -->
 <a href="<?php echo esc_url($_GET['url']);?>">Click Me</a>
+
+<!-- add_query_arg -->
+<a href="<?php echo esc_url(add_query_arg( 'key', 'value' ));?>">Click Me Too</a>
 ```
