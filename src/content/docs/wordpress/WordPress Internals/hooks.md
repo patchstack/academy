@@ -100,6 +100,35 @@ A logged-in user can send the below request adding their cookies to execute the 
 curl <WORDPRESS_BASE_URL>/wp-admin/admin.php?action=foobar
 ```
 
+## [`admin_post_{$action}`](https://developer.wordpress.org/reference/hooks/admin_post/)
+
+This hook is equivalent to both `wp_ajax_` and `admin_action_` hook but on a different endpoint. Similar to both hooks, the `admin_post_` hooks follow the format `admin_post_$action`, where `$action` variable comes from the `action` GET/POST parameter. The only difference is that the URL to hit the request must be to `/wp-admin/admin-post.php` endpoint.
+
+This hook only fires for **logged-in** users, so by default, only users with the **Subscriber+** role can access the attached function on the hook. A proper permission and nonce check is still needed to secure the function attached to this hook.
+
+Example of hook implementation :
+
+```php
+add_action( 'admin_post_foobar', 'admin_post_handler' );
+
+function admin_post_handler() {
+    // Make your response and echo it.
+
+    // Don't forget to stop execution afterward.
+    wp_die();
+}
+```
+
+A logged-in user can send the below request adding their cookies to execute the hook.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-post.php?action=foobar
+```
+
+## [`admin_post_nopriv_{$action}`](https://developer.wordpress.org/reference/hooks/admin_post_nopriv/)
+
+This hook is functionally the same as `admin_post_{$action}`, except the `nopriv` variant is used for handling AJAX requests from unauthenticated users, i.e. when the `is_user_logged_in()` function returns false.
+
 ## [`template_redirect`](https://developer.wordpress.org/reference/hooks/template_redirect/)
 
 The `template_redirect` is used for cases when a feature needs to be implemented right after querying WP site, but before determining which template to load.
