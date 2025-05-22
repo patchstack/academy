@@ -124,3 +124,29 @@ An unauthenticated user can send the below request to execute the hook.
 ```bash
 curl <WORDPRESS_BASE_URL>/?unique_hidden_field=1
 ```
+
+Below are some of the vulnerabilities that acted as a starting point from `template_redirect` hook:
+
+- [Critical LFI to RCE Vulnerability in WP Ghost Plugin Affecting 200k+ Sites](https://patchstack.com/articles/critical-lfi-to-rce-vulnerability-in-wp-ghost-plugin-affecting-200k-sites/)
+
+
+## [`admin_notices`](https://developer.wordpress.org/reference/hooks/admin_notices/)
+
+The `admin_notices` hook is used to add custom notices in the WordPress admin dashboard. These notices can serve various purposes, such as warning users about missing settings, confirming successful actions, or promoting premium features. This hook fires on loading the WordPress admin dashboard `/wp-admin` page.
+
+Example of hook implementation :
+
+```php
+add_action( 'admin_notices', 'admin_notice_handler' );
+
+function admin_notice_handler() {
+    echo '<div class="notice notice-success"><p>' . $_GET['notice'] . '</p></div>';
+    wp_die();
+}
+```
+
+An unauthenticated user can send the below request to execute the hook.
+
+```bash
+curl <WORDPRESS_BASE_URL>/?notice=XSS_PAYLOAD
+```
