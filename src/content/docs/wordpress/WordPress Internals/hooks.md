@@ -76,3 +76,26 @@ function my_ajax_foobar_handler() {
 ## [`wp_ajax_nopriv_{$action}`](https://developer.wordpress.org/reference/hooks/wp_ajax_nopriv_action/)
 
 This hook is functionally the same as `wp_ajax_{$action}`, except the `nopriv` variant is used for handling AJAX requests from unauthenticated users, i.e. when the `is_user_logged_in()` function returns false.
+
+## [`admin_action_{$action}`](https://developer.wordpress.org/reference/hooks/admin_action_action/)
+
+This hook is equivalent to `wp_ajax_` hook but on a different endpoint. Similar to `wp_ajax_`, the `admin_action` hooks follow the format `admin_action_$action`, where `$action` variable comes from the `action` GET/POST parameter. The only difference is that the URL to hit the request must be to `/wp-admin/admin.php` endpoint.
+
+This hook only fires for **logged-in** users, so by default, only users with the **Subscriber+** role can access the attached function on the hook. A proper permission and nonce check is still needed to secure the function attached to this hook.
+
+Example of hook implementation :
+
+```php
+add_action( 'admin_action_foobar', 'my_ajax_foobar_handler' );
+
+function my_ajax_foobar_handler() {
+    echo "Execution successful";
+    wp_die();
+}
+```
+
+A logged-in user can send the below request adding their cookies to execute the hook.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin.php?action=foobar
+```
