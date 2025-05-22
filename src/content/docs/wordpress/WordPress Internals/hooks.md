@@ -99,3 +99,28 @@ A logged-in user can send the below request adding their cookies to execute the 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin.php?action=foobar
 ```
+
+## [`template_redirect`](https://developer.wordpress.org/reference/hooks/template_redirect/)
+
+The `template_redirect` is used for cases when a feature needs to be implemented right after querying WP site, but before determining which template to load.
+
+This hook fires after loading the homepage of the WordPress site.
+
+Example of hook implementation :
+
+```php
+add_action( 'template_redirect', 'my_ajax_foobar_handler' );
+
+function my_ajax_foobar_handler() {
+    if ( isset( $_GET['unique_hidden_field'] ) ) {
+        echo "Execution successful";
+        wp_die();    
+    }
+}
+```
+
+An unauthenticated user can send the below request to execute the hook.
+
+```bash
+curl <WORDPRESS_BASE_URL>/?unique_hidden_field=1
+```
