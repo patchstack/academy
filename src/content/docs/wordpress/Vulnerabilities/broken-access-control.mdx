@@ -5,6 +5,7 @@ head:
       content: Learn about Broken Access Control
 contributors:
     - rafiem
+    - dhakalananda
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -147,3 +148,41 @@ curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/delete/author -d "user_id=1"
 ``` 
 
 Other cases could exist where developers already specify a proper function on the `permission_callback` parameter, however, the permission check implemented inside the function itself is not proper to what process can be done from the REST API route `callback` function.
+
+## Nonce leakage
+
+In the case when an action is only protected by nonce instead of permission check, there is a chance that the nonce might be leaked to the low-privileged users. It can lead to broken access control issues in such cases.
+
+```php
+add_action('wp_enqueue_scripts', function() {
+    wp_register_script('insecure-demo', false);
+    wp_enqueue_script('insecure-demo');
+    wp_localize_script('insecure-demo', 'insecureDemo', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('delete_user_nonce'),
+    ]);
+});
+
+add_action('wp_ajax_nopriv_delete_user', function() {
+    $nonce   = $_POST['nonce'] ?? '';
+    $user_id = $_POST['user_id'] ?? 0;
+
+    if (!wp_verify_nonce($nonce, 'delete_user_nonce')) {
+        wp_die('Invalid nonce');
+    }
+
+    if (wp_delete_user($user_id)) {
+        echo "User $user_id deleted";
+    } else {
+        echo "Failed to delete user";
+    }
+
+    wp_die();
+});
+```
+
+To exploit this, an unauthenticated user can grab the nonce from the WP site homepage source and perform a POST request to the `/admin-ajax.php` endpoint with the nonce parameter to trigger the `wp_delete_user` function.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=delete_user -d "nonce=nonce_from_page_source&user_id=1"
+``` 

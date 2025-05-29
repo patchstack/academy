@@ -59,3 +59,15 @@ It is optimal to use this function when a URL value is being taken from the user
 <!-- add_query_arg -->
 <a href="<?php echo esc_url(add_query_arg( 'key', 'value' ));?>">Click Me Too</a>
 ```
+
+## [`wp_kses_post`](https://developer.wordpress.org/reference/functions/wp_kses_post/)
+
+This function should be used when the developer wants to allow the use of limited HTML tags only. It filters out the valid HTML tags and allows it whereas stripping the malicious XSS payloads.
+
+It is optimal to use this function when the user-input needs to be displayed with HTML tags such as `<a>`, `<b>`, `<p>` and so on without risking XSS.
+
+```php
+
+$text = "<p><b> Message for you: " . $_GET["message_with_html"] . "</b></p>";
+echo wp_kses_post( $text );
+```
