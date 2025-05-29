@@ -19,9 +19,9 @@ This article covers cases of possible sensitive data exposure on WordPress. This
   href="/academy/wordpress/securing-code/sensitive-data-exposure/"
 />
 
-## Example Cases
+## Actions
 
-Below is an example of vulnerable code:
+Sensitive data can be leaked through hooks or actions when used without consideration for the user permissions. Below is an example of vulnerable code:
 
 ```php
 add_action("wp_ajax_nopriv_view_course", "view_course");
@@ -50,3 +50,28 @@ To exploit this, any unauthenticated user just needs to perform a POST request t
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=view_course&course_id=1337
 ```
+
+## Logs
+
+If the logs are stored by the plugin without any .htaccess or randomization of the log filename, it might cause sensitive data leak.
+
+Below is an example of vulnerable code:
+
+```php
+function write_sensitive_log($message) {
+    $log_file = WP_CONTENT_DIR . '/debug.log'; // Predictable and publicly accessible
+    file_put_contents($log_file, $message . "\n", FILE_APPEND);
+}
+
+add_action('init', function() {
+    if (is_user_logged_in()) {
+        $current_user = wp_get_current_user();
+        $email = $current_user->user_email;
+        write_sensitive_log('User email: ' . $email);
+    }
+});
+```
+
+To exploit this, any unauthenticated user can just request the URL:
+
+`http://<WORDPRESS_BASE_URL>/wp-content/plugins/plugin-name/debug.log`

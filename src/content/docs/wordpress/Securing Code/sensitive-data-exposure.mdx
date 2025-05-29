@@ -19,7 +19,7 @@ This article covers ways to secure the code from Sensitive Data Exposure vulnera
   href="/academy/wordpress/vulnerabilities/sensitive-data-exposure/"
 />
 
-## How to secure
+## How to secure Actions
 
 It is necessary to beware of the data being returned to user before proceeding with returning the data. For an example, if an ajax hook is implemented to return the post information, it is necessary to check whether the post is publicly accessible for unauthenticated users. For higher privileged users like administrators, any post type can be returned. Apply a manual logic check for all the features that include retrieval of data is necessary.
 
@@ -50,3 +50,57 @@ function view_course(){
 ```
 
 In the above example, the strict check for the "publish" status of the post prevents malicious users from accessing the sensitive data.
+
+## How to secure Logs
+
+If the log file with predictable filename and publicly accessible directory is used, it can lead to sensitive data expoosure. In order to prevent it, there are multiple ways of implementing the log file.
+
+**Log filename randomization**
+
+One way to fix is to use the random name for the log file. Such way, an attacker won't be able to predict or find the log even if it's in the publicly accessible directory.
+
+```php
+function write_sensitive_log($message) {
+    $unique_id = hash('sha256', get_current_user_id() . date('Y-m-d-H'));
+     $log_file = WP_CONTENT_DIR . '/debug-' . $unique_id . '.log'; // Unpredictable
+    file_put_contents($log_file, $message . "\n", FILE_APPEND);
+}
+
+add_action('init', function() {
+    if (is_user_logged_in()) {
+        $current_user = wp_get_current_user();
+        $email = $current_user->user_email;
+        write_sensitive_log('User email: ' . $email);
+    }
+});
+```
+
+**Adding an .htaccess file**
+
+The use of an `.htaccess` file can prevent the attackers from publicly accessing the log file.
+
+```php
+function write_sensitive_log_secure($message) {
+    $upload_dir = wp_upload_dir();
+    $log_dir = $upload_dir['basedir'] . '/debug-logs';
+
+    if (!file_exists($log_dir)) {
+        wp_mkdir_p($log_dir);
+        
+        file_put_contents($log_dir . '/.htaccess', "Deny from all\n"); // Prevent read access
+    }
+
+    $log_file = $log_dir . '/secure-log.log';
+
+    file_put_contents($log_file, $message . "\n", FILE_APPEND | LOCK_EX);
+}
+
+add_action('init', function() {
+    if (is_user_logged_in()) {
+        $current_user = wp_get_current_user();
+        $email = $current_user->user_email;
+        write_sensitive_log_secure('User email: ' . $email);
+    }
+});
+
+```
