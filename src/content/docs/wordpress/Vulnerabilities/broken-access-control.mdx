@@ -26,7 +26,7 @@ By default, processes on hooks or functions that are used on plugins or themes d
 
 Insecure Direct Object Reference (IDOR) is one of the vulnerabilities caused by broken access control. It involves changing any entity's ID to another that a user is not supposed to access.
 
-For example, if a page views orders by order ID in the URL using the `?order_id=X` parameter, and the user can just change the order ID to view another user's order details, it is an IDOR.
+For example, if a page views orders by order ID in the URL using the `?order_id=X` parameter, and the user can change the order ID to view another user's order details, it is an IDOR.
 
 ## `init` hook
 
@@ -89,7 +89,7 @@ function update_post_data_2(){
 }
 ```
 
-To exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
+To exploit this, any authenticated user (**Subscriber+** role) needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data&update=1 -d "id=1&data=changed"
@@ -114,7 +114,7 @@ function toggle_menu_bar(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "toggle=1"
@@ -141,7 +141,7 @@ function delete_author_user($request){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/delete/author -d "user_id=1"

@@ -45,7 +45,7 @@ function view_course(){
 };
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the post ID, which is not in the published state, to view any post information. This can lead to an attacker viewing draft, password-protected, and pending posts.
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the post ID, which is not in the published state, to view any post information. This can lead to an attacker viewing draft, password-protected, and pending posts.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=view_course&course_id=1337
@@ -72,6 +72,6 @@ add_action('init', function() {
 });
 ```
 
-To exploit this, any unauthenticated user can just request the URL:
+To exploit this, any unauthenticated user can request the URL:
 
 `http://<WORDPRESS_BASE_URL>/wp-content/plugins/plugin-name/debug.log`

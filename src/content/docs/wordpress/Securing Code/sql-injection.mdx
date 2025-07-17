@@ -62,7 +62,7 @@ According to the official documentation, users must be careful when using this f
 ORDER BY {$escaped_value}
 ```
 
-This implementation is vulnerable because the escaped value is not surrounded by quotes in the SQL query. As such, this function does not escape unquoted numeric values, field names, or SQL keywords. Additional note that this function was formerly just an alias for $wpdb->escape(), but that function has now been deprecated:
+This implementation is vulnerable because the escaped value is not surrounded by quotes in the SQL query. As such, this function does not escape unquoted numeric values, field names, or SQL keywords. Additional note that this function was formerly an alias for $wpdb->escape(), but that function has now been deprecated:
 
 ```php
 add_action("wp_ajax_fetch_post_by_title", "fetch_post_by_title");

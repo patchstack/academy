@@ -19,7 +19,7 @@ A lot of the time, developers attach a function to this hook to view or process 
 
 This hook itself is accessible by unauthenticated users by default (also depends on whether the hook is registered outside of an additional permission check). Visiting the front page of a WordPress site should trigger the `init` hook.
 
-An unauthenticated user can simply visit the front page of a WordPress instance, and it will trigger any function that is attached to the `init` hook.
+An unauthenticated user can visit the front page of a WordPress instance, and it will trigger any function that is attached to the `init` hook.
 
 Example of hook implementation:
 
@@ -49,7 +49,7 @@ function myplugin_settings() {
 add_action( 'admin_init', 'myplugin_settings' );
 ```
 
-Since this hook also runs on the `admin-ajax.php` and `admin-post.php` endpoints, an unauthenticated user can trigger this hook by simply visiting the URL below:
+Since this hook also runs on the `admin-ajax.php` and `admin-post.php` endpoints, an unauthenticated user can trigger this hook by visiting the URL below:
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat
