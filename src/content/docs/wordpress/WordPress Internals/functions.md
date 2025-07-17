@@ -14,7 +14,7 @@ This function basically will check whether the current user has the specified ca
 
 For details regarding the default WordPress Role and Capabilities, please refer to the official documentation [here](https://wordpress.org/documentation/article/roles-and-capabilities/).
 
-Example of function implementation :
+Example of function implementation:
 
 ```php
 current_user_can( 'edit_posts' );
@@ -30,7 +30,7 @@ The function is used to verify the nonce sent in the current request usually acc
 
 Nonces should never be relied on for authentication authorization, or access control. Protect your functions using the `current_user_can` function, always assume the nonce value can be compromised.
 
-Example of function implementation :
+Example of function implementation:
 
 ```php
 $nonce = $_REQUEST['_wpnonce'];
@@ -48,7 +48,7 @@ One of the functions available to check for nonce value. This function ensures i
 
 Nonces should never be relied on for authentication authorization, or access control. Protect your functions using the `current_user_can` function, always assume the nonce value can be compromised.
 
-Example of function implementation :
+Example of function implementation:
 
 ```php
 <?php
@@ -66,7 +66,7 @@ One of the functions to check for nonce value. This function verifies the Ajax r
 
 Nonces should never be relied on for authentication authorization, or access control. Protect your functions using the `current_user_can` function, always assume the nonce value can be compromised.
 
-Example of function implementation :
+Example of function implementation:
 
 ```php
 /**

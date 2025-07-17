@@ -13,7 +13,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 This article covers possible ways to secure the code from XSS vulnerability on WordPress. This includes applying a proper function to sanitize and escape the user’s input value.
 
-Depending on the context of the process, in most cases, the user’s input will not be escaped or sanitized by default, that’s why the developer needs to manually process the input.
+Depending on the context of the process, in most cases, the user’s input will not be escaped or sanitized by default; that’s why the developer needs to manually process the input.
 
 <LinkCard
   title="Learn more about XSS"
@@ -22,22 +22,22 @@ Depending on the context of the process, in most cases, the user’s input will 
 
 ## [`esc_attr`](https://developer.wordpress.org/reference/functions/esc_attr/)
 
-This function should be the main function to use when the developer wants to escape a string inside of an HTML attribute. It works by encoding the `<`, `>`, `&`, `"` and `'` (less than, greater than, ampersand, double quote, and single quote) characters and will never double encode entities.
+This function should be the main function to use when the developer wants to escape a string inside an HTML attribute. It works by encoding the `<`, `>`, `&`, `"`, and `'` (less than, greater than, ampersand, double quote, and single quote) characters and will never double encode entities.
 
-Only use this function inside of the HTML attributes where the escaped value is wrapped inside of a single or double quotes:
+Only use this function inside of the HTML attributes where the escaped value is wrapped inside of a single or double quote:
 
 ```php
 <!-- This is correct: -->
 <div class="<?php echo esc_attr( $_GET['class'] ); ?>"></div>
 
-<!-- This is not correct, since the escaped string is not wrapped inside of quotes, resulting user can still inject arbitrary JS code via JS event handler: -->
+<!-- This is not correct, since the escaped string is not wrapped inside of quotes, resulting in the user being able to still inject arbitrary JS code via JS event handler: -->
 <img src=<?php echo esc_attr( $_GET['url'] ); ?> />
 
 ```
 
 ## [`esc_html`](https://developer.wordpress.org/reference/functions/esc_html/)
 
-This function should be the main function to use when the developer wants to escape a string for HTML blocks. This function will simply perform a wide HTML escape process to the string and will convert `<`, `>`, `&`, `"`, `'` characters to HTML entities.
+This function should be the main function to use when the developer wants to escape a string for HTML blocks. This function will perform a wide HTML escape process to the string and will convert `<`, `>`, `&`, `"`, and `'` characters to HTML entities.
 
 Developers can use this function when trying to escape a user's input outside of the HTML tag context:
 
@@ -48,7 +48,7 @@ echo esc_html( $text );
 
 ## [`esc_url`](https://developer.wordpress.org/reference/functions/esc_url/)
 
-This function should be the main function to use when the developer wants to escape a URL inside of an HTML attribute. It removes all the characters that are not valid in URL schemes like `<>`, `{}`, and similar. It encodes the valid special characters to ensure it is not possible to break out of the attribute and inject malicious JS. The special characters like `'`, `"`, ` ` (spacebar), and similar are encoded.
+This function should be the main function to use when the developer wants to escape a URL inside of an HTML attribute. It removes all the characters that are not valid in URL schemes like `<>`, `{}`, and similar. It encodes the valid special characters to ensure it is not possible to break out of the attribute and inject malicious JavaScript. The special characters like `'`, `"`, ` ` (spacebar), and similar are encoded.
 
 It is optimal to use this function when a URL value is being taken from the user or when returning results from `add_query_arg` or `remove_query_arg`.
 
@@ -58,4 +58,16 @@ It is optimal to use this function when a URL value is being taken from the user
 
 <!-- add_query_arg -->
 <a href="<?php echo esc_url(add_query_arg( 'key', 'value' ));?>">Click Me Too</a>
+```
+
+## [`wp_kses_post`](https://developer.wordpress.org/reference/functions/wp_kses_post/)
+
+This function should be used when the developer wants to allow the use of limited HTML tags only. It filters out the valid HTML tags and allows it, whereas stripping the malicious XSS payloads.
+
+It is optimal to use this function when the user-input needs to be displayed with HTML tags such as `<a>`, `<b>`, `<p>`, and so on without risking XSS.
+
+```php
+
+$text = "<p><b> Message for you: " . $_GET["message_with_html"] . "</b></p>";
+echo wp_kses_post( $text );
 ```

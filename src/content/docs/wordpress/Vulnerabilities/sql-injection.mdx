@@ -61,7 +61,7 @@ function load_questions(){
 
 The vulnerable variable, in this case, is the `$question_sql` variable where the value is passed from `$_COOKIE[ 'question_ids_'.$quiz_id ]` value without proper sanitization or escaping. The `sanitize_text_field` function is not enough to prevent SQL Injection since the `$question_sql` variable is constructed inside an ORDER BY clause without proper escaping.
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed action and parameter to trigger the SQL Injection (let's say that the `{$wpdb->prefix}custom_questions` table has 5 columns):
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed action and parameter to trigger the SQL Injection (let's say that the `{$wpdb->prefix}custom_questions` table has 5 columns):
 
 ```http
 GET /wp-admin/admin-ajax.php?action=load_questions&quiz_id=1 HTTP/1.1

@@ -5,6 +5,7 @@ head:
       content: Learn about Broken Access Control
 contributors:
     - rafiem
+    - dhakalananda
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -12,7 +13,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible Broken Access Control on WordPress. This includes improper hook/function/code usage inside of the plugin/theme which can be used to access or update sensitive information.
+This article covers cases of possible Broken Access Control on WordPress. This includes improper hook/function/code usage inside the plugin/theme, which can be used to access or update sensitive information.
 
 By default, processes on hooks or functions that are used on plugins or themes don't have a permission and nonce value check, that's why the developer needs to manually perform a permission check using [`current_user_can`](/academy/wordpress/wordpress-internals/functions/#current_user_can) function and the nonce value check using [`wp_verify_nonce`](/academy/wordpress/wordpress-internals/functions/#wp_verify_nonce), [`check_admin_referer`](/academy/wordpress/wordpress-internals/functions/#check_admin_referer) or [`check_ajax_referer`](/academy/wordpress/wordpress-internals/functions/#check_ajax_referer) functions.
 
@@ -25,7 +26,7 @@ By default, processes on hooks or functions that are used on plugins or themes d
 
 Insecure Direct Object Reference (IDOR) is one of the vulnerabilities caused by broken access control. It involves changing any entity's ID to another that a user is not supposed to access.
 
-For example, if a page views orders by order ID in the URL using the `?order_id=X` parameter, and the user can just change the order ID to view another user's order details, it is an IDOR.
+For example, if a page views orders by order ID in the URL using the `?order_id=X` parameter, and the user can change the order ID to view another user's order details, it is an IDOR.
 
 ## `init` hook
 
@@ -43,7 +44,7 @@ function check_if_update(){
 }
 ```
 
-To exploit this, an unauthenticated user just needs to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function which in this case will modify sensitive information.
+To exploit this, an unauthenticated user needs to visit the front page of a WordPress site and specify the parameter to trigger the `update_option` function, which in this case will modify sensitive information.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/?update=1&data=test
@@ -65,7 +66,7 @@ function delete_admin_menu(){
 }
 ```
 
-To exploit this, the unauthenticated user just needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoints specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
+To exploit this, the unauthenticated user needs to perform a POST request to the `admin-ajax.php` and `admin-post.php` endpoints, specifying the needed parameter to trigger the `delete_option` function to remove sensitive data.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=heartbeat -d "delete=1"
@@ -88,7 +89,7 @@ function update_post_data_2(){
 }
 ```
 
-To exploit this, any authenticated user (**Subscriber+** role) just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
+To exploit this, any authenticated user (**Subscriber+** role) needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_post_meta` function to update arbitrary WP Post metadata.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=update_post_data&update=1 -d "id=1&data=changed"
@@ -113,7 +114,7 @@ function toggle_menu_bar(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `admin-ajax.php` endpoint specifying the needed action and parameter to trigger the `update_option` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "toggle=1"
@@ -123,7 +124,7 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=toggle_menu_bar -d "tog
 
 For more details on the `register_rest_route` function, please refer to this [documentation](/academy/wordpress/wordpress-internals/functions/#register_rest_route-function).
 
-Sometimes, developers don't implement a proper permission check on the custom REST API route and use the `__return_true` string as the permission callback. This makes the custom REST API route to be publicly accessible.
+Sometimes, developers don't implement a proper permission check on the custom REST API route and use the `__return_true` string as the permission callback. This makes the custom REST API route publicly accessible.
 
 ```php
 add_action( 'rest_api_init', function () {
@@ -140,10 +141,48 @@ function delete_author_user($request){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-json/myplugin/v1/delete/author` endpoint specifying the needed parameter to trigger the `wp_delete_user` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-json/myplugin/v1/delete/author -d "user_id=1"
 ``` 
 
-Other cases could exist where developers already specify a proper function on the `permission_callback` parameter, however, the permission check implemented inside the function itself is not proper to what process can be done from the REST API route `callback` function.
+Other cases could exist where developers already specify a proper function on the `permission_callback` parameter; however, the permission check implemented inside the function itself is not proper for what process can be done from the REST API route `callback` function.
+
+## Nonce leakage
+
+In the case when an action is only protected by a nonce instead of a permission check, there is a chance that the nonce might be leaked to low-privileged users. It can lead to broken access control issues in such cases.
+
+```php
+add_action('wp_enqueue_scripts', function() {
+    wp_register_script('insecure-demo', false);
+    wp_enqueue_script('insecure-demo');
+    wp_localize_script('insecure-demo', 'insecureDemo', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'nonce'    => wp_create_nonce('delete_user_nonce'),
+    ]);
+});
+
+add_action('wp_ajax_nopriv_delete_user', function() {
+    $nonce   = $_POST['nonce'] ?? '';
+    $user_id = $_POST['user_id'] ?? 0;
+
+    if (!wp_verify_nonce($nonce, 'delete_user_nonce')) {
+        wp_die('Invalid nonce');
+    }
+
+    if (wp_delete_user($user_id)) {
+        echo "User $user_id deleted";
+    } else {
+        echo "Failed to delete user";
+    }
+
+    wp_die();
+});
+```
+
+To exploit this, an unauthenticated user can grab the nonce from the WP site homepage source and perform a POST request to the `/admin-ajax.php` endpoint with the nonce parameter to trigger the `wp_delete_user` function.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=delete_user -d "nonce=nonce_from_page_source&user_id=1"
+``` 

