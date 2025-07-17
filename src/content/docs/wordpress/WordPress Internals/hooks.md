@@ -21,7 +21,7 @@ This hook itself is accessible by unauthenticated users by default (also depends
 
 An unauthenticated user can simply visit the front page of a WordPress instance, and it will trigger any function that is attached to the `init` hook.
 
-Example of hook implementation :
+Example of hook implementation:
 
 ```php
 add_action( 'init', 'process_post' );
@@ -39,7 +39,7 @@ The `admin_init` hook is commonly used by developers to perform various tasks wh
 
 This hook is similar to the `init` hook, but it only fires as an admin screen or script is being initialized. This hook does not just run on user-facing admin screens; it also runs on the `admin-ajax.php` and `admin-post.php` endpoints as well.
 
-Example of hook implementation :
+Example of hook implementation:
 
 ```php
 function myplugin_settings() {
@@ -61,7 +61,7 @@ This hook allows developers to handle custom AJAX endpoints. The `wp_ajax_` hook
 
 This hook only fires for **logged-in** users, so by default, only users with the **Subscriber+** role can access the attached function on the hook. A proper permission and nonce check is still needed to secure the function attached to this hook.
 
-Example of hook implementation :
+Example of hook implementation:
 
 ```php
 add_action( 'wp_ajax_foobar', 'my_ajax_foobar_handler' );
@@ -108,7 +108,7 @@ This hook is equivalent to both `wp_ajax_` and `admin_action_` hooks but on a di
 
 This hook only fires for **logged-in** users, so by default, only users with the **Subscriber+** role can access the attached function on the hook. A proper permission and nonce check is still needed to secure the function attached to this hook.
 
-Example of hook implementation :
+Example of hook implementation:
 
 ```php
 add_action( 'admin_post_foobar', 'admin_post_handler' );
@@ -137,7 +137,7 @@ The `template_redirect` is used for cases when a feature needs to be implemented
 
 This hook fires after loading the homepage of the WordPress site.
 
-Example of hook implementation :
+Example of hook implementation:
 
 ```php
 add_action( 'template_redirect', 'my_ajax_foobar_handler' );
@@ -165,7 +165,7 @@ Below are some of the vulnerabilities that acted as a starting point from the `t
 
 The `admin_notices` hook is used to add custom notices in the WordPress admin dashboard. These notices can serve various purposes, such as warning users about missing settings, confirming successful actions, or promoting premium features. This hook fires on loading the WordPress admin dashboard `/wp-admin` page.
 
-Example of hook implementation :
+Example of hook implementation:
 
 ```php
 add_action( 'admin_notices', 'admin_notice_handler' );
