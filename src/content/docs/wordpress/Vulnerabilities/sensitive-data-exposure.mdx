@@ -12,7 +12,7 @@ import { LinkCard } from '@astrojs/starlight/components';
 
 ## Introduction
 
-This article covers cases of possible sensitive data exposure on WordPress. This is a subset of Broken Access Control which impacts the confidentiality instead of integrity. This vulnerability occurs due to the lack of proper confidentiality check on the requested resource.
+This article covers cases of possible sensitive data exposure on WordPress. This is a subset of Broken Access Control that impacts confidentiality instead of integrity. This vulnerability occurs due to the lack of a proper confidentiality check on the requested resource.
 
 <LinkCard
   title="Learn how to secure your code against Sensitive Data Exposure"
@@ -21,7 +21,7 @@ This article covers cases of possible sensitive data exposure on WordPress. This
 
 ## Actions
 
-Sensitive data can be leaked through hooks or actions when used without consideration for the user permissions. Below is an example of vulnerable code:
+Sensitive data can be leaked through hooks or actions when used without consideration for the user's permissions. Below is an example of vulnerable code:
 
 ```php
 add_action("wp_ajax_nopriv_view_course", "view_course");
@@ -45,7 +45,7 @@ function view_course(){
 };
 ```
 
-To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the post ID which is not in the published state to view any post information. This can lead to attacker viewing draft, password-protected and pending posts.
+To exploit this, any unauthenticated user just needs to perform a POST request to the `/wp-admin/admin-ajax.php` endpoint specifying the post ID, which is not in the published state, to view any post information. This can lead to an attacker viewing draft, password-protected, and pending posts.
 
 ```bash
 curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=view_course&course_id=1337
@@ -53,7 +53,7 @@ curl <WORDPRESS_BASE_URL>/wp-admin/admin-ajax.php?action=view_course&course_id=1
 
 ## Logs
 
-If the logs are stored by the plugin without any .htaccess or randomization of the log filename, it might cause sensitive data leak.
+If the logs are stored by the plugin without any .htaccess or randomization of the log filename, it might cause a sensitive data leak.
 
 Below is an example of vulnerable code:
 

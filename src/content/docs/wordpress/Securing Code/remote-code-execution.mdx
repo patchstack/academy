@@ -48,7 +48,7 @@ add_shortcode("imagerender", "image_render_callback");
 
 ## Fixing Arbitrary Plugin Installation
 
-It can be fixed by ensuring that the user who's installing the plugin has proper permissions and appropriate nonce check is being done in the action.
+It can be fixed by ensuring that the user who's installing the plugin has proper permissions and that an appropriate nonce check is being done in the action.
 
 ```php
 add_action('wp_ajax_nopriv_install_remote_plugin', function() {
